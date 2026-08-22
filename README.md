@@ -6,12 +6,18 @@ with inter-team and external blockers, for use by a management dashboard
 that detects blockers and potential remedies using percolation-theory
 practices.
 
-See `PROJECT.md` for the outcome and constraints, `ARCHITECTURE.md` for the
-domain model, `BACKLOG.md` for the current sprint's tasks, and
-`TEAM_OPERATING_SYSTEM.md` / `DEFINITION_OF_DONE.md` for how the team
-(BP/PM/Code) works.
+See `specification/PROJECT.md` for the outcome and constraints,
+`specification/ARCHITECTURE.md` for the domain model, `specification/BACKLOG.md`
+for the current sprint's tasks, and `TEAM_OPERATING_SYSTEM.md` /
+`DEFINITION_OF_DONE.md` for how the team (BP/PM/Code) works. `specification/` is
+the locked single source of truth (see Issue #5 for the in-progress Sprint 1
+rebuild against it).
 
 ## Quick start
+
+**Note:** `src/generate_blocker_data.py` currently implements the older generic
+portfolio model, not yet the finance-specific Sprint 1 scenario locked in
+`specification/`. See Issue #5 for the in-progress rebuild.
 
 ```
 python3 src/generate_blocker_data.py
@@ -38,9 +44,11 @@ pytest tests/ -v
 ## Repo layout
 
 ```
-/                 process docs (this README, PROJECT.md, ARCHITECTURE.md,
-                  BACKLOG.md, TESTER.md, TEAM_OPERATING_SYSTEM.md,
+/                 governance docs (this README, TEAM_OPERATING_SYSTEM.md,
                   DEFINITION_OF_DONE.md, session_log.md)
+specification/    locked source of truth (PROJECT.md, ARCHITECTURE.md,
+                  BACKLOG.md, TESTER.md)
+_archive/         superseded generic docs (reference only)
 src/              generate_blocker_data.py — the generator (stdlib only)
 tests/            automated test suite
 data/             generated CSVs

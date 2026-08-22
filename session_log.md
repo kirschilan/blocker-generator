@@ -68,3 +68,43 @@ Observations:
 - Model selection deferred to post-Sprint 1 assessment
 - Dr. Agile standards repo TBD (post-project action)
 
+## Session: 2026-08-22 — PM: Sprint 1 build doesn't match locked spec; rebuild decision
+
+**Date:** 2026-08-22
+**Participants:** Kirschi (BP), PM (Claude)
+**Mode:** Async (GitHub)
+
+**Diagnosis:** `src/generate_blocker_data.py` implements a generic N-team/random-graph
+model (built before `specification/` was locked as source of truth in d7b3f53). It does
+not implement the finance-specific Sprint 1 scenario in `specification/BACKLOG.md`
+(3-squad Auth/Checkout/Payments model, Auth cluster injection weeks 3-5 with 1-day
+cascade lag, Xray test logs). Per `DEFINITION_OF_DONE.md` §5, Code & Generated Data
+was never actually signed off against the locked spec — the earlier "Sprint 1"
+sign-off in this log was against the now-archived generic Tester criteria, not the
+locked one.
+
+**Decision (BP confirmed):** Rebuild to match the locked spec. `specification/`
+stays the single source of truth; the generic generator is not being kept as a
+parallel mode right now (that's the deferred "Multi-domain templating" Post-MVP
+item in `specification/BACKLOG.md` if revisited later).
+
+**Scope Changes:** None to `PROJECT.md`/`ARCHITECTURE.md`/`BACKLOG.md`/`TESTER.md`
+content — all four were already locked and correct; this is a build/implementation
+gap, not a spec change.
+
+**Work Completed:**
+- Opened GitHub Issue #5 with the full Task 1.1–1.6 rebuild handoff for Code,
+  sourced from `specification/BACKLOG.md`, `specification/ARCHITECTURE.md`,
+  `specification/TESTER.md`.
+- Fixed `README.md` doc links (were pointing at root-level `PROJECT.md` /
+  `ARCHITECTURE.md` / `BACKLOG.md`, which moved to `specification/` in d7b3f53).
+
+**Blockers / Open Items:**
+- Rebuild (Task 1.1–1.6 per Issue #5): owner Code, no ETA set.
+- Once the rebuild passes `specification/TESTER.md` Sprint 1 checks, PM will move
+  the current generic `src/generate_blocker_data.py` + `tests/` + generic
+  `data/*.csv` / `docs/validation_report.md` into `_archive/` (reference only),
+  matching how the generic docs were already archived.
+
+**Next:** Code picks up Issue #5.
+
