@@ -100,8 +100,8 @@ Three hardcoded blocker clusters injected into high-density dataset. Each cluste
 - Week 3, Day 1 (Sprint 1, day 15): Auth service has a critical bug (e.g., session cache corruption). SQ-A enters "Waiting on Auth service fix."
 - Week 3, Days 1–3: SQ-A blocked internally. Any feature requiring login fails.
 - Week 3, Day 2: Dependent squads (B, C, D, E, F, G, H) all place features in "Waiting on Login service" (cascade lag = 1 day).
-- Week 4, Day 3: SQ-A resolves (deploy patch). Auth service is stable.
-- Week 4, Day 4: Dependent squads' blockers clear (propagation lag = 1 day).
+- Week 3, Day 3 *(corrected 2026-08-22: was "Week 4, Day 3" — contradicted this cluster's own 3-day duration and Task 1.3's verification text; independently caught in both Sprint 1 rebuild attempts)*: SQ-A resolves (deploy patch). Auth service is stable.
+- Week 3, Day 4 *(corrected 2026-08-22: was "Week 4, Day 4")*: Dependent squads' blockers clear (propagation lag = 1 day).
 
 **Affected Squads:**
 - SQ-A (root): 3 features stuck (high severity)
@@ -208,11 +208,11 @@ SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00
 | `Issue Key` | String | `SQ-A-1`, `SQ-B-42` | Format: `SQ-{A..H}-{1..N}` |
 | `Summary` | String | "Login session timeout handling" | Feature or blocker description; <100 chars |
 | `Type` | String | "Story" or "Sub-task" | Always "Story" for features, "Sub-task" for blockers |
-| `Status` | String | "Done" \| "In Progress" \| "Waiting" | Features in Done; blockers in Waiting |
+| `Status` | String | "Done" \| "In Progress" \| "Waiting" | Feature rows: Done or In Progress. Blocker rows: Waiting if still open, Done once resolved |
 | `Assignee` | String | "auth-squad" | Lowercase squad identifier (e.g., "auth-squad", "payments-squad") |
 | `Created` | ISO-8601 | `2026-07-01T09:00:00Z` | Sprint start date + random offset |
-| `Resolved` | ISO-8601 | `2026-07-15T17:00:00Z` | Created + Cycle Time; null if in Waiting |
-| `Waiting Reason` | String | "Waiting on Login service (SQ-A)" | Only populated if Status = Waiting |
+| `Resolved` | ISO-8601 | `2026-07-15T17:00:00Z` | Created + Cycle Time; null if Status != Done |
+| `Waiting Reason` | String | "Waiting on Login service (SQ-A)" | *(corrected 2026-08-22 — see BACKLOG.md Sprint 1 Outcome note, Fix 2)* Populated for every blocker row (`Type` = "Sub-task"), whether currently Waiting or since resolved to Done — clearing it on resolve would erase the historical cluster signal PROJECT.md's P1 (Detection) needs. Null for feature rows (`Type` = "Story"). |
 | `Cycle Time (days)` | Float | `14.33` | (Resolved - Created) in days; null if waiting |
 | `Test Automation` | String | "Manual" \| "Selenium" \| "Postman" \| "Swagger" \| "Perfecto Mobile" | Primary automation type (if any) |
 | `External Blocker` | Boolean | true \| false | true if root cause is external team |

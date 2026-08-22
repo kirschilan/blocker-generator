@@ -14,7 +14,9 @@
 
 ---
 
-## Sprint 1: Auth Squad + 1 Cluster (Minimum Viable Dataset)
+## Sprint 1/2: Auth-Cluster MVP (Minimum Viable Dataset)
+
+**Note (2026-08-22):** Sprint 1's timebox ended before this gate was reached (see `BACKLOG.md` Sprint 1 Outcome note). These are now Sprint 2's acceptance criteria, corrected for the Task 1.4 density defect found mid-Sprint-1: cluster-only, window-scoped density, `Waiting Reason` persists after resolve. Numbers below already reflect the correction.
 
 ### Automated Checks (Task 1.4 + 1.5 outputs)
 
@@ -25,11 +27,11 @@
 - [ ] No UTF-8 encoding errors or null bytes
 - [ ] All rows have valid Issue Key (format: `SQ-[ABD]-[0-9]+`)
 
-**Row Counts & Data Volume**
+**Row Counts & Data Volume (corrected 2026-08-22 — see BACKLOG.md Sprint 1 Outcome note)**
 - [ ] Total feature rows: 540–720 (15–20 per squad × 3 squads × 12 sprints)
-- [ ] Total blocker rows: 15–30 (Auth cluster weeks 3–5)
-- [ ] Total rows (features + blockers): 555–750
-- [ ] Each row has exactly 13 core columns + 12 Sprint columns (total 25)
+- [ ] Total blocker rows: 7–11 (Auth cluster's own window only — no blockers elsewhere in the 12 sprints)
+- [ ] Total rows (features + blockers): 547–731
+- [ ] Each row has exactly 12 core columns + 12 Sprint columns (total 24) — the mandatory-column list below has 12 named entries
 
 **Data Integrity**
 - [ ] No duplicate Issue Keys (each key appears once)
@@ -37,7 +39,7 @@
 - [ ] All `Resolved` dates are null (blank) if Status = "Waiting"; populated if Status = "Done"
 - [ ] All `Resolved` dates >= `Created` dates (no negative cycle times)
 - [ ] `Cycle Time (days)` is null if Status = "Waiting"; numeric (float) if Status = "Done"
-- [ ] Blocker rows (Status = "Waiting") have non-null `Waiting Reason`; feature rows (Status = "Done") have null `Waiting Reason`
+- [ ] Blocker rows (`Type` = "Sub-task") have non-null `Waiting Reason` regardless of current `Status` (persists after resolve — see BACKLOG.md Sprint 1 Outcome note, Fix 2); feature rows (`Type` = "Story") have null `Waiting Reason`
 - [ ] `Test Automation` is one of: "Manual", "Selenium", "Postman", "Swagger", "Perfecto Mobile", or null
 - [ ] `External Blocker` is boolean (true/false); false for Auth cluster (internal failure)
 - [ ] `Cluster Tag` is one of: "Cluster-1-Auth", null; all Auth-cluster blockers have "Cluster-1-Auth"
@@ -48,8 +50,9 @@
 - [ ] No feature appears in Sprint 0 or Sprint 13+
 - [ ] Dates in Sprint columns align with actual sprint boundaries (Sprint 1 = Jul 1–14, Sprint 2 = Jul 15–28, etc.)
 
-**Blocker Density**
-- [ ] Blocker density = (total blocker rows / total feature rows) × 100 = 20–30%
+**Blocker Density (corrected 2026-08-22 — window-scoped, not global)**
+- [ ] Blocker density within the Auth cluster's own window = (blocker rows in that window ÷ feature rows in that window) × 100 = 20–30%
+- [ ] Global blocker density (all 12 sprints) ≈ 1–2% — expected and correct for a single-cluster MVP; percolation-threshold-breaching density is Sprint 4's full 3-cluster/8-squad scope, not this one
 - [ ] Auth blockers concentrated in weeks 3–5 (4 weeks = sprints 2–3 boundary roughly)
 - [ ] No blockers in weeks 1–2 or 6–12
 
@@ -153,14 +156,14 @@
 - [ ] Test automation coverage aligns with their reality (50% Selenium, 10% API, rest manual)
 - [ ] No "this data looks fake" red flags (cycle times, dates, squad names feel authentic)
 
-**Sign-Off Statement (Required before Sprint 2):**
-> "I recognize this Auth-cluster cascading pattern. The data matches how our squads would actually get blocked. Proceed to Sprint 2."
+**Sign-Off Statement (Required before Sprint 3):**
+> "I recognize this Auth-cluster cascading pattern. The data matches how our squads would actually get blocked. Proceed to Sprint 3."
 
 ---
 
-## Sprint 2: Expand to 5 Squads + 2 Clusters + Mocking
+## Sprint 3: Expand to 5 Squads + 2 Clusters + Mocking
 
-### Automated Checks (Task 2.3 + 2.4 outputs)
+### Automated Checks (Task 3.3 + 2.4 outputs)
 
 All Sprint 1 checks apply here, plus:
 
@@ -190,7 +193,7 @@ All Sprint 1 checks apply here, plus:
 
 ---
 
-### Automated Checks (Task 2.4: Optimized Dataset with Mocking)
+### Automated Checks (Task 3.4: Optimized Dataset with Mocking)
 
 **Optimized CSV (`v2_two_clusters_optimized_with_mocking.csv`)**
 - [ ] Same structure as high-density (same columns, sprint denormalization)
@@ -251,9 +254,9 @@ All Sprint 1 checks apply here, plus:
 
 ---
 
-## Sprint 3: Full 8-Squad + 3 Clusters + CLI + Reusability
+## Sprint 4: Full 8-Squad + 3 Clusters + CLI + Reusability
 
-### Automated Checks (Task 3.3 + 3.4 outputs)
+### Automated Checks (Task 4.3 + 3.4 outputs)
 
 All Sprint 1–2 checks apply, plus:
 
@@ -288,7 +291,7 @@ All Sprint 1–2 checks apply, plus:
 
 ---
 
-### Automated Checks (Task 3.6: CLI Parameterization)
+### Automated Checks (Task 4.6: CLI Parameterization)
 
 **CLI Execution**
 - [ ] `python generate_blocker_data.py --help` displays all options
@@ -421,4 +424,5 @@ Business Partner signs off (statement required) ← Gate to next sprint
 | Date | Item | Status |
 |------|------|--------|
 | 2026-08-22 | TESTER.md created: DoD for Sprint 1–3, automated checks, manual spot-checks, business partner sign-off criteria | Ready for Code |
+| 2026-08-22 | Corrected Sprint 1 gate per PM ruling (BACKLOG.md Sprint 1 Outcome note): window-scoped blocker density, Waiting Reason persists after resolve. Gate renamed Sprint 1/2 (closes in Sprint 2, not Sprint 1). Old Sprint 2 (5-squad+DataPlatform) -> Sprint 3; old Sprint 3 (full 8-squad+CLI) -> Sprint 4. | PM, confirmed with BP |
 

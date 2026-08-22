@@ -1,6 +1,6 @@
 # Agile Blocker Generator — Backlog
 
-**Status:** Ready for Claude Code (Vertical Slices)  
+**Status:** Sprint 1 closed (timeboxed out, not done-done); Sprint 2 (Auth-cluster MVP carryover) in progress  
 **Updated:** 2026-08-22  
 **Principle:** Each sprint produces a complete, testable vertical slice that can be validated with the business partner. INVEST: Independent, Negotiable, Valuable, Estimable, Small, Testable.
 
@@ -15,6 +15,45 @@
 - Auth cluster is visibly propagated to Checkout + Payments (same root cause, cascading timeline)
 - Data loaded into a simple viz (Excel pivot, Grafana, or Tableau) shows the "crime neighborhood"
 - Business partner signs off: "Yes, this matches how our squads actually get blocked"
+
+---
+
+**Sprint 1 Outcome (closed 2026-08-22 — timebox ended, not done-done):**
+
+A sprint is a timebox, not a scope commitment — we were confident this would ship
+within it, and it didn't. Tasks 1.1–1.3 (squad model, archetype taxonomy, cluster
+injection) were implemented consistently by every attempt and are considered
+validated in substance. Tasks 1.4–1.6 hit a real defect in this document's own
+acceptance criteria mid-implementation (see below) and, compounded by two Code
+sessions independently attempting a fix without visibility into each other,
+produced two mutually incompatible, unmerged candidate datasets instead of one
+signed-off deliverable. Nothing from Sprint 1 has been merged to `main` or has
+completed PM manual spot-check / Business Partner sign-off.
+
+**Defect found:** Task 1.4's acceptance criteria were self-contradictory — the
+Auth cluster alone can only ever produce 15–30 blocker rows, which caps *global*
+blocker density (blockers ÷ all 540–720 features) at 2–5%, never the stated
+20–30%. That 20–30% figure was written for the full 8-squad/3-cluster model
+(see `ARCHITECTURE.md` "Blocker Density Targets") and copied into the 3-squad
+Sprint 1 slice without rescaling.
+
+**PM ruling (2026-08-22, confirmed with Business Partner):**
+- Sprint 1 stays **cluster-only** — no blockers outside the Auth cluster's own
+  window. This is what `ARCHITECTURE.md`'s Cluster Topology actually describes
+  for Sprint 1 and what Task 1.3 already implements; density is fixed by
+  scoping the 20–30% target to the cluster's own week, not by inventing
+  additional blocker mechanics to hit a global number (see rescoped Task 1.4
+  criteria below).
+- Task 1.1's external-dependency deferral stands as originally written — not
+  pulled forward.
+- `Waiting Reason` now persists on a blocker row after it resolves (`Status`
+  still reflects current state); clearing it on resolve — the original rule —
+  would erase the historical cluster signal that `PROJECT.md`'s P1 (Detection)
+  needs to identify clusters retrospectively across 12 sprints.
+
+**Carried to Sprint 2:** finishing Tasks 1.4–1.6 to these corrected criteria,
+formal PM/BP sign-off, and consolidating the two candidate branches down to
+one. See "Sprint 2: Ship the Auth-Cluster MVP" below.
 
 ---
 
@@ -69,31 +108,35 @@
 ---
 
 ### Task 1.4: Generate 12-sprint features + Auth cluster (high-density)
+**Status:** Carried to Sprint 2 — criteria below corrected 2026-08-22 (cluster-only, window-scoped density; see Sprint 1 Outcome note above)  
 **Priority:** P1  
 **Size:** Moderate (complete feature generation + blockers for 3 squads only)  
 **Acceptance Criteria:**
 - 15–20 features per squad per sprint (Auth, Checkout, Payments) = 45–60 features per sprint
 - 12 sprints = 540–720 total features
-- Auth cluster blockers injected: Auth (3 blockers, week 3), Checkout/Payments (2 blockers each, week 3–4)
+- Auth cluster blockers injected: Auth (3 blockers, week 3), Checkout/Payments (2–3 blockers each, week 3, 1-day cascade lag) = 7–11 blocker rows total
+- No blockers anywhere outside the Auth cluster's own window — Sprint 1 is single-cluster by design
 - Features in "Waiting" status have correct waiting reason from Task 1.2 taxonomy
+- `Waiting Reason` persists on a blocker row after it resolves (Status still reflects current state)
 - Waiting cycle times realistic (Auth blocker fixed day 3 → downstream clear day 4)
-- Blocker density calculable (total blockers / total features × 12 sprints)
+- **Blocker density is window-scoped, not global:** (blockers in the cluster's own week ÷ features in that week) × 100 = 20–30%. Global density (all 12 sprints) is expected to be ~1–2%.
 - Output: `v1_auth_cluster_high_density.csv` (Jira format)
 
 **Input to Code:** Tasks 1.1–1.3 + ARCHITECTURE.md feature templates for each squad  
-**Output:** CSV (~600–750 rows), Jira columns: Issue Key, Summary, Status, Assignee, Waiting Reason, Created, Resolved, Cycle Time, Sprint, Test Automation  
+**Output:** CSV (547–731 rows: 540–720 features + 7–11 blockers), Jira columns: Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Waiting Reason, Cycle Time, Test Automation, External Blocker, Cluster Tag, Sprint-1..Sprint-12  
 **Verification:**
-  - Row count ≈ 600–750
-  - All Waiting items have non-null Waiting Reason
+  - Row count ≈ 547–731
+  - All blocker rows (Type = Sub-task) have non-null Waiting Reason regardless of Status; feature rows (Type = Story) have null Waiting Reason
   - Dates are monotonic (no time travel)
   - Auth blocker resolves day 3; downstream blockers clear day 4 (visible in Created/Resolved timestamps)
-  - Blocker density ~ 20–30% (permissible for high-density slice)
+  - Window-scoped blocker density ~ 20–30%; global density ~1–2%; zero blocker rows outside the cluster window
   - All Issue Keys match pattern `SQ-[ABD]-[0-9]+`  
-**Test:** Load CSV into Pandas; assert all Waiting rows have Waiting Reason, assert dates monotonic
+**Test:** Load CSV into Pandas; assert all blocker rows have Waiting Reason regardless of Status, assert dates monotonic, assert window-scoped density is 20–30%, assert zero blockers outside the cluster window
 
 ---
 
 ### Task 1.5: Generate test execution logs (Xray-like) for Auth cluster dataset
+**Status:** Carried to Sprint 2  
 **Priority:** P1  
 **Size:** Moderate (one log row per feature × test type)  
 **Acceptance Criteria:**
@@ -113,6 +156,7 @@
 ---
 
 ### Task 1.6: Validate & document (for business partner review)
+**Status:** Carried to Sprint 2  
 **Priority:** P1  
 **Size:** Small (validation + README)  
 **Acceptance Criteria:**
@@ -136,7 +180,79 @@
 
 ---
 
-## Sprint 2: Expand to 5 Squads + DataPlatform Cluster + Optimized Scenario
+## Sprint 2: Ship the Auth-Cluster MVP (Sprint 1 Carryover)
+
+**Goal:** Sprint 1's timebox ended without a merged, signed-off deliverable. Sprint 2 does not add new scope — it finishes Sprint 1's Tasks 1.4–1.6 against the corrected acceptance criteria above (cluster-only, window-scoped density, `Waiting Reason` persists after resolve, external deps stay deferred), consolidates the two unmerged candidate branches into one, and gets the artifact through PM spot-check and Business Partner sign-off. Sized deliberately small: we just observed the 3-squad/1-cluster slice take a full day and produce two conflicting unmerged attempts, so Sprint 2 does not also take on the original 5-squad/DataPlatform expansion (now Sprint 3).
+
+**Done-Done Criteria:**
+- One dataset, one code path — the other candidate branch's approach (recurring background blockers across all 12 sprints, un-deferred external dependencies) is explicitly rejected, not merged
+- `pytest tests/ -v` passes
+- Task 1.4's corrected acceptance criteria (above) all hold against the actual generated CSV
+- PM manual spot-check performed and recorded (`TESTER.md` Sprint 1/2 §Manual Spot-Checks)
+- Business partner signs off: "Yes, this matches how our squads actually get blocked"
+
+---
+
+### Task 2.1: Consolidate the locked spec to the PM ruling
+**Priority:** P0 (unblocks all)
+**Size:** Small (already drafted by PM this session)
+**Acceptance Criteria:**
+- `specification/BACKLOG.md`, `TESTER.md`, `ARCHITECTURE.md` reflect the single, final ruling: cluster-only, window-scoped density, `Waiting Reason` persists after resolve, external deps deferred
+- No other version of these files (branch-local edits on either candidate branch) is treated as authoritative
+**Input to Code:** This document's Sprint 1 Outcome note; `TESTER.md`/`ARCHITECTURE.md` PM edits
+**Output:** none (PM-owned; Code consumes the result)
+**Verification:** Code confirms the spec is unambiguous before resuming Task 2.2
+
+---
+
+### Task 2.2: Land the cluster-only branch and add the Waiting-Reason-persists fix
+**Priority:** P0
+**Size:** Small (one behavioral fix on top of already-working code)
+**Acceptance Criteria:**
+- Base work: `claude/sprint-1-blocker-generator-qpnb1i` (PR #4) — squads, archetypes, cluster injection, cluster-only Task 1.4/1.5/1.6 output already implemented and matches the corrected criteria on every point except Waiting-Reason persistence
+- Add: blocker rows (`Type = Sub-task`) keep their `Waiting Reason` after `Status` resolves to `Done`; feature rows unaffected
+- Do **not** port over `claude/sprint1-backlog-xray-mismatch-8io8es`'s baseline-blocker or external-dependency changes — that branch's approach was considered and rejected (see Sprint 1 Outcome note)
+- Regenerate `data/v1_auth_cluster_high_density.csv` and `data/v1_auth_cluster_test_logs.csv`; all tests pass
+**Input to Code:** PR #4 branch + Task 2.1's consolidated spec
+**Output:** Updated `src/generate_blocker_data.py`, regenerated CSVs, updated tests
+**Test:** `pytest tests/ -v`; assert at least one blocker row has `Status = Done` and non-null `Waiting Reason`
+
+---
+
+### Task 2.3: PM manual spot-check
+**Priority:** P0
+**Size:** Small (~15 min per `TESTER.md`)
+**Acceptance Criteria:** Per `TESTER.md` Sprint 1 §Manual Spot-Checks, against the Task 2.2 output
+**Input to Code:** none (PM-owned)
+**Output:** Findings recorded in `session_log.md`
+**Verification:** PM states explicitly "spot-checks passed" or documents what failed and routes back to Task 2.2
+
+---
+
+### Task 2.4: Business Partner narrative validation and sign-off
+**Priority:** P0
+**Size:** Small (~20–30 min per `TESTER.md` §Business Partner Validation)
+**Acceptance Criteria:** BP loads the CSVs, confirms the Auth-cluster cascade matches their mental model, and gives an explicit sign-off statement (not just "looks good")
+**Input to Code:** none (BP-owned, PM facilitates)
+**Output:** Sign-off recorded in `session_log.md` and this issue's decision point below
+**Verification:** Explicit BP statement, or explicit escalation if the data doesn't match expectations
+
+---
+
+### Task 2.5: Merge and close out
+**Priority:** P1
+**Size:** Small
+**Acceptance Criteria:**
+- PR #4 (updated per Task 2.2) merged to `main`
+- `claude/sprint1-backlog-xray-mismatch-8io8es` closed without merging, with a note pointing to this ruling
+- Superseded generic `src/generate_blocker_data.py` history, old generic `data/*.csv`, and `docs/validation_report.md` reconciled — single set of Sprint-1/2 artifacts on `main`
+- `session_log.md` records the merge and sign-off
+**Input to Code:** Tasks 2.1–2.4 complete
+**Output:** Clean `main` with one working, signed-off Auth-cluster MVP dataset
+**Verification:** `main` at HEAD passes `pytest tests/ -v` and matches `TESTER.md` Sprint 1/2 criteria
+
+---
+## Sprint 3: Expand to 5 Squads + DataPlatform Cluster + Optimized Scenario
 
 **Goal:** Validate that a second, independent blocker cluster (DataPlatform delay) produces similar cascading behavior. Expand to 5 squads (Auth, Checkout, Payments, Core Banking, Savings), add external dependency (DataPlatform), generate optimized dataset where the DataPlatform cluster is mocked/reduced. Business partner confirms: "If we mock the DataPlatform API, do we see flow improvement?"
 
@@ -147,7 +263,7 @@
 
 ---
 
-### Task 2.1: Extend squad model to 5 squads + DataPlatform external dependency
+### Task 3.1: Extend squad model to 5 squads + DataPlatform external dependency
 **Priority:** P0  
 **Size:** Small (3 new squads + external dep)  
 **Acceptance Criteria:**
@@ -162,7 +278,7 @@
 
 ---
 
-### Task 2.2: Inject DataPlatform cluster (weeks 6–10)
+### Task 3.2: Inject DataPlatform cluster (weeks 6–10)
 **Priority:** P0  
 **Size:** Small (1 new cluster, reuse injection logic from Task 1.3)  
 **Acceptance Criteria:**
@@ -176,7 +292,7 @@
 
 ---
 
-### Task 2.3: Generate 12-sprint features + 2 clusters (high-density V2)
+### Task 3.3: Generate 12-sprint features + 2 clusters (high-density V2)
 **Priority:** P1  
 **Size:** Moderate (5 squads × 12 sprints)  
 **Acceptance Criteria:**
@@ -186,7 +302,7 @@
 - Blocker density ~ 25–35% (2 clusters, overlapping impact)
 - Output: `v2_two_clusters_high_density.csv`
 
-**Input to Code:** Tasks 2.1–2.2 + feature generation  
+**Input to Code:** Tasks 3.1–2.2 + feature generation  
 **Output:** CSV (~1,000–1,250 rows)  
 **Verification:**
   - Row count ~ 1,000–1,250
@@ -197,9 +313,9 @@
 
 ---
 
-### Task 2.4: Generate optimized dataset with DataPlatform mocking
+### Task 3.4: Generate optimized dataset with DataPlatform mocking
 **Priority:** P1  
-**Size:** Moderate (variant of Task 2.3)  
+**Size:** Moderate (variant of Task 3.3)  
 **Acceptance Criteria:**
 - Same squads + feature structure as high-density V2
 - **Mocking rule:** DataPlatform cluster removed or duration reduced to 1 day (mocked responses)
@@ -207,7 +323,7 @@
 - Result: blocker density drops to ~15–20% (P2 Metric B: "mocking DataPlatform improves flow")
 - Output: `v2_two_clusters_optimized_with_mocking.csv`
 
-**Input to Code:** Task 2.3 + mocking parameter  
+**Input to Code:** Task 3.3 + mocking parameter  
 **Output:** CSV (~950–1,150 rows, slightly fewer blockers)  
 **Verification:**
   - DataPlatform cluster removed (no "Waiting on DataPlatform" after week 6)
@@ -217,7 +333,7 @@
 
 ---
 
-### Task 2.5: Generate test logs for both V2 datasets
+### Task 3.5: Generate test logs for both V2 datasets
 **Priority:** P1  
 **Size:** Moderate (Task 1.5 applied to 5 squads)  
 **Acceptance Criteria:**
@@ -226,17 +342,17 @@
 - Flaky tests correlate to blockers in high-density; fewer flaky tests in optimized
 - Output: `v2_two_clusters_high_density_test_logs.csv` + `v2_two_clusters_optimized_test_logs.csv`
 
-**Input to Code:** Task 2.3–2.4 feature CSVs  
+**Input to Code:** Task 3.3–2.4 feature CSVs  
 **Output:** Two CSVs (~1,500–2,000 rows each)  
 **Test:** Assert flaky test count higher in high-density than optimized
 
 ---
 
-### Task 2.6: Validate & document V2 (for business partner review)
+### Task 3.6: Validate & document V2 (for business partner review)
 **Priority:** P1  
 **Size:** Small  
 **Acceptance Criteria:**
-- Validation report: "Sprint 2 Dataset Summary"
+- Validation report: "Sprint 3 Dataset Summary"
   - Squads: 5 (Auth, Checkout, Payments, Core Banking, Savings)
   - Clusters: 2 (Auth weeks 3–5, DataPlatform weeks 6–10)
   - High-density: ~1,000 features, ~250–350 blockers, 25–35% density
@@ -245,19 +361,19 @@
 - Updated README.md: mention 2 clusters, mocking scenario, how to load both datasets
 - Commit example CSVs (all 4 for review)
 
-**Input to Code:** Tasks 2.1–2.5  
+**Input to Code:** Tasks 3.1–2.5  
 **Output:** Validation report + updated README  
 **Verification:** Business partner: "I see Auth + DataPlatform clusters; mocking DataPlatform shows flow improvement. This proves the hypothesis. Ready for full 8-squad dataset."
 
 ---
 
-## Sprint 3: Full 8-Squad + 3 Clusters + CLI + Reusability
+## Sprint 4: Full 8-Squad + 3 Clusters + CLI + Reusability
 
 **Goal:** Merge all squads (Loans, Invoicing, Collections) + all external dependencies (CRM, Loans Rule Engine, BPM, ESB) + 3rd cluster (Checkout instability). Parameterize generator (CLI, config files, reproducibility). Handoff to business partner as reusable tool.
 
 ---
 
-### Task 3.1: Extend squad model to all 8 squads + 4 external dependencies
+### Task 4.1: Extend squad model to all 8 squads + 4 external dependencies
 **Priority:** P0  
 **Size:** Small (update datastructure; logic reused from Sprints 1–2)  
 **Acceptance Criteria:**
@@ -272,7 +388,7 @@
 
 ---
 
-### Task 3.2: Inject Checkout cluster (weeks 10–12) + validate all 3 clusters together
+### Task 4.2: Inject Checkout cluster (weeks 10–12) + validate all 3 clusters together
 **Priority:** P0  
 **Size:** Small (reuse cluster injection logic)  
 **Acceptance Criteria:**
@@ -286,7 +402,7 @@
 
 ---
 
-### Task 3.3: Generate full 8-squad high-density dataset (all 3 clusters)
+### Task 4.3: Generate full 8-squad high-density dataset (all 3 clusters)
 **Priority:** P1  
 **Size:** Large (complete dataset generation)  
 **Acceptance Criteria:**
@@ -296,7 +412,7 @@
 - Blocker density ~ 30–40% (percolation threshold breached)
 - Output: `full_8squad_high_density.csv`
 
-**Input to Code:** Tasks 3.1–3.2 + ARCHITECTURE.md feature templates  
+**Input to Code:** Tasks 4.1–3.2 + ARCHITECTURE.md feature templates  
 **Output:** CSV (~1,800–2,400 rows)  
 **Verification:**
   - Blocker density ~ 30–40%
@@ -306,7 +422,7 @@
 
 ---
 
-### Task 3.4: Generate full 8-squad optimized dataset (mocked interventions)
+### Task 4.4: Generate full 8-squad optimized dataset (mocked interventions)
 **Priority:** P1  
 **Size:** Large  
 **Acceptance Criteria:**
@@ -318,7 +434,7 @@
 - Result: blocker density ~ 15–20% (below percolation; flow resumes)
 - Output: `full_8squad_optimized.csv`
 
-**Input to Code:** Task 3.3 + intervention params  
+**Input to Code:** Task 4.3 + intervention params  
 **Output:** CSV (~1,200–1,600 rows)  
 **Verification:**
   - Blocker density ~ 15–20%
@@ -327,7 +443,7 @@
 
 ---
 
-### Task 3.5: Generate test logs for full 8-squad datasets
+### Task 4.5: Generate test logs for full 8-squad datasets
 **Priority:** P1  
 **Size:** Large  
 **Acceptance Criteria:**
@@ -336,13 +452,13 @@
 - Flaky tests higher in high-density (Selenium grid issues weeks 10–12), lower in optimized
 - Output: 2 CSVs (~2,000–3,000 rows each)
 
-**Input to Code:** Tasks 3.3–3.4 + test template logic  
+**Input to Code:** Tasks 4.3–3.4 + test template logic  
 **Output:** Two CSVs  
 **Verification:** Assert flaky test density higher in high-density; test automation counts reflect parameter
 
 ---
 
-### Task 3.6: CLI + parameterization
+### Task 4.6: CLI + parameterization
 **Priority:** P1  
 **Size:** Small (wraps all logic)  
 **Acceptance Criteria:**
@@ -367,7 +483,7 @@
 
 ---
 
-### Task 3.7: Documentation & final handoff
+### Task 4.7: Documentation & final handoff
 **Priority:** P1  
 **Size:** Small  
 **Acceptance Criteria:**
@@ -391,7 +507,7 @@
 
 | Task | Trigger | Priority |
 |------|---------|----------|
-| **P3 Simulation (what-if engine)** | Business partner validates Sprints 1–2; wants to run scenario: "What if we mock CRM instead of DataPlatform?" | P3 |
+| **P3 Simulation (what-if engine)** | Business partner validates Sprints 2–3; wants to run scenario: "What if we mock CRM instead of DataPlatform?" | P3 |
 | **P4 Prediction (forecasting)** | Simulation works; client wants early-warning system ("Squad X will halt in 3 days") | P3 |
 | **Production incident correlation** | Client wants to link blockers to actual prod incidents from their monitoring | P4 |
 | **Resource utilization data** | Dashboard recommends "add 2 nodes to Auth service" (requires resource estimates per squad) | P4 |
@@ -403,19 +519,19 @@
 ## Key INVEST Principles (Enforced per Sprint)
 
 1. **Independent:** Each sprint produces a complete dataset (tests, docs, validation) independent of downstream sprints
-2. **Valuable:** At end of Sprint 1, business partner can load Auth-cluster data and validate hypothesis; at end of Sprint 2, can compare high-density vs. optimized and see flow improvement
+2. **Valuable:** At end of Sprint 2, business partner can load Auth-cluster data and validate hypothesis; at end of Sprint 3, can compare high-density vs. optimized and see flow improvement
 3. **Estimable:** Task sizes mapped (P0 = small, P1 = moderate, no task >1 sprint)
 4. **Testable:** Each task has explicit verification steps (automated tests + manual validation with business partner)
 5. **Small:** No task blocks another; parallelizable (e.g., Task 1.4 and 1.5 can run in parallel once 1.1–1.3 are done)
-6. **Negotiable:** If Task 1.6 validation reveals the data doesn't match business expectations, backlog is updated before Sprint 2 (no late surprises)
+6. **Negotiable:** If a task's validation reveals the data doesn't match business expectations, backlog is updated before the next sprint starts (no late surprises) — this is exactly what happened between Sprint 1 and Sprint 2
 
 ---
 
 ## Blockers & Dependencies
 
-- **None at this point.** Assume each sprint clears its tasks before handoff to business partner.
-- **Decision point after Sprint 1:** Business partner signs off on Auth-cluster data before proceeding to Sprint 2.
-- **Decision point after Sprint 2:** Business partner confirms mocking scenario (P2 Metric B) works before proceeding to Sprint 3.
+- **Decision point after Sprint 1:** not reached — timebox ended before a mergeable, signed-off dataset existed. Remaining work carried into Sprint 2 (see Sprint 1 Outcome note above); no separate BP sign-off gate for Sprint 1 in isolation.
+- **Decision point after Sprint 2:** Business partner signs off on the Auth-cluster MVP before proceeding to Sprint 3.
+- **Decision point after Sprint 3:** Business partner confirms mocking scenario (P2 Metric B) works before proceeding to Sprint 4.
 
 ---
 
@@ -424,4 +540,5 @@
 | Date | Item | Status |
 |------|------|--------|
 | 2026-08-22 | Backlog restructured as vertical slices (Sprint 1: Auth + 1 cluster; Sprint 2: 5 squads + 2 clusters + mocking; Sprint 3: full 8 squads + all clusters + CLI). Each sprint produces complete, testable data for business partner validation. INVEST principles enforced. | Ready for Code |
+| 2026-08-22 | Sprint 1 timeboxed out without a merged, signed-off deliverable (see Sprint 1 Outcome note). PM ruling on the Task 1.4 density defect: cluster-only, window-scoped density, `Waiting Reason` persists after resolve, external deps stay deferred. Replanned: Sprint 2 = finish the Auth-cluster MVP (Sprint 1 carryover, no new scope); old Sprint 2 (5-squad + DataPlatform + mocking) renumbered to Sprint 3; old Sprint 3 (full 8-squad + CLI) renumbered to Sprint 4. | PM, confirmed with BP |
 
