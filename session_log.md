@@ -51,3 +51,20 @@ validation.
 (25 issues/team, density 0.35) tell a strong enough "vendor is the
 bottleneck" story for a dashboard demo, or whether Sprint 2 should ship a
 demo-tuned parameter preset alongside the general-purpose defaults.
+
+## Model & Ethics Checkpoint (2026-08-22)
+
+Models used:
+- PM (Claude Haiku 4.5): Sufficient for well-scoped Sprint 1; reassess at Sprint 2 if architecture complexity rises
+- Code (Claude Sonnet 5): Appropriate for implementation; no escalation needed yet
+
+Ethics:
+- ETHICS_AGREEMENT.md locked in repo, governs all decisions
+- Specification-first principle enforced: Code given /specification/ as source of truth
+- Single source of truth achieved: archived Code's generic versions, consolidated to /specification/
+
+Observations:
+- Miscommunication resolved by consolidation, not conversation
+- Model selection deferred to post-Sprint 1 assessment
+- Dr. Agile standards repo TBD (post-project action)
+
