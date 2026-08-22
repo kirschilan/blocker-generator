@@ -201,3 +201,48 @@ whatever either branch's commit messages claimed.
 **Next:** Code picks up Sprint 2 Tasks 2.1–2.5 (`specification/BACKLOG.md`).
 Sprint 3 (5-squad + DataPlatform expansion) starts only after Sprint 2 signs off.
 
+---
+
+## Session: 2026-08-22 — Code: throughput/spillover forecast for tomorrow's sprint planning
+
+**Date:** 2026-08-22
+**Participants:** Kirschi (BP), Code (Claude Code)
+**Mode:** Async (GitHub) — requested ahead of tomorrow's sprint planning
+
+**Today's throughput:** Full Sprint 1 scope (Tasks 1.1–1.6, 59 tests) was
+implemented and tested twice in one day — once generic (superseded), once
+finance-specific (correct in substance per PM's assessment above). Zero tasks
+reached done-done (merged + PM spot-check + BP sign-off). The gap was
+coordination, not execution speed: two Code sessions (this branch's
+`qpnb1i` and `8io8es`) built the same fix blind, and nothing was merged
+pending review. Worth naming plainly for planning purposes: raw build
+capacity was not the bottleneck today.
+
+**Spillover into Sprint 2 (Tasks 2.1–2.5, per PM's ruling above):**
+
+| Task | Owner | Status | Size |
+|---|---|---|---|
+| 2.1 Consolidate spec | PM | Done, in unmerged PR #6 | — |
+| 2.2 Land `Waiting Reason`-persists fix on PR #4, regenerate CSVs | Code | Not started | Small — one behavioral change on already-working, already-tested code |
+| 2.3 PM manual spot-check | PM | Not started | ~15 min |
+| 2.4 BP narrative sign-off | BP | Not started | ~20–30 min |
+| 2.5 Merge + close out | Code/PM | Not started | Small, mostly mechanical |
+
+**Forecast:**
+- **Code-side (2.2, 2.5): high confidence of same-session completion.**
+  Not new development — a targeted patch to code built today, plus
+  regenerating two CSVs and re-running the suite. Estimate: well under an
+  hour of actual work once PR #6 merges and the spec is formally final.
+- **The binding constraint is 2.3 and 2.4, not Code's throughput.** Those
+  are PM/BP steps Code cannot do or accelerate. If both turn around
+  promptly, Sprint 2 closes early with realistic room to start Sprint 3
+  the same day. If either stalls, Sprint 2 itself doesn't close — flagging
+  this now rather than repeating today's overconfident sizing.
+- **Risk carried forward:** today's failure mode (two sessions duplicating
+  work blind) recurs tomorrow unless branch/PR visibility between PM and
+  Code sessions improves before work starts. Not a capacity risk — a
+  coordination one.
+
+**Next:** Awaiting tomorrow's sprint planning session to formally kick off
+Sprint 2 Task 2.2.
+
