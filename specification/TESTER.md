@@ -25,11 +25,11 @@
 - [ ] No UTF-8 encoding errors or null bytes
 - [ ] All rows have valid Issue Key (format: `SQ-[ABD]-[0-9]+`)
 
-**Row Counts & Data Volume**
+**Row Counts & Data Volume (updated 2026-08-22 — see PM handoff / GitHub Issue #2)**
 - [ ] Total feature rows: 540–720 (15–20 per squad × 3 squads × 12 sprints)
-- [ ] Total blocker rows: 15–30 (Auth cluster weeks 3–5)
-- [ ] Total rows (features + blockers): 555–750
-- [ ] Each row has exactly 13 core columns + 12 Sprint columns (total 25)
+- [ ] Total blocker rows: 7–11 (Auth cluster weeks 3–5: Auth 3, Checkout 2–3, Payments 2–3)
+- [ ] Total rows (features + blockers): 547–731
+- [ ] Each row has exactly 12 core columns + 12 Sprint columns (total 24) — the mandatory-column list below has 12 named entries
 
 **Data Integrity**
 - [ ] No duplicate Issue Keys (each key appears once)
@@ -48,8 +48,9 @@
 - [ ] No feature appears in Sprint 0 or Sprint 13+
 - [ ] Dates in Sprint columns align with actual sprint boundaries (Sprint 1 = Jul 1–14, Sprint 2 = Jul 15–28, etc.)
 
-**Blocker Density**
-- [ ] Blocker density = (total blocker rows / total feature rows) × 100 = 20–30%
+**Blocker Density (updated 2026-08-22 — window-scoped, not global; see GitHub Issue #2)**
+- [ ] Blocker density within the weeks 3–5 window = (blocker rows in weeks 3–5 ÷ feature rows in weeks 3–5) × 100 = 20–30%
+- [ ] Global blocker density (all 12 sprints) ≈ 1–2% — expected and correct for a single-cluster MVP; full percolation-threshold density is Sprint 3's 3-cluster/8-squad scope, not Sprint 1's
 - [ ] Auth blockers concentrated in weeks 3–5 (4 weeks = sprints 2–3 boundary roughly)
 - [ ] No blockers in weeks 1–2 or 6–12
 

@@ -71,25 +71,27 @@
 ### Task 1.4: Generate 12-sprint features + Auth cluster (high-density)
 **Priority:** P1  
 **Size:** Moderate (complete feature generation + blockers for 3 squads only)  
-**Acceptance Criteria:**
+**Acceptance Criteria (updated 2026-08-22 — see PM handoff, "density conflict" resolution below):**
 - 15–20 features per squad per sprint (Auth, Checkout, Payments) = 45–60 features per sprint
 - 12 sprints = 540–720 total features
-- Auth cluster blockers injected: Auth (3 blockers, week 3), Checkout/Payments (2 blockers each, week 3–4)
+- Auth cluster blockers injected: Auth (3 blockers, week 3 days 1–3), Checkout/Payments (2–3 blockers each, week 3 days 2–4, 1-day cascade lag) = 7–11 blocker rows total
 - Features in "Waiting" status have correct waiting reason from Task 1.2 taxonomy
 - Waiting cycle times realistic (Auth blocker fixed day 3 → downstream clear day 4)
-- Blocker density calculable (total blockers / total features × 12 sprints)
+- **Blocker density is window-scoped, not global:** (blockers in weeks 3–5 ÷ features in weeks 3–5) × 100 = 20–30%. Global density (all 12 sprints) is expected to be ~1–2% — a single cluster's local footprint, not the percolation-threshold-breaching density that requires Sprint 3's full 3-cluster/8-squad topology.
 - Output: `v1_auth_cluster_high_density.csv` (Jira format)
 
+**Density-conflict resolution (2026-08-22):** The original criteria above ("Blocker density ~20–30%", uncontextualized) were mathematically incompatible with a 7–11-row cluster against 540–720 total features — that combination can only ever reach ~1–2% *global* density. PM ruled: keep the small, cluster-accurate blocker counts (they're what Task 1.3 already implements and what ARCHITECTURE.md's Cluster 1 narrative describes), and scope the 20–30% density target to the weeks-3–5 window where the cluster actually lives, rather than inflating blocker counts to hit 20–30% globally. Full percolation (density breaching threshold across the whole dataset) is explicitly deferred to Sprint 3's 3-cluster/8-squad topology. See GitHub Issue #2.
+
 **Input to Code:** Tasks 1.1–1.3 + ARCHITECTURE.md feature templates for each squad  
-**Output:** CSV (~600–750 rows), Jira columns: Issue Key, Summary, Status, Assignee, Waiting Reason, Created, Resolved, Cycle Time, Sprint, Test Automation  
+**Output:** CSV (547–731 rows: 540–720 features + 7–11 blockers), Jira columns: Issue Key, Summary, Status, Assignee, Waiting Reason, Created, Resolved, Cycle Time, Sprint, Test Automation  
 **Verification:**
-  - Row count ≈ 600–750
+  - Row count ≈ 547–731 (540–720 features + 7–11 blockers)
   - All Waiting items have non-null Waiting Reason
   - Dates are monotonic (no time travel)
   - Auth blocker resolves day 3; downstream blockers clear day 4 (visible in Created/Resolved timestamps)
-  - Blocker density ~ 20–30% (permissible for high-density slice)
+  - Blocker density within weeks 3–5 window ~ 20–30%; global density ~1–2%
   - All Issue Keys match pattern `SQ-[ABD]-[0-9]+`  
-**Test:** Load CSV into Pandas; assert all Waiting rows have Waiting Reason, assert dates monotonic
+**Test:** Load CSV into Pandas; assert all Waiting rows have Waiting Reason, assert dates monotonic, assert window-scoped density in weeks 3–5 is 20–30%
 
 ---
 

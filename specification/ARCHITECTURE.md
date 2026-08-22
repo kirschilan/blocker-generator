@@ -100,8 +100,8 @@ Three hardcoded blocker clusters injected into high-density dataset. Each cluste
 - Week 3, Day 1 (Sprint 1, day 15): Auth service has a critical bug (e.g., session cache corruption). SQ-A enters "Waiting on Auth service fix."
 - Week 3, Days 1–3: SQ-A blocked internally. Any feature requiring login fails.
 - Week 3, Day 2: Dependent squads (B, C, D, E, F, G, H) all place features in "Waiting on Login service" (cascade lag = 1 day).
-- Week 4, Day 3: SQ-A resolves (deploy patch). Auth service is stable.
-- Week 4, Day 4: Dependent squads' blockers clear (propagation lag = 1 day).
+- Week 3, Day 3 *(corrected 2026-08-22: was "Week 4, Day 3" — a typo that contradicted this cluster's own stated 3-day duration and Task 1.3's verification text; see GitHub Issue #2)*: SQ-A resolves (deploy patch). Auth service is stable.
+- Week 3, Day 4 *(corrected 2026-08-22: was "Week 4, Day 4")*: Dependent squads' blockers clear (propagation lag = 1 day).
 
 **Affected Squads:**
 - SQ-A (root): 3 features stuck (high severity)
