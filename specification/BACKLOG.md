@@ -117,14 +117,14 @@
 ### Task 1.6: Validate & document (for business partner review)
 **Priority:** P1  
 **Size:** Small (validation + README)  
-**Acceptance Criteria:**
+**Acceptance Criteria (updated 2026-08-22 to match Task 1.4/1.5's reconciled numbers — see GitHub Issue #2):**
 - Validation report (text): "Sprint 1 Dataset Summary"
-  - Total features: 600–750
-  - Blocker count: 20–30
-  - Blocker density: 20–30%
+  - Total features: 540–720
+  - Blocker count: 7–11
+  - Blocker density: 20–30% within week 3 (where the cluster's activity concentrates); ~1–2% globally
   - Cluster signature: Auth cluster weeks 3–5, cascades to Checkout/Payments with 1-day lag
   - Peak waiting cycle time: 3 days (Auth), 4 days (Checkout/Payments)
-  - Test coverage: ~50% automation across squads
+  - Test coverage: 40–60% average automation across squads
 - README.md (minimal):
   - What is this? (1 para): "Synthetic Jira + Xray data for 3 squads, 12 sprints, 1 blocker cluster"
   - How to load? (example): "Import .csv into Tableau; filter Sprint column"
