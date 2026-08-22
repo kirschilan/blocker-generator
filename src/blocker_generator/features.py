@@ -4,22 +4,15 @@ Implements BACKLOG.md Task 1.4 against Tasks 1.1-1.3's squads, archetypes,
 and cluster injection. Produces the row set for
 `v1_auth_cluster_high_density.csv`.
 
-Column-count note: TESTER.md's Sprint 1 "Row Counts & Data Volume" section
-says "13 core columns + 12 Sprint columns (total 25)", but the mandatory
-core-column list it (and ARCHITECTURE.md's "Core Columns" table) names
-explicitly has 12 entries (Issue Key, Summary, Type, Status, Assignee,
-Created, Resolved, Waiting Reason, Cycle Time (days), Test Automation,
-External Blocker, Cluster Tag). This implementation uses the 12 explicitly
-named columns (24 total with Sprint-1..12) rather than inventing an
-unnamed 13th column; flagged in session_log.md / GitHub Issue.
-
-Blocker-row-count note: TESTER.md also states "Total blocker rows: 15-30"
-while separately requiring "Auth blocker count: 3-5 in week 3", "Checkout
-blockers: 2-3", "Payments blockers: 2-3" -- which sums to at most 11, never
-15-30. These two constraints are mutually unsatisfiable as written. This
-implementation follows the specific per-squad ranges (they're also what
-Task 1.3's cluster injection already produces and is tested against) over
-the unreachable aggregate total; flagged in the same issue.
+Resolved per PM's 2026-08-22 ruling (GitHub Issue #2; see BACKLOG.md /
+TESTER.md's "updated 2026-08-22" sections for the reconciled criteria):
+- 12 core columns (not 13) + 12 Sprint columns = 24 total.
+- Blocker rows: 7-11 total (Auth 3, Checkout 2-3, Payments 2-3) -- the
+  small, cluster-accurate count Task 1.3 already produces.
+- Blocker density is window-scoped to week 3 (where Task 1.3's cluster
+  injection actually concentrates all activity), not the full "weeks 3-5"
+  span or the global 12-sprint dataset: 20-30% within week 3, ~1-2%
+  globally. Full percolation-threshold density is Sprint 3's job.
 """
 from __future__ import annotations
 

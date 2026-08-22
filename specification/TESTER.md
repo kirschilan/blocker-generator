@@ -49,7 +49,7 @@
 - [ ] Dates in Sprint columns align with actual sprint boundaries (Sprint 1 = Jul 1–14, Sprint 2 = Jul 15–28, etc.)
 
 **Blocker Density (updated 2026-08-22 — window-scoped, not global; see GitHub Issue #2)**
-- [ ] Blocker density within the weeks 3–5 window = (blocker rows in weeks 3–5 ÷ feature rows in weeks 3–5) × 100 = 20–30%
+- [ ] Blocker density within the week 3 window = (blocker rows in week 3 ÷ feature rows in week 3) × 100 = 20–30%. Week 3 specifically, not the full "weeks 3–5" span — all of Cluster-1-Auth's injected activity (Task 1.3) falls within week 3, and the broader 3-week span dilutes density to ~11%.
 - [ ] Global blocker density (all 12 sprints) ≈ 1–2% — expected and correct for a single-cluster MVP; full percolation-threshold density is Sprint 3's 3-cluster/8-squad scope, not Sprint 1's
 - [ ] Auth blockers concentrated in weeks 3–5 (4 weeks = sprints 2–3 boundary roughly)
 - [ ] No blockers in weeks 1–2 or 6–12

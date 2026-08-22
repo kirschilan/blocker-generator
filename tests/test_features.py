@@ -1,10 +1,9 @@
 """Automated checks for BACKLOG.md Task 1.4 + TESTER.md Sprint 1 checks
 that apply to `v1_auth_cluster_high_density.csv`.
 
-See features.py's module docstring for the two spec inconsistencies
-(13-vs-12 core columns; 15-30 total blocker rows vs. the mutually
-unsatisfiable 3-5/2-3/2-3 per-squad ranges) this suite resolves by
-following the more specific/reachable constraint.
+See features.py's module docstring for the reconciled spec (PM ruling,
+GitHub Issue #2, 2026-08-22): 12 core columns, 7-11 blocker rows,
+week-3-scoped 20-30% density.
 """
 import csv
 import io
@@ -44,12 +43,35 @@ def test_feature_row_count_in_range(dataset):
     assert 540 <= len(features) <= 720
 
 
-def test_total_row_count_reasonable(dataset):
-    # TESTER.md's literal "555-750" total assumes 15-30 blocker rows, which
-    # is mutually unsatisfiable with its own 3-5/2-3/2-3 per-squad ranges
-    # (max 11). We check the feature-row range holds and blockers are a
-    # small addition on top, per the per-squad ranges we do satisfy.
-    assert 540 <= len(dataset) <= 720 + 11
+def test_total_row_count_in_reconciled_range(dataset):
+    # TESTER.md (updated 2026-08-22): 547-731 total (540-720 features +
+    # 7-11 blockers).
+    blockers = [r for r in dataset if r.type == "Sub-task"]
+    assert 7 <= len(blockers) <= 11
+    assert 547 <= len(dataset) <= 731
+
+
+def test_window_scoped_blocker_density_week_3(dataset):
+    # TESTER.md (updated 2026-08-22): density scoped to week 3 specifically
+    # (where all Cluster-1-Auth activity concentrates), not the full
+    # "weeks 3-5" span, which dilutes density to ~11%.
+    from blocker_generator.sprints import week_for_date
+
+    in_week3 = [r for r in dataset if week_for_date(r.created.date()) == 3]
+    features_w3 = [r for r in in_week3 if r.type == "Story"]
+    blockers_w3 = [r for r in in_week3 if r.type == "Sub-task"]
+    assert features_w3
+    density = len(blockers_w3) / len(features_w3) * 100
+    assert 20 <= density <= 30, f"week-3 density {density:.1f}% not in 20-30%"
+
+
+def test_global_blocker_density_is_small(dataset):
+    # ~1-2% globally is expected and correct for a single-cluster MVP;
+    # full percolation density is Sprint 3's scope.
+    features = [r for r in dataset if r.type == "Story"]
+    blockers = [r for r in dataset if r.type == "Sub-task"]
+    density = len(blockers) / len(features) * 100
+    assert density < 5
 
 
 def test_issue_keys_match_pattern(dataset):
