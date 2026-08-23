@@ -205,3 +205,17 @@ a Waiting Reason") doesn't match any column that actually exists in either
 delivered CSV or in the spec — filed as Issue #8 asking BP to clarify which
 file/column was meant rather than guessing and changing the schema again.
 
+**Update:** Issue #7 fixed and merged to `main` (`c52e041`) — `Sprint`
+header now repeats once per occupied slot (sized to the dataset's actual
+widest span, 3), cell values are sprint names, not dates.
+`ARCHITECTURE.md`/`BACKLOG.md`/`TESTER.md` corrected to match;
+`data/v1_auth_cluster_high_density.csv` regenerated; 59/59 tests pass;
+determinism reconfirmed. Closed with a note that BP's "Ready For Sprint"
+placeholder value wasn't modeled (reads as a workflow-status artifact of
+BP's specific Jira instance, not universal Jira export behavior) — reopen
+if that's actually expected here.
+
+Issue #8 ("External Dependency column") remains open — still needs BP's
+clarification on which file/column was meant before Code touches the
+schema again on a guess.
+
