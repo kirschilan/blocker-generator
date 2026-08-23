@@ -1,7 +1,7 @@
 # Definition of Done — PM Contract
 
 **Status:** Locked (project governance)  
-**Principle:** Mary Cagan (outcome-driven), LeSS (one team, one definition), Melissa Perry (shared mental model)  
+**Principle:** Marty Cagan (outcome-driven), LeSS (one team, one definition), Melissa Perri (shared mental model)  
 **Audience:** PM, Code, Business Partner (all three are one team)
 
 ---
@@ -310,7 +310,7 @@ This document defines what "done" means at each level of this project, and what 
 
 | Date | Change | Reason | Approver |
 |------|--------|--------|----------|
-| 2026-08-22 | Created DEFINITION_OF_DONE.md; locked 1-level DoD (artifact + decision rights + governance rules) | Explicit working agreement required; supports Cagan (outcomes-driven), LeSS (one team), Perry (shared mental model) | Kirschi (PO) + PM + Code (pending) |
+| 2026-08-22 | Created DEFINITION_OF_DONE.md; locked 1-level DoD (artifact + decision rights + governance rules) | Explicit working agreement required; supports Cagan (outcomes-driven), LeSS (one team), Perri (shared mental model) | Kirschi (PO) + PM + Code (pending) |
 
 ---
 
@@ -335,7 +335,7 @@ When scope changes:
 
 ## Reference: Principles Applied
 
-**Mary Cagan (Inspired):**
+**Marty Cagan (Inspired):**
 - Outcomes over features (PROJECT.md defines outcomes, not features)
 - Clear vision (ARCHITECTURE.md is unambiguous; no "figure it out" phases)
 - Product discovery (DEFINITION_OF_DONE.md treats Code as team, not vendor; feedback loops built in)
@@ -345,7 +345,7 @@ When scope changes:
 - Simplicity (three-layer TESTER, not five; minimal docs, not a forest of specs)
 - Emergent design (ARCHITECTURE.md is detailed where needed, sparse where flexible)
 
-**Melissa Perry (Organizational):**
+**Melissa Perri (Organizational):**
 - Shared mental model (explicit working agreements, not assumptions)
 - Role clarity (who decides what; GOVERNANCE RULES section)
 - Psychological safety (Code can escalate blocker without blame; Business Partner can say "data looks fake" without offending PM)
