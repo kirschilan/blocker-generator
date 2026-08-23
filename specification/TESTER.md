@@ -31,7 +31,7 @@
 - [ ] Total feature rows: 540–720 (15–20 per squad × 3 squads × 12 sprints)
 - [ ] Total blocker rows: 7–11 (Auth cluster's own window only — corrected 2026-08-23, see BACKLOG.md Task 1.4 PM ruling; the earlier 15–30 figure assumed weeks 3–5, but the cluster's actual acceptance criteria is a single week)
 - [ ] Total rows (features + blockers): 547–731
-- [ ] Each row has exactly 13 core columns + 12 Sprint columns (total 25)
+- [ ] Each row has exactly 12 core columns + 12 Sprint columns (total 24) — corrected 2026-08-23, was miscounted as 13 core columns
 
 **Data Integrity**
 - [ ] No duplicate Issue Keys (each key appears once)
