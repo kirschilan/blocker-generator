@@ -183,3 +183,25 @@ is BP's, not PM's or Code's, to perform.
   and in `/specification/`; safe to delete once confirmed nothing else on
   it is needed.
 
+**Update:** PR #6 (open on `claude/blocker-generator-pm-ffutq6`) reviewed and
+closed without merging — its ruling was already independently landed in
+`a195769`; the one thing it caught that the independent fix missed
+(`TESTER.md`'s stale "13 core columns" vs. the actual 12) was ported to
+`main` directly (`014b571`). PM + Code confirm all three orphaned branches
+are safe to delete from GitHub (branch deletion isn't available from this
+session — git push --delete returned 403, no delete-branch tool on the
+GitHub MCP server — so BP needs to do this step).
+
+**BP review of the delivered CSVs surfaced a real defect:** researched real
+Jira CSV export behavior (see Issue #7) and confirmed BP is right —
+`ARCHITECTURE.md`'s Sprint-column schema (`Sprint-1`..`Sprint-12` as
+distinct headers holding dates) doesn't match how Jira actually exports a
+multi-value field (repeated `Sprint` header per occupied slot, sprint
+*name* as the value, not a date). Filed as Issue #7 with a proposed fix,
+pending PM/BP confirmation before Code implements — this touches
+`ARCHITECTURE.md`, `TESTER.md`, the generator, and the committed CSV
+together. BP's second point ("External Dependency column, which should be
+a Waiting Reason") doesn't match any column that actually exists in either
+delivered CSV or in the spec — filed as Issue #8 asking BP to clarify which
+file/column was meant rather than guessing and changing the schema again.
+
