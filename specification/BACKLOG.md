@@ -71,27 +71,31 @@
 ---
 
 ### Task 1.4: Generate 12-sprint features + Auth cluster (high-density)
+**Status:** Corrected 2026-08-23 — see PM ruling below. Original criteria asked for global blocker density of 20–30%, which is mathematically impossible at this slice's scale (a single cluster producing 7–11 blocker rows across 540–720 feature rows caps global density at ~1–2%, not 20–30%). That 20–30% figure was written for the full 8-squad/3-cluster model (`ARCHITECTURE.md` "Blocker Density Targets") and copied into this 3-squad/1-cluster slice without rescaling.  
+**PM ruling:** density is **window-scoped**, not global — measured within the cluster's own active week, not across all 12 sprints. No blockers exist anywhere outside the Auth cluster's own window; this slice is single-cluster by design. Additionally, `Waiting Reason` persists on a blocker row after it resolves (`Status` still reflects current state) — clearing it on resolve would erase the historical cluster signal `PROJECT.md`'s P1 (Detection) needs to identify clusters retrospectively. External-dependency deferral (Task 1.1) stands as originally written.  
 **Priority:** P1  
 **Size:** Moderate (complete feature generation + blockers for 3 squads only)  
 **Acceptance Criteria:**
 - 15–20 features per squad per sprint (Auth, Checkout, Payments) = 45–60 features per sprint
 - 12 sprints = 540–720 total features
-- Auth cluster blockers injected: Auth (3 blockers, week 3), Checkout/Payments (2 blockers each, week 3–4)
+- Auth cluster blockers injected: Auth (3 blockers, week 3), Checkout/Payments (2–3 blockers each, week 3, 1-day cascade lag) = 7–11 blocker rows total
+- No blockers anywhere outside the Auth cluster's own window
 - Features in "Waiting" status have correct waiting reason from Task 1.2 taxonomy
+- `Waiting Reason` persists on a blocker row after it resolves (Status still reflects current state)
 - Waiting cycle times realistic (Auth blocker fixed day 3 → downstream clear day 4)
-- Blocker density calculable (total blockers / total features × 12 sprints)
+- **Blocker density is window-scoped, not global:** (blockers in the cluster's own week ÷ features in that week) × 100 = 20–30%. Global density (all 12 sprints) is expected to be ~1–2%.
 - Output: `v1_auth_cluster_high_density.csv` (Jira format)
 
 **Input to Code:** Tasks 1.1–1.3 + ARCHITECTURE.md feature templates for each squad  
-**Output:** CSV (~600–750 rows), Jira columns: Issue Key, Summary, Status, Assignee, Waiting Reason, Created, Resolved, Cycle Time, Sprint, Test Automation  
+**Output:** CSV (547–731 rows: 540–720 features + 7–11 blockers), Jira columns: Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Waiting Reason, Cycle Time, Test Automation, External Blocker, Cluster Tag, Sprint-1..Sprint-12  
 **Verification:**
-  - Row count ≈ 600–750
-  - All Waiting items have non-null Waiting Reason
+  - Row count ≈ 547–731
+  - All blocker rows (Type = Sub-task) have non-null Waiting Reason regardless of Status; feature rows (Type = Story) have null Waiting Reason
   - Dates are monotonic (no time travel)
   - Auth blocker resolves day 3; downstream blockers clear day 4 (visible in Created/Resolved timestamps)
-  - Blocker density ~ 20–30% (permissible for high-density slice)
+  - Window-scoped blocker density ~ 20–30%; global density ~1–2%; zero blocker rows outside the cluster window
   - All Issue Keys match pattern `SQ-[ABD]-[0-9]+`  
-**Test:** Load CSV into Pandas; assert all Waiting rows have Waiting Reason, assert dates monotonic
+**Test:** Load CSV into Pandas; assert all blocker rows have Waiting Reason regardless of Status, assert dates monotonic, assert window-scoped density is 20–30%, assert zero blockers outside the cluster window
 
 ---
 
@@ -427,4 +431,5 @@
 |------|------|--------|
 | 2026-08-22 | Backlog restructured as vertical slices (Sprint 1: Auth + 1 cluster; Sprint 2: 5 squads + 2 clusters + mocking; Sprint 3: full 8 squads + all clusters + CLI). Each sprint produces complete, testable data for business partner validation. INVEST principles enforced. | Ready for Code |
 | 2026-08-23 | Renamed our delivery timebox from "Sprint" to "Iteration" throughout (headers, sign-off gates, INVEST section) to stop colliding with the dataset's own domain concept (`Sprint-1..Sprint-12` in ARCHITECTURE.md). No scope change — same three vertical slices, same acceptance criteria. | PM + Code + BP (Kirschi) |
+| 2026-08-23 | Task 1.4 corrected: original "20–30% global blocker density" was mathematically impossible for the 3-squad/1-cluster slice (copied from the full 8-squad/3-cluster model without rescaling — see `pm-ffutq6` branch's diagnosis). Ruling: density is window-scoped (within the cluster's own week), not global. `Waiting Reason` now persists after a blocker resolves (needed for retrospective cluster detection, PROJECT.md P1). External-dependency deferral (Task 1.1) confirmed standing. | PM + Code + BP (Kirschi), formalizing a ruling first made 2026-08-22 |
 

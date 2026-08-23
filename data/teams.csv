@@ -1,9 +1,0 @@
-team_id,name,type,capacity_points
-T01,Atlas,Internal,60
-T02,Nimbus,Internal,27
-T03,Forge,Internal,21
-T04,Vector,Internal,37
-T05,Halcyon,Internal,35
-T06,Vendor-Cygnus Logistics,External,34
-T07,Vendor-Meridian Data,External,28
-T08,Vendor-Origin Cloud,External,26

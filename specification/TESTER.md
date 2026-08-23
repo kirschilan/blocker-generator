@@ -29,8 +29,8 @@
 
 **Row Counts & Data Volume**
 - [ ] Total feature rows: 540–720 (15–20 per squad × 3 squads × 12 sprints)
-- [ ] Total blocker rows: 15–30 (Auth cluster weeks 3–5)
-- [ ] Total rows (features + blockers): 555–750
+- [ ] Total blocker rows: 7–11 (Auth cluster's own window only — corrected 2026-08-23, see BACKLOG.md Task 1.4 PM ruling; the earlier 15–30 figure assumed weeks 3–5, but the cluster's actual acceptance criteria is a single week)
+- [ ] Total rows (features + blockers): 547–731
 - [ ] Each row has exactly 13 core columns + 12 Sprint columns (total 25)
 
 **Data Integrity**
@@ -39,7 +39,7 @@
 - [ ] All `Resolved` dates are null (blank) if Status = "Waiting"; populated if Status = "Done"
 - [ ] All `Resolved` dates >= `Created` dates (no negative cycle times)
 - [ ] `Cycle Time (days)` is null if Status = "Waiting"; numeric (float) if Status = "Done"
-- [ ] Blocker rows (Status = "Waiting") have non-null `Waiting Reason`; feature rows (Status = "Done") have null `Waiting Reason`
+- [ ] Blocker rows (`Type` = "Sub-task") have non-null `Waiting Reason` regardless of `Status` — it persists after the blocker resolves, so the cluster signal stays retrospectively detectable (corrected 2026-08-23; previously required null once Status = "Done", which erased the signal `PROJECT.md`'s P1 Detection needs); feature rows (`Type` = "Story") have null `Waiting Reason`
 - [ ] `Test Automation` is one of: "Manual", "Selenium", "Postman", "Swagger", "Perfecto Mobile", or null
 - [ ] `External Blocker` is boolean (true/false); false for Auth cluster (internal failure)
 - [ ] `Cluster Tag` is one of: "Cluster-1-Auth", null; all Auth-cluster blockers have "Cluster-1-Auth"
@@ -50,10 +50,11 @@
 - [ ] No feature appears in Sprint 0 or Sprint 13+
 - [ ] Dates in Sprint columns align with actual sprint boundaries (Sprint 1 = Jul 1–14, Sprint 2 = Jul 15–28, etc.)
 
-**Blocker Density**
-- [ ] Blocker density = (total blocker rows / total feature rows) × 100 = 20–30%
-- [ ] Auth blockers concentrated in weeks 3–5 (4 weeks = sprints 2–3 boundary roughly)
-- [ ] No blockers in weeks 1–2 or 6–12
+**Blocker Density** (corrected 2026-08-23 — density is window-scoped, not global; see BACKLOG.md Task 1.4 PM ruling)
+- [ ] Window-scoped density = (blocker rows in the cluster's own week / feature rows in that week) × 100 = 20–30%
+- [ ] Global density (blockers / all 12 sprints' features) ≈ 1–2% — this is expected, not a failure
+- [ ] Auth blockers concentrated in week 3 only
+- [ ] No blockers anywhere outside the Auth cluster's own window
 
 **Cascade Validation**
 - [ ] Auth blocker count: 3–5 in week 3 (root cause)
