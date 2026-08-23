@@ -87,7 +87,7 @@
 - Output: `v1_auth_cluster_high_density.csv` (Jira format)
 
 **Input to Code:** Tasks 1.1–1.3 + ARCHITECTURE.md feature templates for each squad  
-**Output:** CSV (547–731 rows: 540–720 features + 7–11 blockers), Jira columns: Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Waiting Reason, Cycle Time, Test Automation, External Blocker, Cluster Tag, Sprint-1..Sprint-12  
+**Output:** CSV (547–731 rows: 540–720 features + 7–11 blockers), Jira columns: Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Waiting Reason, Cycle Time, Test Automation, External Blocker, Cluster Tag, then repeated `Sprint` columns holding sprint names (corrected 2026-08-23, Issue #7 — not distinct `Sprint-1..Sprint-12` columns)  
 **Verification:**
   - Row count ≈ 547–731
   - All blocker rows (Type = Sub-task) have non-null Waiting Reason regardless of Status; feature rows (Type = Story) have null Waiting Reason

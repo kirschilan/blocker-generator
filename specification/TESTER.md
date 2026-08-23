@@ -22,7 +22,7 @@
 
 **CSV Format & Structure**
 - [ ] `v1_auth_cluster_high_density.csv` exists and is valid CSV (can be parsed without errors)
-- [ ] Denormalized Sprint columns exist: `Sprint-1`, `Sprint-2`, ..., `Sprint-12`
+- [ ] Repeated `Sprint` columns exist (corrected 2026-08-23, Issue #7 — real Jira export repeats the literal `Sprint` header once per occupied slot, sized to the dataset's widest-spanning issue; not distinct `Sprint-1`..`Sprint-12` columns)
 - [ ] All mandatory columns present: `Issue Key`, `Summary`, `Type`, `Status`, `Assignee`, `Created`, `Resolved`, `Waiting Reason`, `Cycle Time (days)`, `Test Automation`, `External Blocker`, `Cluster Tag`
 - [ ] No UTF-8 encoding errors or null bytes
 - [ ] All rows have valid Issue Key (format: `SQ-[ABD]-[0-9]+`)
@@ -31,7 +31,7 @@
 - [ ] Total feature rows: 540–720 (15–20 per squad × 3 squads × 12 sprints)
 - [ ] Total blocker rows: 7–11 (Auth cluster's own window only — corrected 2026-08-23, see BACKLOG.md Task 1.4 PM ruling; the earlier 15–30 figure assumed weeks 3–5, but the cluster's actual acceptance criteria is a single week)
 - [ ] Total rows (features + blockers): 547–731
-- [ ] Each row has exactly 12 core columns + 12 Sprint columns (total 24) — corrected 2026-08-23, was miscounted as 13 core columns
+- [ ] Each row has exactly 12 core columns + N repeated `Sprint` columns, where N = the dataset's widest issue span (3 for this dataset at seed 42 — corrected 2026-08-23, Issue #7; previously fixed at "12 Sprint columns", and before that miscounted "13 core columns")
 
 **Data Integrity**
 - [ ] No duplicate Issue Keys (each key appears once)
@@ -44,11 +44,11 @@
 - [ ] `External Blocker` is boolean (true/false); false for Auth cluster (internal failure)
 - [ ] `Cluster Tag` is one of: "Cluster-1-Auth", null; all Auth-cluster blockers have "Cluster-1-Auth"
 
-**Sprint Column Distribution**
-- [ ] Each issue has 1–3 Sprint columns populated (most issues in 1–2 sprints; some span 2–3 if they moved due to blockers)
-- [ ] Sprint dates within issue are monotonic (Sprint-1 date < Sprint-2 date < Sprint-3 date, if multiple)
-- [ ] No feature appears in Sprint 0 or Sprint 13+
-- [ ] Dates in Sprint columns align with actual sprint boundaries (Sprint 1 = Jul 1–14, Sprint 2 = Jul 15–28, etc.)
+**Sprint Column Distribution** (corrected 2026-08-23, Issue #7 — columns hold sprint names, not dates)
+- [ ] Each issue has 1–3 `Sprint` columns populated (most issues in 1–2 sprints; some span 2–3 if they moved due to blockers)
+- [ ] Populated `Sprint` values within an issue are consecutive and increasing sprint numbers (e.g. `Sprint-4`, `Sprint-5`, `Sprint-6`, left-aligned; no gaps)
+- [ ] Every populated `Sprint` value matches `Sprint-1` through `Sprint-12` — none outside that range
+- [ ] An issue's first populated `Sprint` value corresponds to the sprint containing its `Created` date
 
 **Blocker Density** (corrected 2026-08-23 — density is window-scoped, not global; see BACKLOG.md Task 1.4 PM ruling)
 - [ ] Window-scoped density = (blocker rows in the cluster's own week / feature rows in that week) × 100 = 20–30%
@@ -378,7 +378,7 @@ All Iteration 1–2 checks apply, plus:
 
 ### Edge Cases Handled
 
-- **Multi-Sprint Issues:** Some features span 2–3 sprints due to blockers; denormalized Sprint columns handle this.
+- **Multi-Sprint Issues:** Some features span 2–3 sprints due to blockers; repeated `Sprint` columns handle this (Issue #7).
 - **Cascading Blockers:** When a root cause resolves, dependent blockers clear 1 day later (propagation lag modeled).
 - **Cluster Overlap Windows:** Cluster 3 onset (week 10 day 2) avoids Cluster 2 tail (week 10 day 1); no conflicts.
 - **External Dependencies:** DataPlatform, CRM, BPM, ESB blockers have `External Blocker = true` for filtering.

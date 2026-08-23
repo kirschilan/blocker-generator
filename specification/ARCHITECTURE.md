@@ -188,18 +188,18 @@ Three hardcoded blocker clusters injected into high-density dataset. Each cluste
 
 **File:** `high_density.csv` (and `post_optimization.csv`)
 
-**Note on Sprint Columns:** Jira's native CSV export denormalizes Sprint into multiple columns—one for each sprint in the issue's lifecycle. The header row contains column names like `Sprint-1`, `Sprint-2`, ..., `Sprint-12`. Each row has values only in the sprints the issue was planned/worked in; others are blank.
+**Note on Sprint Columns (corrected 2026-08-23, GitHub Issue #7):** Jira's native CSV export handles a multi-value field — which Sprint is, since an issue can move across sprints over its life — by **repeating the literal column header once per occupied value slot**: `Sprint`, `Sprint`, `Sprint`, ... (not distinctly-named `Sprint-1`, `Sprint-2`, ... columns, which is not how Jira actually exports this). The number of repeated columns is sized to the **widest-spanning issue in the dataset** (not a fixed 12 — most issues occupy 1 slot, some 2–3; see Row Count below). Each cell holds the **sprint's name** (e.g. `Sprint-4`), not a date.
 
 **Example Header:**
 ```
-Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Waiting Reason, Cycle Time (days), Test Automation, External Blocker, Cluster Tag, Sprint-1, Sprint-2, ..., Sprint-12
+Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Waiting Reason, Cycle Time (days), Test Automation, External Blocker, Cluster Tag, Sprint, Sprint, Sprint
 ```
 
 **Example Row:**
 ```
-SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00:00Z, 2026-07-15T17:00:00Z, (null), 14.33, Selenium, false, (null), , 2026-07-01, , , , , , , , , , , 
+SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00:00Z, 2026-07-15T17:00:00Z, (null), 14.33, Selenium, false, (null), Sprint-1, ,
 ```
-*(This feature was planned in Sprint-1; values appear only in Sprint-1 column; others blank.)*
+*(This feature was planned only in Sprint-1; the remaining repeated Sprint columns are blank.)*
 
 ---
 
@@ -222,30 +222,29 @@ SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00
 
 ---
 
-**Sprint Columns:**
+**Sprint Columns (corrected 2026-08-23, GitHub Issue #7):**
 
-Denormalized; one column per sprint (Sprint-1, Sprint-2, ..., Sprint-12). Each column contains the date the issue was planned in that sprint (or blank if not planned in that sprint).
+Repeated, identically-named `Sprint` columns — not denormalized `Sprint-1`..`Sprint-12`. The repeat count equals the widest sprint-span any issue in the dataset actually reaches (typically 3 for this domain — see Row Count below), not a fixed 12. Each column holds the sprint's **name** for that occupied slot (e.g. `Sprint-4`), left-aligned to the issue's first sprint; unused trailing slots are blank.
 
 | Column | Type | Example | Rules |
 |--------|------|---------|-------|
-| `Sprint-1` | ISO-8601 \| blank | `2026-07-01` | Date issue was planned in Sprint 1; blank if not in Sprint 1 lifecycle |
-| `Sprint-2` | ISO-8601 \| blank | `2026-07-15` | Date issue was planned in Sprint 2 |
-| ... | ... | ... | ... |
-| `Sprint-12` | ISO-8601 \| blank | `2026-10-26` | Date issue was planned in Sprint 12 |
+| `Sprint` (1st occurrence) | String \| blank | `Sprint-1` | Name of the first sprint the issue was planned/worked in |
+| `Sprint` (2nd occurrence) | String \| blank | `Sprint-2` | Name of the second sprint, if the issue spanned one; blank otherwise |
+| `Sprint` (further occurrences) | String \| blank | `Sprint-3` | One column per additional sprint spanned, up to the dataset's max span |
 
 **Example (realistic multi-sprint issue):**
 ```
-Issue Key, Summary, ..., Sprint-1, Sprint-2, Sprint-3, Sprint-4, ...
-SQ-B-99, Add payment retry logic, ..., 2026-07-01, 2026-07-15, 2026-07-29, , ...
+Issue Key, Summary, ..., Sprint, Sprint, Sprint
+SQ-B-99, Add payment retry logic, ..., Sprint-1, Sprint-2, Sprint-3
 ```
-*(Issue SQ-B-99 was planned in Sprints 1, 2, 3 but not 4 onward; cascading blocker moved it across sprints.)*
+*(Issue SQ-B-99 was planned across Sprints 1, 2, and 3; cascading blocker moved it across sprints.)*
 
 ---
 
 **Row Count:**
 - Per sprint: 50–60 features + 2–8 blockers = 52–68 rows
 - 12 sprints: ~650–850 rows total (high-density; optimized slightly lower)
-- Each row has 1–3 Sprint columns populated (some issues span multiple sprints due to blockers/reprioritization)
+- Each row has 1–3 `Sprint` columns populated (some issues span multiple sprints due to blockers/reprioritization); the header repeats `Sprint` as many times as the widest-spanning issue in the dataset requires
 
 ---
 

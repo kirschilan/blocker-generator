@@ -13,15 +13,16 @@ from datetime import datetime
 import pytest
 
 from blocker_generator.clusters import CLUSTER_1_AUTH
+from blocker_generator.csv_io import write_jira_csv
 from blocker_generator.features import (
-    ALL_COLUMNS,
     CORE_COLUMNS,
-    SPRINT_COLUMNS,
     generate_dataset,
+    max_sprint_span,
 )
 from blocker_generator.squads import AUTH, CHECKOUT, PAYMENTS, build_auth_subgraph
 
 ISSUE_KEY_RE = re.compile(r"^SQ-[ABD]-[0-9]+$")
+SPRINT_NAME_RE = re.compile(r"^Sprint-([1-9]|1[0-2])$")
 
 
 @pytest.fixture(scope="module")
@@ -30,10 +31,31 @@ def dataset():
 
 
 @pytest.fixture(scope="module")
-def csv_rows(dataset):
-    from blocker_generator.features import row_to_csv_dict
+def csv_table(dataset, tmp_path_factory):
+    """Writes the real CSV and reads it back positionally (csv.reader, not
+    DictReader) -- a real Jira export repeats the 'Sprint' header once per
+    occupied slot (Issue #7), which a dict-keyed row can't represent."""
+    path = tmp_path_factory.mktemp("csv") / "out.csv"
+    write_jira_csv(dataset, path)
+    with path.open(newline="", encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    return rows[0], rows[1:]
 
-    return [row_to_csv_dict(r) for r in dataset]
+
+@pytest.fixture(scope="module")
+def csv_rows(csv_table):
+    """Core (non-Sprint) fields only, as dicts -- safe since CORE_COLUMNS
+    has no duplicates."""
+    header, data_rows = csv_table
+    core_len = len(CORE_COLUMNS)
+    return [dict(zip(CORE_COLUMNS, row[:core_len])) for row in data_rows]
+
+
+@pytest.fixture(scope="module")
+def sprint_slot_values(csv_table):
+    header, data_rows = csv_table
+    core_len = len(CORE_COLUMNS)
+    return [row[core_len:] for row in data_rows]
 
 
 # --- Row counts (BACKLOG.md Task 1.4 / TESTER.md) ---------------------------
@@ -162,22 +184,22 @@ def test_test_automation_values_valid(dataset):
 
 
 # --- CSV structure -----------------------------------------------------------
+# Issue #7 (2026-08-23): real Jira CSV export repeats the literal "Sprint"
+# header once per occupied multi-value slot, sized to the widest-spanning
+# issue in the dataset -- not a fixed "Sprint-1".."Sprint-12".
 
-def test_csv_has_12_core_and_12_sprint_columns():
-    assert len(CORE_COLUMNS) == 12
-    assert len(SPRINT_COLUMNS) == 12
-    assert len(ALL_COLUMNS) == 24
+def test_csv_header_has_12_core_and_repeated_sprint_columns(csv_table, dataset):
+    header, _ = csv_table
+    assert header[:12] == CORE_COLUMNS
+    slots = max_sprint_span(dataset)
+    assert header[12:] == ["Sprint"] * slots
+    assert len(header) == 12 + slots
 
 
-def test_csv_round_trips_through_csv_module(csv_rows):
-    buf = io.StringIO()
-    writer = csv.DictWriter(buf, fieldnames=ALL_COLUMNS)
-    writer.writeheader()
-    writer.writerows(csv_rows)
-    buf.seek(0)
-    reloaded = list(csv.DictReader(buf))
-    assert len(reloaded) == len(csv_rows)
-    assert reloaded[0].keys() == set(ALL_COLUMNS)
+def test_csv_round_trips_through_csv_module(csv_table, dataset):
+    header, data_rows = csv_table
+    assert len(data_rows) == len(dataset)
+    assert all(len(row) == len(header) for row in data_rows)
 
 
 def test_created_dates_are_valid_iso8601(csv_rows):
@@ -185,21 +207,23 @@ def test_created_dates_are_valid_iso8601(csv_rows):
         datetime.strptime(row["Created"], "%Y-%m-%dT%H:%M:%SZ")
 
 
-def test_sprint_columns_populated_1_to_3_times(csv_rows):
-    for row in csv_rows:
-        populated = [row[c] for c in SPRINT_COLUMNS if row[c]]
+def test_sprint_slots_populated_1_to_3_times(sprint_slot_values):
+    for slots in sprint_slot_values:
+        populated = [v for v in slots if v]
         assert 1 <= len(populated) <= 3
 
 
-def test_sprint_columns_never_beyond_sprint_12(csv_rows):
-    for row in csv_rows:
-        for col in SPRINT_COLUMNS:
-            # presence alone proves it's Sprint-1..Sprint-12 (no Sprint-13+
-            # column exists in the header at all)
-            assert col in row
+def test_sprint_slot_values_are_sprint_names_not_dates(sprint_slot_values):
+    for slots in sprint_slot_values:
+        for v in slots:
+            if v:
+                assert SPRINT_NAME_RE.match(v), f"{v!r} is not a 'Sprint-N' name"
 
 
-def test_no_utf8_or_null_byte_issues(csv_rows):
+def test_no_utf8_or_null_byte_issues(csv_rows, sprint_slot_values):
     for row in csv_rows:
         for value in row.values():
             assert "\x00" not in value
+    for slots in sprint_slot_values:
+        for v in slots:
+            assert "\x00" not in v

@@ -6,13 +6,19 @@ and cluster injection. Produces the row set for
 
 Resolved per PM's 2026-08-22 ruling (GitHub Issue #2; see BACKLOG.md /
 TESTER.md's "updated 2026-08-22" sections for the reconciled criteria):
-- 12 core columns (not 13) + 12 Sprint columns = 24 total.
 - Blocker rows: 7-11 total (Auth 3, Checkout 2-3, Payments 2-3) -- the
   small, cluster-accurate count Task 1.3 already produces.
 - Blocker density is window-scoped to week 3 (where Task 1.3's cluster
   injection actually concentrates all activity), not the full "weeks 3-5"
   span or the global 12-sprint dataset: 20-30% within week 3, ~1-2%
   globally. Full percolation-threshold density is Sprint 3's job.
+
+GitHub Issue #7 (2026-08-23): the Sprint column model is corrected here to
+match real Jira CSV export behavior for a multi-value field -- the header
+repeats the literal column name "Sprint" once per occupied slot (not
+distinct "Sprint-1".."Sprint-12" names), and each cell holds the sprint's
+*name* (e.g. "Sprint-3"), not a date. Slot count is sized to the actual
+dataset's widest-spanning issue (see `max_sprint_span`), not a fixed 12.
 """
 from __future__ import annotations
 
@@ -50,8 +56,6 @@ CORE_COLUMNS = [
     "Issue Key", "Summary", "Type", "Status", "Assignee", "Created", "Resolved",
     "Waiting Reason", "Cycle Time (days)", "Test Automation", "External Blocker", "Cluster Tag",
 ]
-SPRINT_COLUMNS = [f"Sprint-{i}" for i in range(1, SPRINT_COUNT + 1)]
-ALL_COLUMNS = CORE_COLUMNS + SPRINT_COLUMNS
 
 
 @dataclass
@@ -169,31 +173,45 @@ def spanned_sprints(created: datetime, resolved: Optional[datetime]) -> List[int
     return list(range(start_sprint, end_sprint + 1))
 
 
-def row_to_csv_dict(row: IssueRow) -> Dict[str, str]:
-    d = {
-        "Issue Key": row.issue_key,
-        "Summary": row.summary,
-        "Type": row.type,
-        "Status": row.status,
-        "Assignee": row.assignee,
-        "Created": row.created.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "Resolved": row.resolved.strftime("%Y-%m-%dT%H:%M:%SZ") if row.resolved else "",
-        "Waiting Reason": row.waiting_reason,
-        "Cycle Time (days)": f"{row.cycle_time_days:.2f}" if row.cycle_time_days is not None else "",
-        "Test Automation": row.test_automation or "",
-        "External Blocker": "true" if row.external_blocker else "false",
-        "Cluster Tag": row.cluster_tag,
-    }
+def sprint_name(sprint_number: int) -> str:
+    """The value a real Jira export would show for a Sprint field -- the
+    sprint's name, not a date. Our domain numbers sprints 1..12, so the
+    name is just that number (Issue #7)."""
+    return f"Sprint-{sprint_number}"
+
+
+def max_sprint_span(rows: List["IssueRow"]) -> int:
+    """Widest number of sprints any single issue in this dataset spans --
+    sizes the repeated 'Sprint' header (Issue #7); not a fixed 12."""
+    return max((len(spanned_sprints(r.created, r.resolved)) for r in rows), default=1)
+
+
+def build_header(sprint_slots: int) -> List[str]:
+    """Real Jira CSV export repeats the literal field name once per
+    occupied multi-value slot -- 'Sprint','Sprint',... not 'Sprint-1',
+    'Sprint-2' (Issue #7)."""
+    return CORE_COLUMNS + ["Sprint"] * sprint_slots
+
+
+def row_to_csv_row(row: IssueRow, sprint_slots: int) -> List[str]:
+    core = [
+        row.issue_key,
+        row.summary,
+        row.type,
+        row.status,
+        row.assignee,
+        row.created.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        row.resolved.strftime("%Y-%m-%dT%H:%M:%SZ") if row.resolved else "",
+        row.waiting_reason,
+        f"{row.cycle_time_days:.2f}" if row.cycle_time_days is not None else "",
+        row.test_automation or "",
+        "true" if row.external_blocker else "false",
+        row.cluster_tag,
+    ]
     spans = spanned_sprints(row.created, row.resolved)
-    for i in range(1, SPRINT_COUNT + 1):
-        col = f"Sprint-{i}"
-        if i not in spans:
-            d[col] = ""
-        elif i == spans[0]:
-            d[col] = row.created.date().isoformat()
-        else:
-            d[col] = sprint_start_date(i).isoformat()
-    return d
+    sprint_values = [sprint_name(s) for s in spans]
+    sprint_values += [""] * (sprint_slots - len(sprint_values))
+    return core + sprint_values
 
 
 def generate_dataset(seed: int, squads: List[Squad], cluster: BlockerCluster) -> List[IssueRow]:
