@@ -68,3 +68,37 @@ Observations:
 - Model selection deferred to post-Sprint 1 assessment
 - Dr. Agile standards repo TBD (post-project action)
 
+## Iteration 1 Retro (2026-08-23)
+
+**Participants:** Kirschi (BP), PM, Code
+
+**Finding:** `git fetch --all` revealed three unmerged branches, each an
+independent, divergent rewrite of Iteration 1
+(`claude/blocker-generator-pm-ffutq6`, `claude/sprint-1-blocker-generator-qpnb1i`,
+`claude/sprint1-backlog-xray-mismatch-8io8es`), none reconciled with `main`.
+Root cause: policies written into `TEAM_OPERATING_SYSTEM.md` (single source
+of truth, branch-per-task) were never enforced or bounded — nothing stopped
+a session from opening a branch and never coming back to it.
+
+**Decisions made:**
+1. Fixed citation spelling in `DEFINITION_OF_DONE.md`: Marty Cagan, Melissa Perri.
+2. Adopted trunk-based development (Fowler) — one branch per task, merged or
+   deleted before the session that created it ends. Codified as
+   `DEFINITION_OF_DONE.md` Governance Rule 7.
+3. Created `CLAUDE.md` as the enforcement point (loaded automatically every
+   session), constrained to be DRY with `/specification/` — it points, it
+   doesn't restate.
+4. Replaced the weekly kickoff/sign-off cadence with a one-day timebox, so
+   BP/PM/Code calibrate real throughput before committing to larger scope.
+5. Renamed our delivery timebox from "Sprint" to "Iteration" throughout
+   `BACKLOG.md`, `TESTER.md`, `PROJECT.md`, `DEFINITION_OF_DONE.md`, and
+   `TEAM_OPERATING_SYSTEM.md` — "Sprint" is now reserved for the synthetic
+   dataset's own domain concept (`Sprint-1..Sprint-12`, ARCHITECTURE.md),
+   which was never renamed.
+6. Iteration 1 declared closed (as of yesterday); Iteration 2 begins now.
+
+**Not yet resolved (first item for Iteration 2 planning):** the three
+orphaned branches above, and the spec-vs-build gap they each independently
+attempted to close (the locked 8-squad finance/3-cluster spec in
+`/specification/` vs. the generic random-graph generator on `main`).
+

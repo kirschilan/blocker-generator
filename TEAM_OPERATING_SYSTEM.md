@@ -10,6 +10,8 @@
 
 One source of truth, lightweight communication, asynchronous-first (you're on iPad, Mac, iPhone, PC—work wherever you are without waiting).
 
+**Terminology:** "Iteration" is our own one-day delivery timebox (BP/PM/Code). "Sprint" is reserved for the synthetic dataset's own domain concept — the fictional squads' 12-sprint quarter (see `specification/ARCHITECTURE.md`). Don't conflate the two.
+
 ---
 
 ## Source of Truth: GitHub
@@ -20,7 +22,7 @@ One source of truth, lightweight communication, asynchronous-first (you're on iP
 - BACKLOG.md
 - ARCHITECTURE.md
 - TESTER.md
-- Generated data files (CSVs for each sprint)
+- Generated data files (CSVs for each iteration)
 - Code (generate_blocker_data.py, tests)
 - Session logs (session_log.md in root)
 
@@ -43,7 +45,7 @@ blocker-generator/
 │   ├── v1_auth_cluster_test_logs.csv
 │   └── ...
 ├── docs/
-│   └── VALIDATION_REPORT_Sprint_1.md
+│   └── VALIDATION_REPORT_Iteration_1.md
 └── README.md
 ```
 
@@ -84,15 +86,15 @@ blocker-generator/
 
 ---
 
-### **For Sprint Kickoff / Sign-Off Gates**
-→ **30-min synchronous meeting** (video call; scheduled in advance so BP can plan)
+### **For Iteration Kickoff / Sign-Off Gates**
+→ **Two short synchronous touchpoints per day** (see Daily Iteration Cadence below)
 
 **Agenda:**
-- Sprint kickoff: "Here's what we're building (BACKLOG); any questions?" (5 min)
-- Sprint sign-off: "Here's the data; does it match expectations?" (20 min)
+- Iteration kickoff: "Here's what's realistic to reach Done-Done today (BACKLOG); any questions?" (5 min)
+- Iteration sign-off: "Here's the data; does it match expectations?" (20 min)
 - Blockers / scope changes (if any) (5 min)
 
-**Recording:** PM writes summary in GitHub Issue immediately after (e.g., "Sprint 1 Sign-Off: BP confirmed Auth-cluster cascade matches expectations. Approved to proceed to Sprint 2.")
+**Recording:** PM writes summary in GitHub Issue immediately after (e.g., "Iteration 1 Sign-Off: BP confirmed Auth-cluster cascade matches expectations. Approved to proceed to Iteration 2.")
 
 ---
 
@@ -109,7 +111,7 @@ blocker-generator/
 
 **Date:** 2026-08-22  
 **Participants:** Kirschi (BP), PM (Claude), Code (pending Claude Code)  
-**Outcome:** Five locked docs (PROJECT, BACKLOG, ARCHITECTURE, TESTER, DEFINITION_OF_DONE); ready for Sprint 1 build
+**Outcome:** Five locked docs (PROJECT, BACKLOG, ARCHITECTURE, TESTER, DEFINITION_OF_DONE); ready for Iteration 1 build
 
 **Decisions Made:**
 - GitHub as source of truth; Slack for real-time questions
@@ -118,11 +120,11 @@ blocker-generator/
 - Scope change workflow: diagnose → update artifact → session log → confirm all three
 
 **Blockers:** None  
-**Next:** Code begins Sprint 1 (Tasks 1.1–1.6)
+**Next:** Code begins Iteration 1 (Tasks 1.1–1.6)
 
 ---
 
-## Session: [Next Date] — Sprint 1 Kickoff
+## Session: [Next Date] — Iteration 1 Kickoff
 
 [to be filled in when Code starts]
 ```
@@ -145,6 +147,8 @@ git checkout -b task/1.1-squad-model
 #   "Task 1.1: Create Squad dataclass with adjacency matrix"
 #   "Task 1.1: Add JSON serialization for squad config"
 ```
+
+**Branch lifetime (trunk-based development; see `DEFINITION_OF_DONE.md` Governance Rule 7, and `CLAUDE.md`):** one branch per task, merged or deleted before the session that created it ends. If the task isn't finished, land what's safe on `main` behind a clear "incomplete" marker and continue next session — don't hold the branch open.
 
 ### **Code Opens Pull Request**
 
@@ -177,7 +181,7 @@ Blockers / Questions:
 ### **BP Optional Review**
 
 - BP doesn't need to review every PR (that's Code + PM's domain)
-- BP reviews only when asked or at sign-off gate (after all Sprint 1 tasks are merged)
+- BP reviews only when asked or at sign-off gate (after all Iteration 1 tasks are merged)
 
 ---
 
@@ -192,7 +196,7 @@ Blockers / Questions:
 | **Automated checks** | Code | Implement in test suite (pytest, etc.); run before PR |
 | **Manual spot-checks** | PM | Load CSVs, spot-check 5 features, verify dates/times |
 | **Narrative validation** | BP | Load into viz tool; "Does this match our org?" |
-| **Acceptance criteria** | All three | Agreed in TESTER.md before sprint starts |
+| **Acceptance criteria** | All three | Agreed in TESTER.md before iteration starts |
 
 ### **Example: Task 1.4 (Generate Features + Blockers)**
 
@@ -247,7 +251,7 @@ BP signs off: "This matches our org" or escalates to PM
 
 ## Scope Change Process (How It Works In Practice)
 
-### **Scenario: Mid-Sprint, Code Discovers Task Is Too Large**
+### **Scenario: Mid-Iteration, Code Discovers Task Is Too Large**
 
 **Day 1, Thursday:**
 1. Code: Opens GitHub Issue titled "Task 1.4 is too large; branching logic needs splitting"
@@ -288,26 +292,26 @@ BP signs off: "This matches our org" or escalates to PM
 
 ---
 
-## Weekly Sync Cadence (Suggested)
+## Daily Iteration Cadence
 
-**Monday 10am (30 min):** Sprint Kickoff
-- "Here's this week's tasks (BACKLOG.md Sprint N)"
-- PM: questions? Blockers?
-- BP: anything I should know for narrative validation?
-- Calendar it; Code, PM, BP all attend
+**Our delivery timebox is one day** (an "Iteration" — see Terminology, above), adopted 2026-08-23 so BP, PM, and Code learn actual mutual throughput before committing to larger scope. Iterations replace the earlier weekly cadence; nothing else about decision rights or verification changes.
 
-**Friday 4pm (30 min):** Sprint Sign-Off
-- PM: "Here's the generated data (CSVs + validation report)"
-- BP: "Does it match expectations?"
-- BP: Sign-off or escalate
-- Code + PM: plan any re-work
+**Start of day (10–15 min):** Iteration Kickoff
+- PM proposes today's slice from BACKLOG.md, sized to what can realistically reach Done-Done today — not what's left on the list
+- Code: flags anything blocking before starting
+- BP: anything to know for today's narrative validation?
 
-**Async between meetings:**
+**End of day (20–30 min):** Iteration Sign-Off
+- PM: "Here's what shipped today (CSVs + validation report)"
+- BP: "Does it match expectations?" — sign-off or escalate
+- Code + PM: carry anything unfinished into tomorrow's kickoff — never onto an open branch (see Governance Rule 7, trunk-based development)
+
+**Async within the day:**
 - Code: commits + PRs (PM reviews async)
-- PM: session_log.md updated daily (end of session)
+- PM: session_log.md updated at end of day
 - BP: spot-checks any queries in Slack / GitHub
 
-**No daily standup.** Trust async workflow. Formal sync only at sprint boundaries.
+**No mid-day standup.** Trust async workflow within the day; the two synchronous touchpoints are kickoff and sign-off.
 
 ---
 
@@ -329,8 +333,8 @@ BP signs off: "This matches our org" or escalates to PM
 - Scheduling ("Can we move sign-off call to Thursday instead?")
 
 **When to use Video Call (30 min, formal):**
-- Sprint kickoff (ensure everyone understands what's being built)
-- Sprint sign-off (BP validates narrative; decision gate to proceed)
+- Iteration kickoff (ensure everyone understands what's being built)
+- Iteration sign-off (BP validates narrative; decision gate to proceed)
 - Escalated disagreements (if GitHub Issue discussion reaches an impasse)
 
 ---
@@ -369,7 +373,7 @@ BP signs off: "This matches our org" or escalates to PM
 
 **Approvals / Sign-Offs:**
 - [ ] PM: Session log reviewed
-- [ ] BP: Sprint work acknowledged
+- [ ] BP: Iteration work acknowledged
 - [ ] Code: Ready for next task (if applicable)
 ```
 
@@ -379,9 +383,9 @@ BP signs off: "This matches our org" or escalates to PM
 
 **GitHub is version-controlled, so history is built-in.**
 
-At end of each sprint, PM creates:
-- `docs/VALIDATION_REPORT_Sprint_N.md` (auto-generated summary of what passed, what was validated)
-- `data/sprint_N_artifacts/` (CSVs, test logs, generated data)
+At end of each iteration, PM creates:
+- `docs/VALIDATION_REPORT_Iteration_N.md` (auto-generated summary of what passed, what was validated)
+- `data/iteration_N_artifacts/` (CSVs, test logs, generated data)
 
 Everything is in git; no risk of losing work.
 
@@ -392,4 +396,5 @@ Everything is in git; no risk of losing work.
 | Date | Session | Participants | Key Decisions |
 |------|---------|--------------|---------------|
 | 2026-08-22 | PM Alignment on DoD | Kirschi (BP), PM, (Code pending) | GitHub as source of truth; Tester.md is shared agreement (not a role); three-party verification (Code automated, PM manual, BP narrative) |
+| 2026-08-23 | Iteration 1 Retro | Kirschi (BP), PM, Code | Weekly cadence replaced with one-day Iterations (calibrate throughput before committing scope); "Sprint" renamed to "Iteration" for our own cadence; trunk-based development adopted (branch per task, merged before session ends); `CLAUDE.md` created to enforce branching without duplicating `/specification/` |
 

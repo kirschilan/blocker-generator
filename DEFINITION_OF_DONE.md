@@ -1,7 +1,7 @@
 # Definition of Done — PM Contract
 
 **Status:** Locked (project governance)  
-**Principle:** Marty Cagan (outcome-driven), LeSS (one team, one definition), Melissa Perri (shared mental model)  
+**Principle:** Marty Cagan (outcome-driven), LeSS (one team, one definition), Melissa Perri (shared mental model), Fowler (trunk-based development)  
 **Audience:** PM, Code, Business Partner (all three are one team)
 
 ---
@@ -34,17 +34,17 @@ This document defines what "done" means at each level of this project, and what 
 ### 2. BACKLOG.md — "Work Is Vertical Slices, Each Independently Valuable"
 
 **This artifact is DONE when:**
-- [ ] Work is organized into sprints (not a monolithic task list)
-- [ ] Each sprint produces a complete, independently testable deliverable (vertical slice)
+- [ ] Work is organized into iterations (not a monolithic task list)
+- [ ] Each iteration produces a complete, independently testable deliverable (vertical slice)
 - [ ] Each task is INVEST-compliant: Independent, Negotiable, Valuable, Estimable, Small, Testable
 - [ ] No task is blocked by a later task (precedence is clear; parallelizable where possible)
 - [ ] Acceptance criteria are concrete and testable (not "build a feature"; "generate 600–750 rows with blocker density 20–30%")
 - [ ] Post-MVP items are explicitly deferred with triggers (not silently dropped)
-- [ ] Business Partner has read it and agrees: "This breakdown makes sense; I can validate each sprint"
+- [ ] Business Partner has read it and agrees: "This breakdown makes sense; I can validate each iteration"
 
 **Who owns it:** PM  
 **When it changes:** When scope changes (outcomes shift, or implementation strategy evolves). Changes are triggered by:
-  - **Code discovers a task is too large:** PM breaks it down (backlog updated before sprint runs)
+  - **Code discovers a task is too large:** PM breaks it down (backlog updated before iteration runs)
   - **Business Partner requests new feature:** PM assesses against outcomes, re-prioritizes, updates backlog
   - **New dependency discovered:** PM updates precedence and task order
   - Changes require PM re-assessment and Business Partner acknowledgment (not silent)
@@ -79,7 +79,7 @@ This document defines what "done" means at each level of this project, and what 
 - **Response:** 
   1. PM diagnoses: "If we own CRM, blocker durations drop from 2–5 days to <1 day"
   2. PM assesses impact: "This affects Cluster scenarios; Metric B (mocking) changes"
-  3. PM + Business Partner decide: "This changes our Actionability story; worth 1–2 tasks in Sprint 2"
+  3. PM + Business Partner decide: "This changes our Actionability story; worth 1–2 tasks in Iteration 2"
   4. PM updates ARCHITECTURE.md (CRM no longer external)
   5. PM updates BACKLOG.md (new task: "reduce Cluster 2 blocker durations")
   6. PM updates TESTER.md (sign-off gate for updated cluster specs)
@@ -92,10 +92,10 @@ This document defines what "done" means at each level of this project, and what 
 
 **This artifact is DONE when:**
 - [ ] Automated checks are written (code can run them; pass/fail is binary)
-- [ ] Manual spot-checks are defined (PM knows exactly what to verify; ~10–20 min per sprint)
+- [ ] Manual spot-checks are defined (PM knows exactly what to verify; ~10–20 min per iteration)
 - [ ] Business Partner sign-off criteria are explicit (what must partner confirm before gate opens?)
 - [ ] Acceptance thresholds are quantified (not "blocker density should be high"; "20–30%")
-- [ ] Each sprint has its own TESTER section (Sprint 1 ≠ Sprint 2; verification scope evolves)
+- [ ] Each iteration has its own TESTER section (Iteration 1 ≠ Iteration 2; verification scope evolves)
 
 **Who owns it:** PM (with Code input on what's automatable)  
 **When it changes:** When tasks or acceptance criteria in BACKLOG.md change. Changes are always:
@@ -130,7 +130,7 @@ This document defines what "done" means at each level of this project, and what 
   - PM re-spot-checks if fix impacts acceptance criteria
   - Business Partner notified (may need re-sign-off if change is significant)
 
-**Current Status:** PENDING (waiting for Claude Code to build Sprint 1)
+**Current Status:** PENDING (waiting for Claude Code to build Iteration 1)
 
 ---
 
@@ -149,14 +149,14 @@ This document defines what "done" means at each level of this project, and what 
 
 2. **If in scope: PM re-scopes:**
    - What's the smallest version? (MVP: link 1 blocker to 1 incident; not all incidents)
-   - Does it fit in current sprints, or does it require new sprint?
+   - Does it fit in current iterations, or does it require a new iteration?
    - What's the effort? (Code estimates)
    - Trigger: What outcome makes this worth revisiting post-V1?
 
 3. **PM updates backlog:**
    - Adds task to BACKLOG.md with clear acceptance criteria
    - Updates TESTER.md with new verification checks
-   - Adjusts backlog priority and sprint if needed
+   - Adjusts backlog priority and iteration if needed
 
 4. **PM + Business Partner confirm:**
    - "Does this change still meet your definition of success for V1?"
@@ -175,7 +175,7 @@ This document defines what "done" means at each level of this project, and what 
 1. **Code brings to PM:** "Here's the blocker and my proposed split."
 
 2. **PM assesses:**
-   - Does split violate vertical-slice principle (each sprint independently valuable)?
+   - Does split violate vertical-slice principle (each iteration independently valuable)?
    - Can the split maintain INVEST? (small, independent, testable)
    - What's the impact on timeline?
 
@@ -222,7 +222,7 @@ This document defines what "done" means at each level of this project, and what 
 
 ---
 
-### Scenario 4: Architecture Assumption Changes Mid-Sprint
+### Scenario 4: Architecture Assumption Changes Mid-Iteration
 
 **Example:** "We just learned that DataPlatform releases weekly, not annually. How does this affect Cluster 2?"
 
@@ -234,7 +234,7 @@ This document defines what "done" means at each level of this project, and what 
    - Impact: Blocker density drops; percolation hypothesis weaker
 
 2. **PM brings to team:**
-   - "This changes our cluster topology. Resets current sprint; let's reassess."
+   - "This changes our cluster topology. Resets current iteration; let's reassess."
 
 3. **PM + Business Partner + Code jointly decide:**
    - **Option A:** Adjust cluster to match new reality (weekly gate, shorter duration) → regenerate data, adjust TESTER
@@ -284,7 +284,7 @@ This document defines what "done" means at each level of this project, and what 
 
 ### 5. Incomplete States Are Honest
 
-- **Rule:** If a sprint's data is "mostly done" but verification failed, don't hide it. Document explicitly: what passed, what failed, and what's next.
+- **Rule:** If an iteration's data is "mostly done" but verification failed, don't hide it. Document explicitly: what passed, what failed, and what's next.
 - **Enforcement:** TESTER.md sign-off includes a "blockers" section if anything is incomplete.
 - **Rationale (pm-playbook):** "Make incomplete states honest, not hidden."
 
@@ -293,6 +293,13 @@ This document defines what "done" means at each level of this project, and what 
 - **Rule:** DoD is negotiated once, then held constant. No separate "Code's DoD" vs "PM's DoD" vs "Business Partner's DoD."
 - **Enforcement:** This document (DEFINITION_OF_DONE.md) is the contract. Changes require all three parties.
 - **Rationale (pm-playbook):** "Treat the team (human + any coding agent involved) as one whole unit with one definition of done."
+
+### 7. Trunk-Based Development (Not Long-Lived Branches)
+
+- **Rule:** One branch per task, not per Iteration and not per session. A branch is merged — or deleted, if abandoned — before the session that created it ends. Nothing survives unmerged into the next session.
+- **If a task isn't finished:** land what's safe on `main` behind a clear "incomplete" marker (a skipped test, a TODO tied to the BACKLOG task ID) and continue next session. Don't park it on an island branch.
+- **Enforcement:** Encoded in `CLAUDE.md` so it's loaded automatically every session, not left to be discovered in prose.
+- **Rationale (Fowler, Trunk-Based Development):** Session-scoped branches with no lifetime limit are what produced three divergent, never-merged rewrites of Iteration 1 (see `session_log.md`, 2026-08-23). A rule stated only in a document that may or may not be read is not a rule; this one is enforced by branch lifetime, not by trust.
 
 ---
 
@@ -311,6 +318,8 @@ This document defines what "done" means at each level of this project, and what 
 | Date | Change | Reason | Approver |
 |------|--------|--------|----------|
 | 2026-08-22 | Created DEFINITION_OF_DONE.md; locked 1-level DoD (artifact + decision rights + governance rules) | Explicit working agreement required; supports Cagan (outcomes-driven), LeSS (one team), Perri (shared mental model) | Kirschi (PO) + PM + Code (pending) |
+| 2026-08-23 | Fixed citation spelling (Marty Cagan, Melissa Perri). Added Governance Rule 7 (Trunk-Based Development, Fowler). Renamed our delivery timebox "Sprint" → "Iteration" throughout (kept "Sprint" for the dataset's own domain concept). | Iteration 1 retro surfaced three unmerged, divergent branches — policy without enforcement or a bounded branch lifetime doesn't prevent drift; "Sprint" collided with ARCHITECTURE.md's domain concept | Kirschi (BP) + PM + Code |
+| 2026-08-23 | Fixed citation spelling (Marty Cagan, Melissa Perri). Added Governance Rule 7 (Trunk-Based Development). Renamed our delivery timebox "Sprint" → "Iteration" throughout (kept "Sprint" for the dataset's own domain concept). | Iteration 1 retro surfaced three unmerged, divergent branches — policy without enforcement or a bounded branch lifetime doesn't prevent drift; "Sprint" collided with ARCHITECTURE.md's domain concept | Kirschi (BP) + PM + Code |
 
 ---
 
@@ -349,6 +358,11 @@ When scope changes:
 - Shared mental model (explicit working agreements, not assumptions)
 - Role clarity (who decides what; GOVERNANCE RULES section)
 - Psychological safety (Code can escalate blocker without blame; Business Partner can say "data looks fake" without offending PM)
+
+**Martin Fowler (Trunk-Based Development):**
+- Branches are short-lived and integrate to `main` frequently, not held open across sessions (Governance Rule 7)
+- Incomplete work is merged behind a marker (skipped test, TODO tied to a task ID) rather than isolated on a branch
+- Prevents the divergence that produced three un-reconciled versions of Iteration 1
 
 ---
 

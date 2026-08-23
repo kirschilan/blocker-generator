@@ -2,11 +2,13 @@
 
 **Status:** Ready for Claude Code (Vertical Slices)  
 **Updated:** 2026-08-22  
-**Principle:** Each sprint produces a complete, testable vertical slice that can be validated with the business partner. INVEST: Independent, Negotiable, Valuable, Estimable, Small, Testable.
+**Principle:** Each iteration produces a complete, testable vertical slice that can be validated with the business partner. INVEST: Independent, Negotiable, Valuable, Estimable, Small, Testable.
+
+**Terminology:** "Iteration" is our own delivery timebox (BP/PM/Code); "Sprint" (below) refers only to the synthetic dataset's own domain concept — the fictional squads' 12-sprint quarter. See `TEAM_OPERATING_SYSTEM.md`.
 
 ---
 
-## Sprint 1: Auth Squad + Auth Cluster (Minimum Viable Dataset)
+## Iteration 1: Auth Squad + Auth Cluster (Minimum Viable Dataset)
 
 **Goal:** Prove the percolation hypothesis works at the smallest scale. Generate Auth squad (SQ-A) + 1 blocker cluster (Auth outage, weeks 3–5) + 2 cascading squads (Checkout, Payments) for 12 sprints. Business partner validates the data correlates to their mental model of how Auth blockers ripple.
 
@@ -116,7 +118,7 @@
 **Priority:** P1  
 **Size:** Small (validation + README)  
 **Acceptance Criteria:**
-- Validation report (text): "Sprint 1 Dataset Summary"
+- Validation report (text): "Iteration 1 Dataset Summary"
   - Total features: 600–750
   - Blocker count: 20–30
   - Blocker density: 20–30%
@@ -136,7 +138,7 @@
 
 ---
 
-## Sprint 2: Expand to 5 Squads + DataPlatform Cluster + Optimized Scenario
+## Iteration 2: Expand to 5 Squads + DataPlatform Cluster + Optimized Scenario
 
 **Goal:** Validate that a second, independent blocker cluster (DataPlatform delay) produces similar cascading behavior. Expand to 5 squads (Auth, Checkout, Payments, Core Banking, Savings), add external dependency (DataPlatform), generate optimized dataset where the DataPlatform cluster is mocked/reduced. Business partner confirms: "If we mock the DataPlatform API, do we see flow improvement?"
 
@@ -236,7 +238,7 @@
 **Priority:** P1  
 **Size:** Small  
 **Acceptance Criteria:**
-- Validation report: "Sprint 2 Dataset Summary"
+- Validation report: "Iteration 2 Dataset Summary"
   - Squads: 5 (Auth, Checkout, Payments, Core Banking, Savings)
   - Clusters: 2 (Auth weeks 3–5, DataPlatform weeks 6–10)
   - High-density: ~1,000 features, ~250–350 blockers, 25–35% density
@@ -251,7 +253,7 @@
 
 ---
 
-## Sprint 3: Full 8-Squad + 3 Clusters + CLI + Reusability
+## Iteration 3: Full 8-Squad + 3 Clusters + CLI + Reusability
 
 **Goal:** Merge all squads (Loans, Invoicing, Collections) + all external dependencies (CRM, Loans Rule Engine, BPM, ESB) + 3rd cluster (Checkout instability). Parameterize generator (CLI, config files, reproducibility). Handoff to business partner as reusable tool.
 
@@ -259,7 +261,7 @@
 
 ### Task 3.1: Extend squad model to all 8 squads + 4 external dependencies
 **Priority:** P0  
-**Size:** Small (update datastructure; logic reused from Sprints 1–2)  
+**Size:** Small (update datastructure; logic reused from Iterations 1–2)  
 **Acceptance Criteria:**
 - 8 squads: Auth, Checkout, Payments, Core Banking, Savings, Loans, Invoicing, Collections
 - 4 external deps: DataPlatform, CRM, Loans Rule Engine, BPM, ESB
@@ -391,7 +393,7 @@
 
 | Task | Trigger | Priority |
 |------|---------|----------|
-| **P3 Simulation (what-if engine)** | Business partner validates Sprints 1–2; wants to run scenario: "What if we mock CRM instead of DataPlatform?" | P3 |
+| **P3 Simulation (what-if engine)** | Business partner validates Iterations 1–2; wants to run scenario: "What if we mock CRM instead of DataPlatform?" | P3 |
 | **P4 Prediction (forecasting)** | Simulation works; client wants early-warning system ("Squad X will halt in 3 days") | P3 |
 | **Production incident correlation** | Client wants to link blockers to actual prod incidents from their monitoring | P4 |
 | **Resource utilization data** | Dashboard recommends "add 2 nodes to Auth service" (requires resource estimates per squad) | P4 |
@@ -400,22 +402,22 @@
 
 ---
 
-## Key INVEST Principles (Enforced per Sprint)
+## Key INVEST Principles (Enforced per Iteration)
 
-1. **Independent:** Each sprint produces a complete dataset (tests, docs, validation) independent of downstream sprints
-2. **Valuable:** At end of Sprint 1, business partner can load Auth-cluster data and validate hypothesis; at end of Sprint 2, can compare high-density vs. optimized and see flow improvement
-3. **Estimable:** Task sizes mapped (P0 = small, P1 = moderate, no task >1 sprint)
+1. **Independent:** Each iteration produces a complete dataset (tests, docs, validation) independent of downstream iterations
+2. **Valuable:** At end of Iteration 1, business partner can load Auth-cluster data and validate hypothesis; at end of Iteration 2, can compare high-density vs. optimized and see flow improvement
+3. **Estimable:** Task sizes mapped (P0 = small, P1 = moderate, no task >1 iteration)
 4. **Testable:** Each task has explicit verification steps (automated tests + manual validation with business partner)
 5. **Small:** No task blocks another; parallelizable (e.g., Task 1.4 and 1.5 can run in parallel once 1.1–1.3 are done)
-6. **Negotiable:** If Task 1.6 validation reveals the data doesn't match business expectations, backlog is updated before Sprint 2 (no late surprises)
+6. **Negotiable:** If Task 1.6 validation reveals the data doesn't match business expectations, backlog is updated before Iteration 2 (no late surprises)
 
 ---
 
 ## Blockers & Dependencies
 
-- **None at this point.** Assume each sprint clears its tasks before handoff to business partner.
-- **Decision point after Sprint 1:** Business partner signs off on Auth-cluster data before proceeding to Sprint 2.
-- **Decision point after Sprint 2:** Business partner confirms mocking scenario (P2 Metric B) works before proceeding to Sprint 3.
+- **None at this point.** Assume each iteration clears its tasks before handoff to business partner.
+- **Decision point after Iteration 1:** Business partner signs off on Auth-cluster data before proceeding to Iteration 2.
+- **Decision point after Iteration 2:** Business partner confirms mocking scenario (P2 Metric B) works before proceeding to Iteration 3.
 
 ---
 
@@ -424,4 +426,5 @@
 | Date | Item | Status |
 |------|------|--------|
 | 2026-08-22 | Backlog restructured as vertical slices (Sprint 1: Auth + 1 cluster; Sprint 2: 5 squads + 2 clusters + mocking; Sprint 3: full 8 squads + all clusters + CLI). Each sprint produces complete, testable data for business partner validation. INVEST principles enforced. | Ready for Code |
+| 2026-08-23 | Renamed our delivery timebox from "Sprint" to "Iteration" throughout (headers, sign-off gates, INVEST section) to stop colliding with the dataset's own domain concept (`Sprint-1..Sprint-12` in ARCHITECTURE.md). No scope change — same three vertical slices, same acceptance criteria. | PM + Code + BP (Kirschi) |
 

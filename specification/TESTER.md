@@ -1,7 +1,9 @@
 # Blocker Generator — Definition of Done (Verification & Validation)
 
 **Status:** Validation framework  
-**Purpose:** Executable checklist for confirming each sprint's dataset is production-ready for business partner review  
+**Purpose:** Executable checklist for confirming each iteration's dataset is production-ready for business partner review  
+
+**Terminology:** "Iteration" is our own delivery timebox; "Sprint" below refers only to the synthetic dataset's own domain concept (the fictional squads' 12-sprint quarter). See `TEAM_OPERATING_SYSTEM.md`.
 **Audience:** Code (automated checks), PM (manual spot-checks), Business Partner (sign-off)
 
 ---
@@ -14,7 +16,7 @@
 
 ---
 
-## Sprint 1: Auth Squad + 1 Cluster (Minimum Viable Dataset)
+## Iteration 1: Auth Squad + 1 Cluster (Minimum Viable Dataset)
 
 ### Automated Checks (Task 1.4 + 1.5 outputs)
 
@@ -153,16 +155,16 @@
 - [ ] Test automation coverage aligns with their reality (50% Selenium, 10% API, rest manual)
 - [ ] No "this data looks fake" red flags (cycle times, dates, squad names feel authentic)
 
-**Sign-Off Statement (Required before Sprint 2):**
-> "I recognize this Auth-cluster cascading pattern. The data matches how our squads would actually get blocked. Proceed to Sprint 2."
+**Sign-Off Statement (Required before Iteration 2):**
+> "I recognize this Auth-cluster cascading pattern. The data matches how our squads would actually get blocked. Proceed to Iteration 2."
 
 ---
 
-## Sprint 2: Expand to 5 Squads + 2 Clusters + Mocking
+## Iteration 2: Expand to 5 Squads + 2 Clusters + Mocking
 
 ### Automated Checks (Task 2.3 + 2.4 outputs)
 
-All Sprint 1 checks apply here, plus:
+All Iteration 1 checks apply here, plus:
 
 **Row Counts (5 Squads)**
 - [ ] Total feature rows: 900–1,200 (15–20 per squad × 5 squads × 12 sprints)
@@ -170,7 +172,7 @@ All Sprint 1 checks apply here, plus:
 - [ ] Total rows: 930–1,250
 
 **Two Clusters Present**
-- [ ] Auth blockers in weeks 3–5 (unchanged from Sprint 1)
+- [ ] Auth blockers in weeks 3–5 (unchanged from Iteration 1)
 - [ ] DataPlatform blockers in weeks 6–10 (new; 5–10 blockers in Core Banking, 2–3 in Savings)
 - [ ] No overlap: Auth weeks 3–5, DataPlatform weeks 6–10
 - [ ] All Auth-cluster blockers tagged "Cluster-1-Auth"
@@ -246,16 +248,16 @@ All Sprint 1 checks apply here, plus:
 - [ ] No objections to the blocker reduction (40–50% feels realistic for that intervention)
 - [ ] Agrees that Metric B (mocking reduces blockage) is proven
 
-**Sign-Off Statement (Required before Sprint 3):**
+**Sign-Off Statement (Required before Iteration 3):**
 > "I see how mocking DataPlatform improves flow by X%. The two-cluster scenario is credible. Ready for the full 8-squad dataset and all three clusters."
 
 ---
 
-## Sprint 3: Full 8-Squad + 3 Clusters + CLI + Reusability
+## Iteration 3: Full 8-Squad + 3 Clusters + CLI + Reusability
 
 ### Automated Checks (Task 3.3 + 3.4 outputs)
 
-All Sprint 1–2 checks apply, plus:
+All Iteration 1–2 checks apply, plus:
 
 **Row Counts (8 Squads)**
 - [ ] Total feature rows: 1,440–1,920 (15–20 per squad × 8 squads × 12 sprints)
@@ -393,7 +395,7 @@ All Sprint 1–2 checks apply, plus:
 ## Verification Workflow (Code + PM + Business Partner)
 
 ```
-Sprint N Development:
+Iteration N Development:
   ↓
 Code runs Tasks N.1–N.X
   ↓
@@ -409,7 +411,7 @@ Business Partner loads CSVs into viz tool ← Sees "crime neighborhoods"
   ↓
 Business Partner validates narrative: "Does this match reality?"
   ↓
-Business Partner signs off (statement required) ← Gate to next sprint
+Business Partner signs off (statement required) ← Gate to next iteration
   ↓
 (If sign-off fails: backlog updated, tasks re-run, cycle repeats)
 ```
@@ -421,4 +423,5 @@ Business Partner signs off (statement required) ← Gate to next sprint
 | Date | Item | Status |
 |------|------|--------|
 | 2026-08-22 | TESTER.md created: DoD for Sprint 1–3, automated checks, manual spot-checks, business partner sign-off criteria | Ready for Code |
+| 2026-08-23 | Renamed our delivery timebox from "Sprint" to "Iteration" throughout (headers, sign-off gates); domain concept (`Sprint-1..Sprint-12` columns, weekly cluster timing) left unchanged. No scope change. | PM + Code + BP (Kirschi) |
 
