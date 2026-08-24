@@ -192,33 +192,35 @@ Three hardcoded blocker clusters injected into high-density dataset. Each cluste
 
 **Example Header:**
 ```
-Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Waiting Reason, Cycle Time (days), Test Automation, External Blocker, Cluster Tag, Sprint, Sprint, Sprint
+Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Custom field (Waiting Reason), Custom field (Test Automation), Labels, Sprint, Sprint, Sprint
 ```
 
 **Example Row:**
 ```
-SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00:00Z, 2026-07-15T17:00:00Z, (null), 14.33, Selenium, false, (null), Sprint-1, ,
+SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00:00Z, 2026-07-15T17:00:00Z, (null), Selenium, , Sprint-1, ,
 ```
-*(This feature was planned only in Sprint-1; the remaining repeated Sprint columns are blank.)*
+*(This feature was planned only in Sprint-1 and carries no label; the remaining repeated Sprint columns are blank.)*
 
 ---
 
-**Core Columns:**
+**Core Columns (corrected 2026-08-23, PBI 2.0a/b/c/d — BP's ruling on each):**
 
 | Column | Type | Example | Rules |
 |--------|------|---------|-------|
 | `Issue Key` | String | `SQ-A-1`, `SQ-B-42` | Format: `SQ-{A..H}-{1..N}` |
 | `Summary` | String | "Login session timeout handling" | Feature or blocker description; <100 chars |
 | `Type` | String | "Story" or "Sub-task" | Always "Story" for features, "Sub-task" for blockers |
-| `Status` | String | "Done" \| "In Progress" \| "Waiting" | Feature rows: Done. Blocker rows: Waiting while open, Done once resolved (corrected 2026-08-23 — `Waiting Reason` persists either way, see below) |
+| `Status` | String | "Done" \| "In Progress" \| "Waiting" | Feature rows: Done. Blocker rows: Waiting while open, Done once resolved (`Waiting Reason` persists either way, see below) |
 | `Assignee` | String | "auth-squad" | Lowercase squad identifier (e.g., "auth-squad", "payments-squad") |
 | `Created` | ISO-8601 | `2026-07-01T09:00:00Z` | Sprint start date + random offset |
 | `Resolved` | ISO-8601 | `2026-07-15T17:00:00Z` | Created + Cycle Time; null only while a blocker row is still open (Status = Waiting) |
-| `Custom field (Waiting Reason)` | String | "Waiting on Login service (SQ-A)" | Corrected 2026-08-23, PBI 2.0a — not a native Jira field, exported as a custom field per real Jira CSV convention. Populated for every blocker row (`Type` = "Sub-task"), whether open or resolved; null for feature rows |
-| `Cycle Time (days)` | Float | `14.33` | (Resolved - Created) in days; null while a blocker is still open. Not a native Jira field or a typical custom field either — flagged as an open question in `BACKLOG.md` PBI 2.0d (keep as generator convenience vs. drop) |
-| `Custom field (Test Automation)` | String | "Manual" \| "Selenium" \| "Postman" \| "Swagger" \| "Perfecto Mobile" | Corrected 2026-08-23, PBI 2.0a — not a native Jira field, exported as a custom field. Primary automation type (if any) |
-| `External Blocker` | Boolean | true \| false | true if root cause is external team. Also not a native Jira field — pending rename to `Custom field (External Blocker)`, tracked as `BACKLOG.md` PBI 2.0b (Issue #8, resolved) |
-| `Cluster Tag` | String | "Cluster-1-Auth" \| "Cluster-2-DP" \| "Cluster-3-Checkout" \| null | Injected for analysis (can be removed for blind testing). Also not native — whether this should be a custom field or Jira's native `Labels` field is an open question, `BACKLOG.md` PBI 2.0c |
+| `Custom field (Waiting Reason)` | String | "Waiting on Login service (SQ-A)" | PBI 2.0a — not a native Jira field, exported as a custom field. Populated for every blocker row (`Type` = "Sub-task"), whether open or resolved; null for feature rows |
+| `Custom field (Test Automation)` | String | "Manual" \| "Selenium" \| "Postman" \| "Swagger" \| "Perfecto Mobile" | PBI 2.0a — not a native Jira field, exported as a custom field. Primary automation type (if any) |
+| `Labels` | String, repeated column per value | "Cluster-1-Auth" | PBI 2.0c — `Cluster Tag` was never a real field; Jira's native `Labels` field is the right fit. Like `Sprint`, a real Jira export repeats this header once per occupied slot (confirmed: Atlassian JRACLOUD-85433/JRASERVER-63747), not a single comma-joined cell. Only cluster blockers carry a label today; feature rows have none |
+
+**Dropped (not real Jira fields, per BP's 2026-08-23 ruling):**
+- `Cycle Time (days)` — Jira doesn't export a computed cycle time; a real dashboard computes it from `Created`/`Resolved` (PBI 2.0d). Kept as an internal generator value for `xray_logs.py` and the validation report, just not written to the CSV.
+- `External Blocker` — not a Jira field either. The internal-vs-external signal it carried belongs to which blocker archetype produced the `Waiting Reason` text (e.g. `SharedCompFailure`'s internal template vs. `ExternalDelay`'s external one), not a separate boolean column (PBI 2.0b). No archetype other than `SharedCompFailure` is used yet (external dependencies are still deferred, Task 1.1), so this distinction isn't visible in Milestone 1's data — it will become visible once Milestone 2 introduces `ExternalDelay`.
 
 ---
 

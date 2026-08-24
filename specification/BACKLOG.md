@@ -19,7 +19,7 @@
 |---|---|---|---|
 | 1 | 2026-08-22 | Complete (timeboxed out) | Land Milestone 1 (Auth Squad + Cluster) to Done-Done — **Not Done** |
 | 2 | 2026-08-23 | Complete | Land Milestone 1 to Done-Done — **Done**; Fix Issue #7 (Sprint CSV format) — **Done**; PBR — Task 2.0 candidate PBIs drafted |
-| 3 | 2026-08-24 | Complete | PBI 2.0a (native vs. custom field rename) — **Done**; Issue #8 (External Blocker clarification) — **Done** |
+| 3 | 2026-08-24 | Complete | PBI 2.0a (native vs. custom field rename) — **Done**; Issue #8 (External Blocker clarification) — **Done**; PBI 2.0b/c/d (External Blocker → folded into Waiting Reason; Cluster Tag → native Labels; Cycle Time → dropped, dashboard-computed) — **Done**; PM flagged a new gap (all rows Status=Done, no actionable "currently open" view) — new PBI drafted, not started |
 
 Full narrative for each Iteration (root causes, decisions, rationale) lives in `session_log.md` — this table is a status index, not a replacement for it.
 
@@ -34,10 +34,11 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 | Land Auth Squad + Cluster MVP to Done-Done | Milestone 1 | Done (Iterations 1–2) |
 | Fix Issue #7 — Sprint CSV column format | Milestone 1 | Done (Iteration 2) |
 | PBI 2.0a — Rename `Waiting Reason`/`Test Automation` to `Custom field (...)` | Milestone 2 (prerequisite) | Done (Iteration 3) |
-| Issue #8 — Clarify & resolve `External Blocker` column | Milestone 1 (hardening) | Done (Iteration 3) — resolved as PBI 2.0b |
-| PBI 2.0b — `External Blocker` field correction | Milestone 2 (prerequisite) | Not started — ready (Issue #8 resolved, no blockers left) |
-| PBI 2.0c — `Cluster Tag`: custom field vs. native `Labels` | Milestone 2 (prerequisite) | Not started (needs a `Labels` export-format check) |
-| PBI 2.0d — `Cycle Time (days)`: keep as convenience value vs. drop | Milestone 2 (prerequisite) | Not started (needs a PM+BP decision) |
+| Issue #8 — Clarify & resolve `External Blocker` column | Milestone 1 (hardening) | Done (Iteration 3) |
+| PBI 2.0b — `External Blocker` dropped; signal folded into `Waiting Reason` archetype | Milestone 2 (prerequisite) | Done (Iteration 3) — BP's ruling: not a real field, remove rather than relabel |
+| PBI 2.0c — `Cluster Tag` → native, repeated `Labels` field | Milestone 2 (prerequisite) | Done (Iteration 3) — confirmed Jira exports `Labels` as repeated columns, same convention as `Sprint` |
+| PBI 2.0d — `Cycle Time (days)` dropped from CSV (kept internally) | Milestone 2 (prerequisite) | Done (Iteration 3) — BP's ruling: not a real field, dashboard computes it |
+| PBI 2.1 — Live/actionable Status distribution (as-of reference date) | Milestone 1 (hardening) | Not started — scoped below, BP's observation (Iteration 3) |
 | Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Not started — not yet broken into individual PBIs |
 | Milestone 3 scope: Full 8-Squad + 3 clusters + CLI | Milestone 3 | Not started — not yet broken into individual PBIs |
 
@@ -122,7 +123,7 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 - Output: `v1_auth_cluster_high_density.csv` (Jira format)
 
 **Input to Code:** Tasks 1.1–1.3 + ARCHITECTURE.md feature templates for each squad  
-**Output:** CSV (547–731 rows: 540–720 features + 7–11 blockers), Jira columns: Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Waiting Reason, Cycle Time, Test Automation, External Blocker, Cluster Tag, then repeated `Sprint` columns holding sprint names (corrected 2026-08-23, Issue #7 — not distinct `Sprint-1..Sprint-12` columns)  
+**Output:** CSV (547–731 rows: 540–720 features + 7–11 blockers), Jira columns: Issue Key, Summary, Type, Status, Assignee, Created, Resolved, Custom field (Waiting Reason), Custom field (Test Automation), then repeated `Labels` columns and repeated `Sprint` columns holding sprint names (corrected 2026-08-24, PBI 2.0a/b/c/d — `Cycle Time`/`External Blocker`/`Cluster Tag` were never real Jira fields; see Task 2.0 below)  
 **Verification:**
   - Row count ≈ 547–731
   - All blocker rows (Type = Sub-task) have non-null Waiting Reason regardless of Status; feature rows (Type = Story) have null Waiting Reason
@@ -211,6 +212,34 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 - **Task 2.0c (Small, blocked on a `Labels`-vs-custom-field decision):** `Cluster Tag`'s real modeling — needs the `Labels` export-format check first.
 - **Task 2.0d (Small, blocked on a keep-vs-drop decision):** `Cycle Time (days)`'s fate.
 Each is independently mergeable; 2.0a can land in Iteration 3 regardless of what happens with 2.0b–d.
+
+**Resolved 2026-08-24 (BP's ruling on each, ahead of Code starting):**
+- **2.0b:** `External Blocker` isn't a Jira field. Not relabeled — dropped. The internal-vs-external signal belongs to which blocker archetype produced the `Waiting Reason` (e.g. `ExternalDelay`'s template vs. `SharedCompFailure`'s), not a separate column.
+- **2.0c:** `Cluster Tag` → Jira's native `Labels` field, confirmed to export as repeated columns (one per occupied label slot), the same convention as `Sprint` (Issue #7) — not a single comma-joined cell.
+- **2.0d:** `Cycle Time (days)` isn't a Jira field. Dropped from the CSV; a real dashboard computes it from `Created`/`Resolved`. Kept internally since `xray_logs.py` and the validation report still use it.
+
+All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
+
+---
+
+### PBI 2.1: Live/actionable Status distribution (as-of reference date)
+
+**Priority:** P1 (blocks Milestone 1 fully satisfying `PROJECT.md`'s P1 Detection outcome as a *live* dashboard input, not just a retrospective one)
+**Origin:** BP, 2026-08-24 — "all lines in the CSV are in Status Done. We should have multiple stati, so the dashboard can point to actionable data, such as aging items."
+
+**Root cause:** the generator has no "as-of" reference point within the 12-sprint timeline — it always generates as if the entire quarter has already concluded. `generate_features` hardcodes every feature row to `Status = "Done"` regardless of where it falls in the timeline, and (after today's persistence fix) every blocker row also resolves to `Done`. Real dashboards need a live snapshot: some items still open now, some resolved with history, some at risk of becoming a problem soon. `ARCHITECTURE.md`'s own schema already lists `"In Progress"` as a valid `Status` value — the generator has just never used it.
+
+**What BP is asking for, restated as three concrete row categories at some reference point in time ("as of" a chosen sprint/day within the quarter, not after it):**
+1. **Currently blocked** — a cluster blocker whose active window straddles the as-of date: `Status = "Waiting"`, `Resolved` still null, `Waiting Reason` populated. (Today, every cluster blocker resolves — none are left genuinely open.)
+2. **Previously blocked, now resolved** — already implemented (today's persistence fix): `Status = "Done"`, `Waiting Reason` still populated.
+3. **Aging / at-risk candidates** — a feature still open (`Status = "In Progress"`, no `Resolved`) that's been open unusually long relative to typical cycle time for its squad — an early-warning signal, not yet an actual blocker.
+
+**Design questions for PM+BP before Code scopes this (not decided here):**
+- Where should the as-of date sit in the 12-sprint timeline? It needs to fall during or shortly after the Auth cluster's window (week 3) for category 1 to actually demonstrate a live blocker on Milestone 1's own dataset — an as-of date at the very end of the quarter would make everything look closed regardless.
+- Should "aging" be a computed flag/column, or (matching today's principle: don't pre-compute what a dashboard should) purely inferable from `Created` + `Status = "In Progress"` + no `Resolved`, letting the dashboard define its own "too long" threshold?
+- Does introducing partial-quarter data change any of `TESTER.md`'s Milestone 1 row-count / density checks (e.g., features created after the as-of date presumably shouldn't exist in the export yet)?
+
+**Not started.** Flagged for Product Backlog review before any Milestone 2 work begins scaling the schema further — an as-of-date concept affects the core generation model, so Milestone 2's 5-squad expansion should build on top of it, not before it.
 
 ---
 

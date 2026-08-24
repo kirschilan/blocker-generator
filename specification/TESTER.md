@@ -23,7 +23,7 @@
 **CSV Format & Structure**
 - [ ] `v1_auth_cluster_high_density.csv` exists and is valid CSV (can be parsed without errors)
 - [ ] Repeated `Sprint` columns exist (corrected 2026-08-23, Issue #7 — real Jira export repeats the literal `Sprint` header once per occupied slot, sized to the dataset's widest-spanning issue; not distinct `Sprint-1`..`Sprint-12` columns)
-- [ ] All mandatory columns present: `Issue Key`, `Summary`, `Type`, `Status`, `Assignee`, `Created`, `Resolved`, `Custom field (Waiting Reason)`, `Cycle Time (days)`, `Custom field (Test Automation)`, `External Blocker`, `Cluster Tag` (corrected 2026-08-23, PBI 2.0a — `Waiting Reason`/`Test Automation` aren't native Jira fields, exported as custom fields)
+- [ ] All mandatory columns present: `Issue Key`, `Summary`, `Type`, `Status`, `Assignee`, `Created`, `Resolved`, `Custom field (Waiting Reason)`, `Custom field (Test Automation)` (corrected 2026-08-23, PBI 2.0a/b/c/d): `Waiting Reason`/`Test Automation` aren't native Jira fields, exported as custom fields; `Cycle Time (days)` and `External Blocker` are dropped (neither is a real Jira field — Cycle Time is dashboard-computed, External Blocker's signal lives in the `Waiting Reason` text instead); `Cluster Tag` is now the native, repeated `Labels` column
 - [ ] No UTF-8 encoding errors or null bytes
 - [ ] All rows have valid Issue Key (format: `SQ-[ABD]-[0-9]+`)
 
@@ -31,18 +31,16 @@
 - [ ] Total feature rows: 540–720 (15–20 per squad × 3 squads × 12 sprints)
 - [ ] Total blocker rows: 7–11 (Auth cluster's own window only — corrected 2026-08-23, see BACKLOG.md Task 1.4 PM ruling; the earlier 15–30 figure assumed weeks 3–5, but the cluster's actual acceptance criteria is a single week)
 - [ ] Total rows (features + blockers): 547–731
-- [ ] Each row has exactly 12 core columns + N repeated `Sprint` columns, where N = the dataset's widest issue span (3 for this dataset at seed 42 — corrected 2026-08-23, Issue #7; previously fixed at "12 Sprint columns", and before that miscounted "13 core columns")
+- [ ] Each row has exactly 9 core columns + L repeated `Labels` columns + N repeated `Sprint` columns, where L = the dataset's widest label span (1 at seed 42) and N = the widest sprint span (3 at seed 42) — corrected 2026-08-23, PBI 2.0b/c/d (core column count dropped from 12 to 9: `Cycle Time (days)`, `External Blocker`, `Cluster Tag` removed/moved)
 
 **Data Integrity**
 - [ ] No duplicate Issue Keys (each key appears once)
 - [ ] All `Created` dates are valid ISO-8601 and monotonic (no time travel)
 - [ ] All `Resolved` dates are null (blank) if Status = "Waiting"; populated if Status = "Done"
 - [ ] All `Resolved` dates >= `Created` dates (no negative cycle times)
-- [ ] `Cycle Time (days)` is null if Status = "Waiting"; numeric (float) if Status = "Done"
 - [ ] Blocker rows (`Type` = "Sub-task") have non-null `Custom field (Waiting Reason)` regardless of `Status` — it persists after the blocker resolves, so the cluster signal stays retrospectively detectable (corrected 2026-08-23; previously required null once Status = "Done", which erased the signal `PROJECT.md`'s P1 Detection needs); feature rows (`Type` = "Story") have null `Custom field (Waiting Reason)`
 - [ ] `Custom field (Test Automation)` is one of: "Manual", "Selenium", "Postman", "Swagger", "Perfecto Mobile", or null
-- [ ] `External Blocker` is boolean (true/false); false for Auth cluster (internal failure)
-- [ ] `Cluster Tag` is one of: "Cluster-1-Auth", null; all Auth-cluster blockers have "Cluster-1-Auth"
+- [ ] `Labels` is one of: "Cluster-1-Auth", blank; all Auth-cluster blockers carry it (corrected 2026-08-23, PBI 2.0c — was `Cluster Tag`, now Jira's native `Labels` field)
 
 **Sprint Column Distribution** (corrected 2026-08-23, Issue #7 — columns hold sprint names, not dates)
 - [ ] Each issue has 1–3 `Sprint` columns populated (most issues in 1–2 sprints; some span 2–3 if they moved due to blockers)
@@ -103,14 +101,13 @@
 
 1. Pick an Auth-cluster blocker in week 3 (e.g., `SQ-A-25`, Status = "Waiting", Waiting Reason = "Session cache corruption...")
 2. Verify:
-   - [ ] It has `Cluster Tag` = "Cluster-1-Auth"
-   - [ ] It has `External Blocker` = false
+   - [ ] It has `Labels` = "Cluster-1-Auth"
    - [ ] Its `Created` date is in week 3 (Jul 17–21, 2026 approximately)
 3. Pick a Checkout blocker also in week 3 (e.g., `SQ-B-42`, Status = "Waiting", Waiting Reason = "Waiting on Login service")
 4. Verify:
    - [ ] Its `Created` date is ≥ 1 day after the Auth blocker (cascade lag)
    - [ ] Its `Waiting Reason` references Auth or Login service
-   - [ ] It has `Cluster Tag` = "Cluster-1-Auth" (same cluster)
+   - [ ] It has `Labels` = "Cluster-1-Auth" (same cluster)
 5. Pick a feature that resolves before the Auth blocker (e.g., something in week 1–2)
 6. Verify:
    - [ ] Its `Resolved` date is before any Auth blocker was created

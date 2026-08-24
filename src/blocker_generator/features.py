@@ -19,6 +19,22 @@ repeats the literal column name "Sprint" once per occupied slot (not
 distinct "Sprint-1".."Sprint-12" names), and each cell holds the sprint's
 *name* (e.g. "Sprint-3"), not a date. Slot count is sized to the actual
 dataset's widest-spanning issue (see `max_sprint_span`), not a fixed 12.
+
+BACKLOG.md PBI 2.0b/c/d (2026-08-23, BP's ruling on each): none of
+`Cluster Tag`, `Cycle Time (days)`, or `External Blocker` are real Jira
+fields.
+- `Cluster Tag` -> Jira's native `Labels` field, which -- like `Sprint`
+  (Issue #7) -- exports as one repeated column per occupied multi-value
+  slot, not one comma-joined cell (confirmed: Atlassian JRACLOUD-85433 /
+  JRASERVER-63747).
+- `Cycle Time (days)` isn't exported by Jira at all (a real dashboard
+  computes it from `Created`/`Resolved`) -- dropped from the CSV; kept as
+  an internal field since `xray_logs.py` and the validation report still
+  use it.
+- `External Blocker` isn't a field Jira has either; the signal it carried
+  is inherent to which blocker archetype produced the `Waiting Reason`
+  text (an internal vs. external template), not a separate flag -- so
+  it's removed rather than relabeled.
 """
 from __future__ import annotations
 
@@ -54,8 +70,7 @@ TEST_AUTOMATION_POOL = (
 
 CORE_COLUMNS = [
     "Issue Key", "Summary", "Type", "Status", "Assignee", "Created", "Resolved",
-    "Custom field (Waiting Reason)", "Cycle Time (days)", "Custom field (Test Automation)",
-    "External Blocker", "Cluster Tag",
+    "Custom field (Waiting Reason)", "Custom field (Test Automation)",
 ]
 
 
@@ -69,10 +84,9 @@ class IssueRow:
     created: datetime
     resolved: Optional[datetime]
     waiting_reason: str
-    cycle_time_days: Optional[float]
+    cycle_time_days: Optional[float]  # internal use only (xray_logs, validation report) -- not exported, PBI 2.0d
     test_automation: Optional[str]
-    external_blocker: bool
-    cluster_tag: str
+    labels: List[str]  # exported as repeated "Labels" columns, PBI 2.0c
 
 
 def _random_time_of_day(rng: random.Random) -> time:
@@ -115,8 +129,7 @@ def generate_features(rng: random.Random, squads: List[Squad]) -> tuple[List[Iss
                         waiting_reason="",
                         cycle_time_days=cycle_time,
                         test_automation=rng.choice(TEST_AUTOMATION_POOL),
-                        external_blocker=False,
-                        cluster_tag="",
+                        labels=[],
                     )
                 )
     return rows, counters
@@ -160,8 +173,7 @@ def generate_cluster_blockers(
                 waiting_reason=entry.waiting_reason,
                 cycle_time_days=(resolved - created).total_seconds() / 86400,
                 test_automation=None,
-                external_blocker=False,
-                cluster_tag=entry.cluster_id,
+                labels=[entry.cluster_id],
             )
         )
     return rows
@@ -187,14 +199,22 @@ def max_sprint_span(rows: List["IssueRow"]) -> int:
     return max((len(spanned_sprints(r.created, r.resolved)) for r in rows), default=1)
 
 
-def build_header(sprint_slots: int) -> List[str]:
-    """Real Jira CSV export repeats the literal field name once per
-    occupied multi-value slot -- 'Sprint','Sprint',... not 'Sprint-1',
-    'Sprint-2' (Issue #7)."""
-    return CORE_COLUMNS + ["Sprint"] * sprint_slots
+def max_label_span(rows: List["IssueRow"]) -> int:
+    """Widest number of labels any single issue in this dataset carries --
+    sizes the repeated 'Labels' header (PBI 2.0c), same convention as
+    Sprint (Issue #7): Jira exports one column per occupied label slot,
+    not a comma-joined cell."""
+    return max((len(r.labels) for r in rows), default=0)
 
 
-def row_to_csv_row(row: IssueRow, sprint_slots: int) -> List[str]:
+def build_header(label_slots: int, sprint_slots: int) -> List[str]:
+    """Real Jira CSV export repeats a multi-value field's literal name
+    once per occupied slot -- 'Sprint','Sprint',... (Issue #7) and
+    'Labels','Labels',... (PBI 2.0c) -- not a single joined cell."""
+    return CORE_COLUMNS + ["Labels"] * label_slots + ["Sprint"] * sprint_slots
+
+
+def row_to_csv_row(row: IssueRow, label_slots: int, sprint_slots: int) -> List[str]:
     core = [
         row.issue_key,
         row.summary,
@@ -204,15 +224,13 @@ def row_to_csv_row(row: IssueRow, sprint_slots: int) -> List[str]:
         row.created.strftime("%Y-%m-%dT%H:%M:%SZ"),
         row.resolved.strftime("%Y-%m-%dT%H:%M:%SZ") if row.resolved else "",
         row.waiting_reason,
-        f"{row.cycle_time_days:.2f}" if row.cycle_time_days is not None else "",
         row.test_automation or "",
-        "true" if row.external_blocker else "false",
-        row.cluster_tag,
     ]
+    label_values = list(row.labels) + [""] * (label_slots - len(row.labels))
     spans = spanned_sprints(row.created, row.resolved)
     sprint_values = [sprint_name(s) for s in spans]
     sprint_values += [""] * (sprint_slots - len(sprint_values))
-    return core + sprint_values
+    return core + label_values + sprint_values
 
 
 def generate_dataset(seed: int, squads: List[Squad], cluster: BlockerCluster) -> List[IssueRow]:

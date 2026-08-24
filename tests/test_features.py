@@ -17,6 +17,7 @@ from blocker_generator.csv_io import write_jira_csv
 from blocker_generator.features import (
     CORE_COLUMNS,
     generate_dataset,
+    max_label_span,
     max_sprint_span,
 )
 from blocker_generator.squads import AUTH, CHECKOUT, PAYMENTS, build_auth_subgraph
@@ -52,10 +53,19 @@ def csv_rows(csv_table):
 
 
 @pytest.fixture(scope="module")
-def sprint_slot_values(csv_table):
+def label_slot_values(csv_table, dataset):
     header, data_rows = csv_table
     core_len = len(CORE_COLUMNS)
-    return [row[core_len:] for row in data_rows]
+    label_slots = max_label_span(dataset)
+    return [row[core_len:core_len + label_slots] for row in data_rows]
+
+
+@pytest.fixture(scope="module")
+def sprint_slot_values(csv_table, dataset):
+    header, data_rows = csv_table
+    core_len = len(CORE_COLUMNS)
+    label_slots = max_label_span(dataset)
+    return [row[core_len + label_slots:] for row in data_rows]
 
 
 # --- Row counts (BACKLOG.md Task 1.4 / TESTER.md) ---------------------------
@@ -162,19 +172,13 @@ def test_resolved_after_created(dataset):
             assert row.resolved >= row.created
 
 
-def test_cluster_tag_only_on_auth_cluster_blockers(dataset):
+def test_labels_only_on_auth_cluster_blockers(dataset):
+    """PBI 2.0c (2026-08-23): Cluster Tag -> Jira's native Labels field."""
     for row in dataset:
         if row.type == "Sub-task":
-            assert row.cluster_tag == "Cluster-1-Auth"
+            assert row.labels == ["Cluster-1-Auth"]
         else:
-            assert row.cluster_tag == ""
-
-
-def test_external_blocker_false_for_all_sprint1_rows(dataset):
-    # Auth cluster is an internal SharedCompFailure; Sprint 1 has no
-    # external dependency (Task 1.1: "External dependency: none for this
-    # slice").
-    assert all(row.external_blocker is False for row in dataset)
+            assert row.labels == []
 
 
 def test_test_automation_values_valid(dataset):
@@ -188,12 +192,15 @@ def test_test_automation_values_valid(dataset):
 # header once per occupied multi-value slot, sized to the widest-spanning
 # issue in the dataset -- not a fixed "Sprint-1".."Sprint-12".
 
-def test_csv_header_has_12_core_and_repeated_sprint_columns(csv_table, dataset):
+def test_csv_header_has_core_repeated_labels_and_repeated_sprint_columns(csv_table, dataset):
     header, _ = csv_table
-    assert header[:12] == CORE_COLUMNS
-    slots = max_sprint_span(dataset)
-    assert header[12:] == ["Sprint"] * slots
-    assert len(header) == 12 + slots
+    core_len = len(CORE_COLUMNS)
+    assert header[:core_len] == CORE_COLUMNS
+    label_slots = max_label_span(dataset)
+    sprint_slots = max_sprint_span(dataset)
+    assert header[core_len:core_len + label_slots] == ["Labels"] * label_slots
+    assert header[core_len + label_slots:] == ["Sprint"] * sprint_slots
+    assert len(header) == core_len + label_slots + sprint_slots
 
 
 def test_non_native_fields_labeled_as_custom_fields(csv_table):

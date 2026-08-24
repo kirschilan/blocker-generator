@@ -305,3 +305,38 @@ sooner if wanted today.
 **Status:** Iteration 3 complete. Both planned items done. Product
 Backlog and Iteration Log in `BACKLOG.md` updated to match.
 
+**Follow-up, same day — BP's rulings on PBI 2.0b/c/d:**
+- **External Blocker:** not a Jira field. My earlier Issue #8 resolution
+  (just relabel it) was incomplete — BP's correction: drop the column
+  entirely, the internal-vs-external signal belongs to which blocker
+  archetype produced the `Waiting Reason`, not a separate flag. Corrected
+  the GitHub issue comment accordingly.
+- **Cluster Tag → Labels:** confirmed via research that Jira's native
+  `Labels` field exports as repeated columns (one per occupied label
+  slot, like `Sprint`), not a comma-joined cell (Atlassian
+  JRACLOUD-85433/JRASERVER-63747).
+- **Cycle Time (days):** confirmed not a real Jira field either way;
+  dropped from the CSV, kept internally (still used by `xray_logs.py` and
+  the validation report).
+
+Implemented all three: `IssueRow.cluster_tag: str` → `labels: List[str]`;
+`external_blocker` field removed entirely; `cycle_time_days` no longer
+written to CSV. CSV writer now handles two independent repeated-column
+groups (`Labels`, `Sprint`). Header shrank from 12 core columns to 9 (+
+repeated `Labels` + repeated `Sprint`). Updated `ARCHITECTURE.md`,
+`TESTER.md`, and the test suite to match; regenerated CSV; 59/59 tests
+pass; determinism reconfirmed.
+
+**BP's separate PM-directed observation:** every row in the dataset is
+`Status = Done` — the generator has no "as-of" reference point within the
+12-sprint timeline, so it can't show a live, actionable snapshot (some
+items currently blocked, some previously blocked with history, some aging
+toward risk). Diagnosed as a real gap: `ARCHITECTURE.md` already lists
+`"In Progress"` as a valid Status, but the generator never uses it.
+Written up as **PBI 2.1** in `BACKLOG.md`'s Product Backlog — not
+implemented today (this was addressed to PM as something to account for
+before Milestone 2, not an execution go-ahead like PBI 2.0b/c/d was for
+Code). Flagged as should-land before Milestone 2 scales the schema
+further, since 5 squads on top of a still-fully-retrospective dataset
+just repeats the same gap at larger scale.
+
