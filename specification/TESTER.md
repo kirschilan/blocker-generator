@@ -3,7 +3,7 @@
 **Status:** Validation framework  
 **Purpose:** Executable checklist for confirming each iteration's dataset is production-ready for business partner review  
 
-**Terminology:** "Iteration" is our own delivery timebox; "Sprint" below refers only to the synthetic dataset's own domain concept (the fictional squads' 12-sprint quarter). See `TEAM_OPERATING_SYSTEM.md`.
+**Terminology (corrected 2026-08-23):** **Sprint** = the synthetic dataset's own domain concept (never ours). **Iteration** = our one-day delivery timebox (see `TEAM_OPERATING_SYSTEM.md`'s Daily Iteration Cadence). **Milestone** (below, e.g. "Milestone 1") = a vertical-slice grouping of backlog tasks that can span several Iterations — don't assume one Milestone fits in one Iteration.
 **Audience:** Code (automated checks), PM (manual spot-checks), Business Partner (sign-off)
 
 ---
@@ -16,7 +16,7 @@
 
 ---
 
-## Iteration 1: Auth Squad + 1 Cluster (Minimum Viable Dataset)
+## Milestone 1: Auth Squad + 1 Cluster (Minimum Viable Dataset)
 
 ### Automated Checks (Task 1.4 + 1.5 outputs)
 
@@ -140,9 +140,9 @@
 
 **Narrative Validation:**
 
-> Provide business partner with:
-> 1. `v1_auth_cluster_high_density.csv` + `v1_auth_cluster_test_logs.csv`
-> 2. VALIDATION_REPORT.md (auto-generated summary: row counts, blocker density, cluster timeline)
+> BP reviews directly from `main` (corrected 2026-08-23 — "Done" means merged to `main`; artifacts live in `data/`/`docs/` there, no need to upload files to a session for review):
+> 1. `data/v1_auth_cluster_high_density.csv` + `data/v1_auth_cluster_test_logs.csv`
+> 2. `docs/VALIDATION_REPORT_Milestone_1.md` (auto-generated summary: row counts, blocker density, cluster timeline)
 > 3. A simple Tableau/Grafana/Excel pivot showing:
 >    - X-axis: Sprints (1–12)
 >    - Y-axis: Blocker count by squad
@@ -156,16 +156,16 @@
 - [ ] Test automation coverage aligns with their reality (50% Selenium, 10% API, rest manual)
 - [ ] No "this data looks fake" red flags (cycle times, dates, squad names feel authentic)
 
-**Sign-Off Statement (Required before Iteration 2):**
-> "I recognize this Auth-cluster cascading pattern. The data matches how our squads would actually get blocked. Proceed to Iteration 2."
+**Sign-Off Statement (Required before Milestone 2):**
+> "I recognize this Auth-cluster cascading pattern. The data matches how our squads would actually get blocked. Proceed to Milestone 2."
 
 ---
 
-## Iteration 2: Expand to 5 Squads + 2 Clusters + Mocking
+## Milestone 2: Expand to 5 Squads + 2 Clusters + Mocking
 
 ### Automated Checks (Task 2.3 + 2.4 outputs)
 
-All Iteration 1 checks apply here, plus:
+All Milestone 1 checks apply here, plus:
 
 **Row Counts (5 Squads)**
 - [ ] Total feature rows: 900–1,200 (15–20 per squad × 5 squads × 12 sprints)
@@ -173,7 +173,7 @@ All Iteration 1 checks apply here, plus:
 - [ ] Total rows: 930–1,250
 
 **Two Clusters Present**
-- [ ] Auth blockers in weeks 3–5 (unchanged from Iteration 1)
+- [ ] Auth blockers in weeks 3–5 (unchanged from Milestone 1)
 - [ ] DataPlatform blockers in weeks 6–10 (new; 5–10 blockers in Core Banking, 2–3 in Savings)
 - [ ] No overlap: Auth weeks 3–5, DataPlatform weeks 6–10
 - [ ] All Auth-cluster blockers tagged "Cluster-1-Auth"
@@ -249,16 +249,16 @@ All Iteration 1 checks apply here, plus:
 - [ ] No objections to the blocker reduction (40–50% feels realistic for that intervention)
 - [ ] Agrees that Metric B (mocking reduces blockage) is proven
 
-**Sign-Off Statement (Required before Iteration 3):**
+**Sign-Off Statement (Required before Milestone 3):**
 > "I see how mocking DataPlatform improves flow by X%. The two-cluster scenario is credible. Ready for the full 8-squad dataset and all three clusters."
 
 ---
 
-## Iteration 3: Full 8-Squad + 3 Clusters + CLI + Reusability
+## Milestone 3: Full 8-Squad + 3 Clusters + CLI + Reusability
 
 ### Automated Checks (Task 3.3 + 3.4 outputs)
 
-All Iteration 1–2 checks apply, plus:
+All Milestone 1–2 checks apply, plus:
 
 **Row Counts (8 Squads)**
 - [ ] Total feature rows: 1,440–1,920 (15–20 per squad × 8 squads × 12 sprints)
@@ -396,7 +396,7 @@ All Iteration 1–2 checks apply, plus:
 ## Verification Workflow (Code + PM + Business Partner)
 
 ```
-Iteration N Development:
+Milestone N Development:
   ↓
 Code runs Tasks N.1–N.X
   ↓

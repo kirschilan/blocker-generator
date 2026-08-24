@@ -19,7 +19,7 @@
      - Example: "If we mock the DataPlatform API responses, Core Banking unblocks; flow improves by Y days per sprint."
      - Success: Dashboard shows blocker reduction when we simulate a mock integration (V2-variant dataset).
 
-3. **P3: Simulation** — (Deferred to Iteration 2) Forecast flow improvement by simulating resource additions or mocking specific dependencies.
+3. **P3: Simulation** — (Deferred to Milestone 2) Forecast flow improvement by simulating resource additions or mocking specific dependencies.
    - **Metric:** If we add N resources to X or mock Y, based on today's cluster data, flow improves by Z%.
    - Success: "Add 2 nodes to Auth service → Auth resolves in 1 day instead of 3 → downstream blockers clear 1 day earlier → 15% velocity gain."
    - Deferred: Requires V1 data to be solid; needs interactive scenario engine (post-backlog).

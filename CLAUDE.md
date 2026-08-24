@@ -12,13 +12,13 @@ the pointed-to file wins; fix this file instead of trusting the copy.
 2. `DEFINITION_OF_DONE.md` — decision rights, governance rules, done-done criteria
 3. `specification/PROJECT.md`, `specification/ARCHITECTURE.md`,
    `specification/BACKLOG.md`, `specification/TESTER.md` — the single source
-   of truth for outcomes, domain model, current Iteration's tasks, and
+   of truth for outcomes, domain model, the active Milestone's tasks, and
    verification. `/specification/` always wins over anything else in the repo.
 
 **If a referenced file is missing, renamed, or contradicts another: stop.**
 Do not guess, improvise, or build a substitute. Raise the gap per
 `DEFINITION_OF_DONE.md`'s decision-rights rules before writing code — this is
-exactly the failure that produced three divergent rewrites of Iteration 1.
+exactly the failure that produced three divergent rewrites of Milestone 1.
 
 ## Branching — trunk-based development
 
@@ -32,13 +32,17 @@ you're about to run `git checkout -b`:
   marker (a skipped test, a TODO tied to the BACKLOG task ID) and continue
   next session — don't park it on an island branch.
 
-## Iterations, not Sprints
+## Three words, three things — don't conflate them
 
-Our delivery timebox is a one-day **Iteration**. "Sprint" is reserved for the
-synthetic dataset's own domain concept (`Sprint-1..Sprint-12` in
-`specification/ARCHITECTURE.md`) — don't use it for our own cadence. See
-`TEAM_OPERATING_SYSTEM.md`'s Terminology note and Daily Iteration Cadence
-section.
+- **Sprint** — the synthetic dataset's own domain concept
+  (`Sprint-1..Sprint-12` in `specification/ARCHITECTURE.md`). Never ours.
+- **Iteration** — our one-day delivery timebox (BP/PM/Code). See
+  `TEAM_OPERATING_SYSTEM.md`'s Terminology note and Daily Iteration Cadence
+  section.
+- **Milestone** — a vertical-slice grouping of BACKLOG.md tasks (e.g.
+  "Milestone 1: Auth Squad + Auth Cluster"), which can span more than one
+  Iteration. Milestone 1 took two Iterations to actually land — don't
+  assume a 1:1 mapping between the two.
 
 ## Decision rights
 

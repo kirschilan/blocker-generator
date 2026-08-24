@@ -45,7 +45,7 @@ blocker-generator/
 │   ├── v1_auth_cluster_test_logs.csv
 │   └── ...
 ├── docs/
-│   └── VALIDATION_REPORT_Iteration_1.md
+│   └── VALIDATION_REPORT_Milestone_1.md
 └── README.md
 ```
 
@@ -94,7 +94,7 @@ blocker-generator/
 - Iteration sign-off: "Here's the data; does it match expectations?" (20 min)
 - Blockers / scope changes (if any) (5 min)
 
-**Recording:** PM writes summary in GitHub Issue immediately after (e.g., "Iteration 1 Sign-Off: BP confirmed Auth-cluster cascade matches expectations. Approved to proceed to Iteration 2.")
+**Recording:** PM writes summary in GitHub Issue immediately after (e.g., "Milestone 1 Sign-Off: BP confirmed Auth-cluster cascade matches expectations. Approved to proceed to Milestone 2.")
 
 ---
 
@@ -111,7 +111,7 @@ blocker-generator/
 
 **Date:** 2026-08-22  
 **Participants:** Kirschi (BP), PM (Claude), Code (pending Claude Code)  
-**Outcome:** Five locked docs (PROJECT, BACKLOG, ARCHITECTURE, TESTER, DEFINITION_OF_DONE); ready for Iteration 1 build
+**Outcome:** Five locked docs (PROJECT, BACKLOG, ARCHITECTURE, TESTER, DEFINITION_OF_DONE); ready for Milestone 1 build
 
 **Decisions Made:**
 - GitHub as source of truth; Slack for real-time questions
@@ -120,11 +120,11 @@ blocker-generator/
 - Scope change workflow: diagnose → update artifact → session log → confirm all three
 
 **Blockers:** None  
-**Next:** Code begins Iteration 1 (Tasks 1.1–1.6)
+**Next:** Code begins Milestone 1 (Tasks 1.1–1.6)
 
 ---
 
-## Session: [Next Date] — Iteration 1 Kickoff
+## Session: [Next Date] — Milestone 1 Kickoff
 
 [to be filled in when Code starts]
 ```
@@ -181,7 +181,7 @@ Blockers / Questions:
 ### **BP Optional Review**
 
 - BP doesn't need to review every PR (that's Code + PM's domain)
-- BP reviews only when asked or at sign-off gate (after all Iteration 1 tasks are merged)
+- BP reviews only when asked or at sign-off gate (after all Milestone 1 tasks are merged)
 
 ---
 

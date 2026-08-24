@@ -79,7 +79,7 @@ This document defines what "done" means at each level of this project, and what 
 - **Response:** 
   1. PM diagnoses: "If we own CRM, blocker durations drop from 2–5 days to <1 day"
   2. PM assesses impact: "This affects Cluster scenarios; Metric B (mocking) changes"
-  3. PM + Business Partner decide: "This changes our Actionability story; worth 1–2 tasks in Iteration 2"
+  3. PM + Business Partner decide: "This changes our Actionability story; worth 1–2 tasks in Milestone 2"
   4. PM updates ARCHITECTURE.md (CRM no longer external)
   5. PM updates BACKLOG.md (new task: "reduce Cluster 2 blocker durations")
   6. PM updates TESTER.md (sign-off gate for updated cluster specs)
@@ -95,7 +95,7 @@ This document defines what "done" means at each level of this project, and what 
 - [ ] Manual spot-checks are defined (PM knows exactly what to verify; ~10–20 min per iteration)
 - [ ] Business Partner sign-off criteria are explicit (what must partner confirm before gate opens?)
 - [ ] Acceptance thresholds are quantified (not "blocker density should be high"; "20–30%")
-- [ ] Each iteration has its own TESTER section (Iteration 1 ≠ Iteration 2; verification scope evolves)
+- [ ] Each milestone has its own TESTER section (Milestone 1 ≠ Milestone 2; verification scope evolves)
 
 **Who owns it:** PM (with Code input on what's automatable)  
 **When it changes:** When tasks or acceptance criteria in BACKLOG.md change. Changes are always:
@@ -130,7 +130,7 @@ This document defines what "done" means at each level of this project, and what 
   - PM re-spot-checks if fix impacts acceptance criteria
   - Business Partner notified (may need re-sign-off if change is significant)
 
-**Current Status:** PENDING (waiting for Claude Code to build Iteration 1)
+**Current Status:** PENDING (waiting for Claude Code to build Milestone 1)
 
 ---
 
@@ -299,7 +299,7 @@ This document defines what "done" means at each level of this project, and what 
 - **Rule:** One branch per task, not per Iteration and not per session. A branch is merged — or deleted, if abandoned — before the session that created it ends. Nothing survives unmerged into the next session.
 - **If a task isn't finished:** land what's safe on `main` behind a clear "incomplete" marker (a skipped test, a TODO tied to the BACKLOG task ID) and continue next session. Don't park it on an island branch.
 - **Enforcement:** Encoded in `CLAUDE.md` so it's loaded automatically every session, not left to be discovered in prose.
-- **Rationale (Fowler, Trunk-Based Development):** Session-scoped branches with no lifetime limit are what produced three divergent, never-merged rewrites of Iteration 1 (see `session_log.md`, 2026-08-23). A rule stated only in a document that may or may not be read is not a rule; this one is enforced by branch lifetime, not by trust.
+- **Rationale (Fowler, Trunk-Based Development):** Session-scoped branches with no lifetime limit are what produced three divergent, never-merged rewrites of Milestone 1 (see `session_log.md`, 2026-08-23). A rule stated only in a document that may or may not be read is not a rule; this one is enforced by branch lifetime, not by trust.
 
 ---
 
@@ -362,7 +362,7 @@ When scope changes:
 **Martin Fowler (Trunk-Based Development):**
 - Branches are short-lived and integrate to `main` frequently, not held open across sessions (Governance Rule 7)
 - Incomplete work is merged behind a marker (skipped test, TODO tied to a task ID) rather than isolated on a branch
-- Prevents the divergence that produced three un-reconciled versions of Iteration 1
+- Prevents the divergence that produced three un-reconciled versions of Milestone 1
 
 ---
 
