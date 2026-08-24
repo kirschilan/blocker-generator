@@ -145,3 +145,14 @@ def test_flaky_tests_concentrated_in_selenium_and_perfecto(logs, features):
     assert in_window_flaky
     automation_heavy = sum(1 for r in in_window_flaky if r.test_type in ("Selenium", "Perfecto Mobile"))
     assert automation_heavy / len(in_window_flaky) >= 0.7
+
+
+def test_csv_drops_flaky_and_automation_coverage(logs):
+    """Issue #9 (2026-08-24): neither is a raw Xray export field --
+    Automation Coverage % is a computed report metric, Flaky is inferred
+    from run history. Dropped from the CSV (kept internally, as above,
+    since generation logic still needs them); same pattern as Cycle Time
+    in the Jira CSV (PBI 2.0d)."""
+    rows = [log_row_to_csv_dict(r) for r in logs]
+    assert "Flaky" not in rows[0]
+    assert "Automation Coverage %" not in rows[0]

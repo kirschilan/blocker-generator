@@ -7,6 +7,17 @@ Distribution" / "Flaky Test Correlation" checks.
 Only Story (feature) rows get test logs -- Sub-task (blocker) rows from
 Task 1.4 represent a squad waiting on something else, not a testable
 feature, so they're excluded here.
+
+GitHub Issue #9 (2026-08-24): `Automation Coverage %` and `Flaky` are not
+raw Xray export fields -- automation coverage is a computed report metric
+(Xray's Automation Coverage Report, not a stored per-row number) and
+flakiness is inferred from a test's run history, not a stored boolean.
+Same pattern as `Cycle Time (days)` in the Jira CSV (PBI 2.0d): both are
+dropped from the CSV; kept as internal fields since the generator's own
+logic still uses them (deciding fail counts, the validation report).
+`Test Type`'s tool-name values (Selenium/Postman/...) are a separate,
+bigger gap -- flagged in Issue #9, needs a design decision, not touched
+here.
 """
 from __future__ import annotations
 
@@ -122,7 +133,7 @@ def generate_test_logs(rng: random.Random, features: List[IssueRow]) -> List[Tes
 
 TEST_LOG_COLUMNS = [
     "Issue Key", "Sprint", "Test Type", "Test Count", "Pass Count", "Fail Count",
-    "Flaky", "Automation Coverage %", "Executed Date",
+    "Executed Date",
 ]
 
 
@@ -134,7 +145,5 @@ def log_row_to_csv_dict(row: TestLogRow) -> Dict[str, str]:
         "Test Count": str(row.test_count),
         "Pass Count": str(row.pass_count),
         "Fail Count": str(row.fail_count),
-        "Flaky": "true" if row.flaky else "false",
-        "Automation Coverage %": f"{row.automation_coverage_pct:.2f}",
         "Executed Date": row.executed_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }

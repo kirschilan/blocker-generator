@@ -67,7 +67,7 @@
 
 **Test Execution Log Format**
 - [ ] `v1_auth_cluster_test_logs.csv` exists and is valid CSV
-- [ ] All mandatory columns: `Issue Key`, `Sprint`, `Test Type`, `Test Count`, `Pass Count`, `Fail Count`, `Flaky`, `Automation Coverage %`, `Executed Date`
+- [ ] All mandatory columns: `Issue Key`, `Sprint`, `Test Type`, `Test Count`, `Pass Count`, `Fail Count`, `Executed Date` (corrected 2026-08-24, Issue #9 — `Flaky` and `Automation Coverage %` dropped: neither is a raw Xray export field, both are derivable from `Test Count`/`Pass Count`/`Fail Count`, same pattern as `Cycle Time` in the Jira CSV)
 - [ ] No duplicate (Issue Key, Sprint, Test Type) tuples
 - [ ] Row count: 1,200–1,500 (roughly 2–3 test types per feature × 3 squads × 12 sprints)
 
@@ -76,11 +76,11 @@
 - [ ] All `Sprint` values are 1–12
 - [ ] `Test Type` is one of: "Manual", "Selenium", "Postman", "Swagger", "Perfecto Mobile"
 - [ ] `Test Count` ≥ `Pass Count` + `Fail Count` (tests are accounted for)
-- [ ] `Flaky` is boolean; true only if `Fail Count` > 0 and (Fail Count / Test Count) is 20–30%
-- [ ] `Automation Coverage %` is 0–100
+- [ ] Derived flakiness (`Fail Count` > 0 and `Fail Count`/`Test Count` in 20–30%) — computed by PM/dashboard from raw counts, no longer a stored column (Issue #9)
+- [ ] Derived automation coverage (automated `Test Count` / total `Test Count` per feature) is 0–100% — same, computed not stored
 - [ ] No issue has 100% automation (all have at least some manual testing)
 
-**Automation Coverage Distribution**
+**Automation Coverage Distribution** (computed from raw `Test Count` per type, not a stored column — Issue #9)
 - [ ] ~50% of features have Selenium tests
 - [ ] ~10% have Postman API tests
 - [ ] ~10% have Perfecto Mobile tests
@@ -88,7 +88,7 @@
 - [ ] 100% have Manual tests
 - [ ] Average automation coverage across all features: 40–60%
 
-**Flaky Test Correlation**
+**Flaky Test Correlation** (computed from raw `Fail Count`/`Test Count`, not a stored column — Issue #9)
 - [ ] Flaky tests correlate to Auth-cluster weeks (weeks 3–5): 15–20% of tests are flaky in those weeks
 - [ ] Flaky tests appear in Selenium + Perfecto Mobile primarily (automation-heavy)
 - [ ] Features with "Waiting on Test Infrastructure" blocker reasons have corresponding flaky tests in same sprint
