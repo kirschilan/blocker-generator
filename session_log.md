@@ -340,3 +340,42 @@ Code). Flagged as should-land before Milestone 2 scales the schema
 further, since 5 squads on top of a still-fully-retrospective dataset
 just repeats the same gap at larger scale.
 
+**Follow-up, same day — Xray CSV research (Issue #9), PBI 2.1 implemented,
+and BP's other rulings:**
+
+**Xray research (mirroring Issue #7's Jira research):** confirmed via
+Atlassian/Xray docs that real Xray `Test Type` values are Manual/
+Cucumber/Generic (a test's *authoring method*), not the tool names our
+schema uses (Selenium/Postman/Swagger/Perfecto Mobile) — foundational to
+`xray_logs.py`'s whole model, flagged for a design decision, not touched.
+Also confirmed `Automation Coverage %` and `Flaky` aren't raw Xray
+fields — coverage is a computed report metric, flakiness is inferred from
+run history — same pattern as `Cycle Time` in the Jira CSV. Dropped both
+from the CSV (kept internally), no BP input needed for that part.
+
+**BP's aging ruling:** the dashboard computes age as NOW()-`Created` at
+report time — not something we pre-compute. This simplified PBI 2.1 to
+just: leave some issues genuinely unresolved.
+
+**PBI 2.1 implemented** (rejected the global as-of-date design floated
+earlier — it would have excluded most of the 12-sprint feature population
+from the export, conflicting with `TESTER.md`'s existing row-count
+baseline). Smaller design instead: each cascade squad's final blocker day
+stays `Waiting` (root always fully resolves — "downstream clears day 4" is
+a lag relative to root's "resolves day 3," so the last step hasn't cleared
+yet); ~8% of ordinary features stay `In Progress`. Caught and fixed a real
+bug during implementation: the in-progress decision initially drew from
+the shared feature-generation RNG, which perturbed every later feature's
+created-date draw and broke the window-density and flaky-correlation
+tests for this seed — fixed by deciding via an independent per-issue RNG
+instead, leaving the original draw sequence untouched. 61/61 tests pass,
+determinism reconfirmed, real output spot-checked (including catching and
+fixing stale example issue keys in `TESTER.md` left over from the broken
+intermediate state).
+
+**Status:** Iteration 3 (extended) complete. `BACKLOG.md`'s Iteration Log
+and Product Backlog updated. Xray's bigger gaps (`Test Type` values, and
+real exports being one-row-per-Test-Run rather than aggregated counts)
+remain open, tracked as future Milestone 2+ items needing BP/design
+input.
+

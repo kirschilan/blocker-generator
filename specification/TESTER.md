@@ -36,7 +36,8 @@
 **Data Integrity**
 - [ ] No duplicate Issue Keys (each key appears once)
 - [ ] All `Created` dates are valid ISO-8601 and monotonic (no time travel)
-- [ ] All `Resolved` dates are null (blank) if Status = "Waiting"; populated if Status = "Done"
+- [ ] All `Resolved` dates are null (blank) if Status = "Waiting" or "In Progress"; populated if Status = "Done"
+- [ ] Feature rows (`Type` = "Story"): ~92% `Status` = "Done", ~8% `Status` = "In Progress" (PBI 2.1, 2026-08-24 — aging/at-risk candidates; a dashboard computes age as NOW()-`Created`, not a stored field)
 - [ ] All `Resolved` dates >= `Created` dates (no negative cycle times)
 - [ ] Blocker rows (`Type` = "Sub-task") have non-null `Custom field (Waiting Reason)` regardless of `Status` — it persists after the blocker resolves, so the cluster signal stays retrospectively detectable (corrected 2026-08-23; previously required null once Status = "Done", which erased the signal `PROJECT.md`'s P1 Detection needs); feature rows (`Type` = "Story") have null `Custom field (Waiting Reason)`
 - [ ] `Custom field (Test Automation)` is one of: "Manual", "Selenium", "Postman", "Swagger", "Perfecto Mobile", or null
@@ -54,11 +55,11 @@
 - [ ] Auth blockers concentrated in week 3 only
 - [ ] No blockers anywhere outside the Auth cluster's own window
 
-**Cascade Validation**
-- [ ] Auth blocker count: 3–5 in week 3 (root cause)
-- [ ] Checkout blockers: 2–3 appearing in week 3 day 2+ (1-day cascade lag)
-- [ ] Payments blockers: 2–3 appearing in week 3 day 2+ (1-day cascade lag)
-- [ ] All three squads' blockers have `Custom field (Waiting Reason)` containing "Login service" or "Auth"
+**Cascade Validation** (corrected 2026-08-24, PBI 2.1)
+- [ ] Auth blocker count: 3–5 in week 3 (root cause) — all `Status` = "Done" (the root fully resolves, per BACKLOG.md "Auth blocker resolves day 3")
+- [ ] Checkout blockers: 2–3 appearing in week 3 day 2+ (1-day cascade lag) — all `Done` except the last, which is `Waiting` (still propagating as of the report)
+- [ ] Payments blockers: 2–3 appearing in week 3 day 2+ (1-day cascade lag) — same: last one `Waiting`, earlier ones `Done`
+- [ ] All three squads' blockers have `Custom field (Waiting Reason)` containing "Login service" or "Auth" — regardless of `Status`
 - [ ] No orphaned blockers (every blocker has a root cause in `Custom field (Waiting Reason)`)
 
 ---
@@ -99,20 +100,25 @@
 
 **Sample 5 Features, Verify Cascade:**
 
-1. Pick an Auth-cluster blocker in week 3 (e.g., `SQ-A-25`, Status = "Waiting", Waiting Reason = "Session cache corruption...")
+1. Pick an Auth-cluster blocker in week 3 (e.g., `SQ-A-214`, Status = "Done" -- the root always fully resolves, PBI 2.1 -- Waiting Reason = "Session cache corruption...")
 2. Verify:
    - [ ] It has `Labels` = "Cluster-1-Auth"
    - [ ] Its `Created` date is in week 3 (Jul 17–21, 2026 approximately)
-3. Pick a Checkout blocker also in week 3 (e.g., `SQ-B-42`, Status = "Waiting", Waiting Reason = "Waiting on Login service")
+   - [ ] Its `Waiting Reason` is still populated despite `Status` = "Done" (persists after resolving)
+3. Pick a Checkout blocker also in week 3 -- specifically the *last* one for that squad (e.g., `SQ-B-216`, Status = "Waiting", Waiting Reason = "Waiting on Login service")
 4. Verify:
    - [ ] Its `Created` date is ≥ 1 day after the Auth blocker (cascade lag)
    - [ ] Its `Waiting Reason` references Auth or Login service
    - [ ] It has `Labels` = "Cluster-1-Auth" (same cluster)
+   - [ ] `Resolved` is null (PBI 2.1: the cascade's last step hasn't cleared as of the report; earlier Checkout/Payments occurrences resolve normally)
 5. Pick a feature that resolves before the Auth blocker (e.g., something in week 1–2)
 6. Verify:
    - [ ] Its `Resolved` date is before any Auth blocker was created
    - [ ] It has null `Waiting Reason`
-   - [ ] Its `Cycle Time (days)` is positive and realistic (2–10 days)
+7. Pick a feature with `Status` = "In Progress" (PBI 2.1, ~8% of features)
+8. Verify:
+   - [ ] `Resolved` is null
+   - [ ] `Waiting Reason` is still null (it's ordinary aging WIP, not a blocker)
 
 **Sample Test Logs:**
 

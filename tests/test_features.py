@@ -149,21 +149,49 @@ def test_no_blockers_outside_weeks_3_to_5(dataset):
 
 # --- Data integrity (TESTER.md) ---------------------------------------------
 
-def test_blocker_rows_keep_reason_after_resolving_feature_rows_do_not(dataset):
+def test_blocker_rows_keep_reason_regardless_of_status(dataset):
     """PM ruling 2026-08-23: Waiting Reason persists on blocker rows (Type =
-    Sub-task) after they resolve to Done, so the cluster signal is still
-    retrospectively detectable; feature rows (Type = Story) never have one."""
+    Sub-task) whether Done or still Waiting (PBI 2.1's cascade-tail rows),
+    so the cluster signal is retrospectively detectable either way; feature
+    rows (Type = Story) never have one."""
     for row in dataset:
         if row.type == "Sub-task":
             assert row.waiting_reason != ""
-            assert row.status == "Done"
-            assert row.resolved is not None
-            assert row.cycle_time_days is not None
+            assert row.status in ("Done", "Waiting")
+            if row.status == "Done":
+                assert row.resolved is not None
+                assert row.cycle_time_days is not None
+            else:
+                assert row.resolved is None
+                assert row.cycle_time_days is None
         elif row.type == "Story":
             assert row.waiting_reason == ""
-            assert row.status == "Done"
-            assert row.resolved is not None
-            assert row.cycle_time_days is not None
+            assert row.status in ("Done", "In Progress")
+            if row.status == "Done":
+                assert row.resolved is not None
+                assert row.cycle_time_days is not None
+            else:
+                assert row.resolved is None
+                assert row.cycle_time_days is None
+
+
+def test_cluster_cascade_tail_stays_open(dataset):
+    """PBI 2.1 (2026-08-24): the last day of each cascade squad's blocker
+    (Checkout, Payments) stays genuinely open -- BACKLOG.md's "downstream
+    blockers clear day 4" is a lag relative to the root resolving day 3;
+    the report is implicitly taken at that moment, so the final clearing
+    hasn't happened yet. The root (Auth) itself always fully resolves."""
+    blockers = [r for r in dataset if r.type == "Sub-task"]
+    by_squad: dict = {}
+    for r in blockers:
+        by_squad.setdefault(r.assignee, []).append(r)
+    for assignee, rows in by_squad.items():
+        rows.sort(key=lambda r: r.created)
+        if assignee == "auth-squad":
+            assert all(r.status == "Done" for r in rows)
+        else:
+            assert all(r.status == "Done" for r in rows[:-1])
+            assert rows[-1].status == "Waiting"
 
 
 def test_resolved_after_created(dataset):

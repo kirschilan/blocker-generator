@@ -39,6 +39,10 @@ def write_validation_report(dataset, test_logs, path: Path, seed: int) -> None:
     global_density = (len(blockers) / len(features) * 100) if features else 0.0
     flaky = [r for r in test_logs if r.flaky]
 
+    resolved_cycle_times = [r.cycle_time_days for r in blockers if r.cycle_time_days is not None]
+    still_waiting = [r for r in dataset if r.status == "Waiting"]
+    in_progress = [r for r in features if r.status == "In Progress"]
+
     lines = [
         "# Milestone 1 Dataset Summary",
         "",
@@ -59,7 +63,13 @@ def write_validation_report(dataset, test_logs, path: Path, seed: int) -> None:
         "## Cluster signature",
         "",
         "- Auth cluster (Cluster-1-Auth): week 3, cascades to Checkout/Payments with 1-day lag",
-        f"- Peak waiting cycle time: {max((r.cycle_time_days for r in blockers), default=0):.0f} day(s)",
+        f"- Peak resolved waiting cycle time: {max(resolved_cycle_times, default=0):.0f} day(s)",
+        "",
+        "## Live status distribution (PBI 2.1, 2026-08-24)",
+        "",
+        f"- Currently Waiting (blocker rows not yet cleared): {len(still_waiting)}",
+        f"- In Progress (feature rows, aging candidates — dashboard computes age as NOW()-Created): {len(in_progress)} ({len(in_progress) / len(features) * 100:.1f}% of features)",
+        f"- Done (resolved, historical): {len(dataset) - len(still_waiting) - len(in_progress)}",
         "",
         "## Test coverage",
         "",

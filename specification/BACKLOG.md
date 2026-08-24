@@ -19,7 +19,7 @@
 |---|---|---|---|
 | 1 | 2026-08-22 | Complete (timeboxed out) | Land Milestone 1 (Auth Squad + Cluster) to Done-Done — **Not Done** |
 | 2 | 2026-08-23 | Complete | Land Milestone 1 to Done-Done — **Done**; Fix Issue #7 (Sprint CSV format) — **Done**; PBR — Task 2.0 candidate PBIs drafted |
-| 3 | 2026-08-24 | Complete | PBI 2.0a (native vs. custom field rename) — **Done**; Issue #8 (External Blocker clarification) — **Done**; PBI 2.0b/c/d (External Blocker → folded into Waiting Reason; Cluster Tag → native Labels; Cycle Time → dropped, dashboard-computed) — **Done**; PM flagged a new gap (all rows Status=Done, no actionable "currently open" view) — new PBI drafted, not started |
+| 3 | 2026-08-24 | Complete | PBI 2.0a — **Done**; Issue #8 — **Done**; PBI 2.0b/c/d — **Done**; Xray Issue #9 research + fix (Flaky/Automation Coverage % dropped) — **Done**; PBI 2.1 (live Status distribution: Waiting/Done/In Progress) — **Done**; Xray `Test Type` gap and row-shape gap — flagged, not started (need design input) |
 
 Full narrative for each Iteration (root causes, decisions, rationale) lives in `session_log.md` — this table is a status index, not a replacement for it.
 
@@ -38,7 +38,10 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 | PBI 2.0b — `External Blocker` dropped; signal folded into `Waiting Reason` archetype | Milestone 2 (prerequisite) | Done (Iteration 3) — BP's ruling: not a real field, remove rather than relabel |
 | PBI 2.0c — `Cluster Tag` → native, repeated `Labels` field | Milestone 2 (prerequisite) | Done (Iteration 3) — confirmed Jira exports `Labels` as repeated columns, same convention as `Sprint` |
 | PBI 2.0d — `Cycle Time (days)` dropped from CSV (kept internally) | Milestone 2 (prerequisite) | Done (Iteration 3) — BP's ruling: not a real field, dashboard computes it |
-| PBI 2.1 — Live/actionable Status distribution (as-of reference date) | Milestone 1 (hardening) | Not started — scoped below, BP's observation (Iteration 3) |
+| PBI 2.1 — Live/actionable Status distribution | Milestone 1 (hardening) | Done (Iteration 3) — see resolution note below |
+| Xray Issue #9 — drop `Flaky`/`Automation Coverage %` (not real Xray fields) | Milestone 1 (hardening) | Done (Iteration 3) |
+| Xray gap — `Test Type` values (tool names vs. Manual/Cucumber/Generic) | Milestone 2 (prerequisite) | Not started — needs a design decision, Issue #9 |
+| Xray gap — real exports are one row per Test Run, not aggregated counts | Milestone 2+ (future) | Not started — noted, not attempted; bigger structural change |
 | Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Not started — not yet broken into individual PBIs |
 | Milestone 3 scope: Full 8-Squad + 3 clusters + CLI | Milestone 3 | Not started — not yet broken into individual PBIs |
 
@@ -234,12 +237,15 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 2. **Previously blocked, now resolved** — already implemented (today's persistence fix): `Status = "Done"`, `Waiting Reason` still populated.
 3. **Aging / at-risk candidates** — a feature still open (`Status = "In Progress"`, no `Resolved`) that's been open unusually long relative to typical cycle time for its squad — an early-warning signal, not yet an actual blocker.
 
-**Design questions for PM+BP before Code scopes this (not decided here):**
-- Where should the as-of date sit in the 12-sprint timeline? It needs to fall during or shortly after the Auth cluster's window (week 3) for category 1 to actually demonstrate a live blocker on Milestone 1's own dataset — an as-of date at the very end of the quarter would make everything look closed regardless.
-- Should "aging" be a computed flag/column, or (matching today's principle: don't pre-compute what a dashboard should) purely inferable from `Created` + `Status = "In Progress"` + no `Resolved`, letting the dashboard define its own "too long" threshold?
-- Does introducing partial-quarter data change any of `TESTER.md`'s Milestone 1 row-count / density checks (e.g., features created after the as-of date presumably shouldn't exist in the export yet)?
-
-**Not started.** Flagged for Product Backlog review before any Milestone 2 work begins scaling the schema further — an as-of-date concept affects the core generation model, so Milestone 2's 5-squad expansion should build on top of it, not before it.
+**Resolved 2026-08-24 (BP's ruling, then implemented same day):**
+- **Aging is dashboard-computed** — "NOW()-Created at the time of the report," not a stored field. Simplifies category 3 to just: leave some features genuinely unresolved; nothing to pre-compute.
+- **Rejected a global as-of-date/truncation design** (would have cut most of the 12-sprint feature population, since a single as-of point early enough to catch the Auth cluster live would exclude sprints 2–12 entirely — conflicting with `TESTER.md`'s existing 540–720 feature row-count baseline). Implemented a smaller, narratively-consistent design instead:
+  1. **Currently blocked:** each cascade squad's (Checkout, Payments) *final* blocker day stays `Status = "Waiting"`, `Resolved` null — the root's "resolves day 3" is a completed fact per `BACKLOG.md`; "downstream clears day 4" is a *lag* relative to that, so the last step of propagation hasn't happened yet as of the report. The root (Auth) itself always fully resolves.
+  2. **Previously blocked, now resolved:** unchanged — already implemented (Waiting-Reason-persistence fix, Iteration 2).
+  3. **Aging candidates:** ~8% of ordinary feature rows across all 12 sprints stay `Status = "In Progress"`, `Resolved` null — realistic WIP, not tied to any calendar cutoff.
+- Implemented in `src/blocker_generator/features.py` (`IN_PROGRESS_PROBABILITY`, cascade-tail logic in `generate_cluster_blockers`); the in-progress decision uses an independent per-issue RNG so it doesn't perturb the existing created-date distribution (and with it, `TESTER.md`'s density/flaky-correlation numbers) — verified via test failures caught and fixed before landing.
+- `TESTER.md`'s row-count/density baselines are unaffected — Status changed, row existence didn't.
+- Regenerated CSV; 61/61 tests pass; determinism reconfirmed; PM spot-checked the real output.
 
 ---
 

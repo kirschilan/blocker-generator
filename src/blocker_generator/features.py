@@ -101,8 +101,19 @@ def _random_cycle_time_days(rng: random.Random) -> float:
     return round(rng.uniform(2, 10), 2)
 
 
+# PBI 2.1 (2026-08-24): BP's observation -- every row was Status=Done,
+# giving a dashboard nothing "currently open" to point at. A fixed
+# fraction of ordinary feature work stays In Progress (no Resolved date),
+# matching a realistic WIP snapshot rather than a fully-drained backlog.
+# Aging itself is NOT computed here -- BP's ruling: the dashboard
+# calculates it as NOW()-Created at report time, so we just need to leave
+# some issues genuinely unresolved.
+IN_PROGRESS_PROBABILITY = 0.08
+
+
 def generate_features(rng: random.Random, squads: List[Squad]) -> tuple[List[IssueRow], Dict[str, int]]:
-    """Task 1.4: 15-20 Story rows per squad per sprint, Status=Done."""
+    """Task 1.4: 15-20 Story rows per squad per sprint. Most are Done;
+    ~8% stay In Progress (PBI 2.1) as aging/at-risk candidates."""
     counters: Dict[str, int] = {s.id: 0 for s in squads}
     rows: List[IssueRow] = []
     for sprint in range(1, SPRINT_COUNT + 1):
@@ -116,13 +127,22 @@ def generate_features(rng: random.Random, squads: List[Squad]) -> tuple[List[Iss
                 created = datetime.combine(created_date, _random_time_of_day(rng))
                 cycle_time = _random_cycle_time_days(rng)
                 resolved = created + timedelta(days=cycle_time)
+                # Independent per-issue RNG, not the shared `rng` stream: an
+                # issue's in-progress/done split shouldn't perturb every
+                # later issue's created-date draw (and with it, week-level
+                # distributions this seed's tests depend on).
+                still_open = random.Random(f"{key}:in-progress").random() < IN_PROGRESS_PROBABILITY
+                if still_open:
+                    status, resolved, cycle_time = "In Progress", None, None
+                else:
+                    status = "Done"
                 summary = f"{rng.choice(SQUAD_VERBS)} {rng.choice(SQUAD_KEYWORDS[squad.id])}"
                 rows.append(
                     IssueRow(
                         issue_key=key,
                         summary=summary,
                         type="Story",
-                        status="Done",
+                        status=status,
                         assignee=ASSIGNEE[squad.id],
                         created=created,
                         resolved=resolved,
@@ -140,22 +160,36 @@ def generate_cluster_blockers(
 ) -> List[IssueRow]:
     """Task 1.4: inject the cluster's blocker rows (Type=Sub-task).
 
-    This dataset is a retrospective export of a completed 12-sprint quarter,
-    so every blocker day has, by generation time, already run its course:
-    Status resolves to "Done" and Resolved is populated a day after Created
-    (day-granularity blocker), matching BACKLOG.md's "Auth blocker resolves
-    day 3; downstream blockers clear day 4 (visible in Created/Resolved
-    timestamps)". Per PM's 2026-08-23 ruling, `Waiting Reason` persists after
-    resolution instead of being cleared -- Status carries current state,
-    Waiting Reason carries the historical cluster signal needed for
-    retrospective detection (PROJECT.md P1).
+    Root (Auth) blocker days all resolve to Done, matching BACKLOG.md's
+    "Auth blocker resolves day 3" exactly. Per PM's 2026-08-23 ruling,
+    `Waiting Reason` persists after resolution instead of being cleared --
+    Status carries current state, Waiting Reason carries the historical
+    cluster signal needed for retrospective detection (PROJECT.md P1).
+
+    PBI 2.1 (2026-08-24, BP's observation): each cascade squad's *last*
+    day stays genuinely open (Status=Waiting, no Resolved) rather than
+    also resolving -- BACKLOG.md's own "downstream blockers clear day 4"
+    is a propagation *lag* relative to the root resolving on day 3; the
+    report is implicitly taken at that moment, so the cascade's final
+    clearing hasn't happened yet. Earlier cascade days still resolve
+    normally (the historical, already-cleared portion of the incident).
     """
+    entries = inject_cluster(cluster)
+    last_index_per_squad: Dict[str, int] = {}
+    for i, entry in enumerate(entries):
+        last_index_per_squad[entry.squad_id] = i
+
     rows: List[IssueRow] = []
-    for entry in inject_cluster(cluster):
+    for i, entry in enumerate(entries):
         counters[entry.squad_id] += 1
         key = f"{ISSUE_KEY_PREFIX[entry.squad_id]}-{counters[entry.squad_id]}"
         created = datetime.combine(entry.date, _random_time_of_day(rng))
-        resolved = created + timedelta(days=1)
+        still_open = not entry.is_root and i == last_index_per_squad[entry.squad_id]
+        if still_open:
+            status, resolved, cycle_time = "Waiting", None, None
+        else:
+            resolved = created + timedelta(days=1)
+            status, cycle_time = "Done", (resolved - created).total_seconds() / 86400
         summary = (
             "Session cache corruption in Auth service"
             if entry.is_root
@@ -166,12 +200,12 @@ def generate_cluster_blockers(
                 issue_key=key,
                 summary=summary,
                 type="Sub-task",
-                status="Done",
+                status=status,
                 assignee=ASSIGNEE[entry.squad_id],
                 created=created,
                 resolved=resolved,
                 waiting_reason=entry.waiting_reason,
-                cycle_time_days=(resolved - created).total_seconds() / 86400,
+                cycle_time_days=cycle_time,
                 test_automation=None,
                 labels=[entry.cluster_id],
             )

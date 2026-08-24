@@ -210,7 +210,7 @@ SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00
 | `Issue Key` | String | `SQ-A-1`, `SQ-B-42` | Format: `SQ-{A..H}-{1..N}` |
 | `Summary` | String | "Login session timeout handling" | Feature or blocker description; <100 chars |
 | `Type` | String | "Story" or "Sub-task" | Always "Story" for features, "Sub-task" for blockers |
-| `Status` | String | "Done" \| "In Progress" \| "Waiting" | Feature rows: Done. Blocker rows: Waiting while open, Done once resolved (`Waiting Reason` persists either way, see below) |
+| `Status` | String | "Done" \| "In Progress" \| "Waiting" | PBI 2.1 (2026-08-24) — feature rows: ~92% Done, ~8% In Progress (aging/at-risk candidates, no `Resolved` date; a dashboard computes age as NOW()-`Created`, not a stored field). Blocker rows: Done once resolved, except each cascade squad's final day, which stays Waiting (the root's "resolves day 3" is a completed fact; the cascade's "clears day 4" is a lag relative to that, so its last step hasn't cleared as of the report) |
 | `Assignee` | String | "auth-squad" | Lowercase squad identifier (e.g., "auth-squad", "payments-squad") |
 | `Created` | ISO-8601 | `2026-07-01T09:00:00Z` | Sprint start date + random offset |
 | `Resolved` | ISO-8601 | `2026-07-15T17:00:00Z` | Created + Cycle Time; null only while a blocker row is still open (Status = Waiting) |
