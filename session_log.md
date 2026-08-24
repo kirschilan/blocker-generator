@@ -426,3 +426,69 @@ Implemented as a single-role rename, not a relabeling exercise:
 **Status:** Issue #10 resolved — closing with a confirming comment. Going
 forward this log (and all docs) uses "Product Owner (PO)"; "BP" is
 retired except where it appears inside untouched historical rows above.
+
+---
+
+**Same day — Iteration 3 retrospective, closed with working-agreement changes,
+not just talk:**
+
+PM proposed 9 retro candidates (research-before-guessing paying off,
+independent-RNG pattern, trunk-based development working, the Issue #8
+wrong-then-corrected resolution, the rename script's case-sensitivity gap,
+pushing to the wrong branch mid-session, the "merged ≠ deleted" branch
+confusion, Backlog Refinement placement, and the BP→PO role churn). PO
+responded to each:
+
+1. Asked what needs to change to make vendor-format validation (Atlassian,
+   and future vendors) the norm, not an ad hoc save each time.
+2. Asked what the architecture improvement is (re: the independent-RNG bug).
+3. Good work acknowledged, all three parties.
+4. Explicit no-blame framing: "I am human, I make mistakes. You are AI,
+   you make mistakes. That's why we improve our agreements" — re: Issue #8's
+   wrong-then-corrected resolution.
+5. Asked whether there's an action item on the rename script's
+   case-sensitivity gap.
+6. No-blame (as #4) on the wrong-branch push; asked what changes in the
+   working agreements.
+7. New standing practice proposed directly: at the end of work on each
+   PBI, Code gives PO the list of branches safe to delete.
+8. Backlog Refinement placement: still work in progress, no ruling yet.
+9. BP→PO role churn: also work in progress — explicitly deferred to revisit
+   after 2–3 additional Iterations, not decided now.
+
+**Converted into actual working-agreement changes today (items 1, 2, 5, 6,
+7 — not left as retro notes):**
+- `DEFINITION_OF_DONE.md` Governance Rule 8 (new): Vendor Format
+  Verification — every schema column cites a vendor-doc source or is
+  marked internal; code and `ARCHITECTURE.md` must agree, enforced via a
+  new Schema Authenticity Check in `TESTER.md`.
+- Fixed a real instance of the gap Rule 8 targets while writing it:
+  `ARCHITECTURE.md`'s Xray schema table still listed `Flaky`/`Automation
+  Coverage %` as columns after Issue #9 had already dropped them from
+  `xray_logs.py` — spec and code had drifted. Corrected the table and
+  flagged `Test Type`'s non-authentic values inline, still open pending
+  client feedback (Issue #9 stays open for that reason alone).
+- `ARCHITECTURE.md` "Notes for Code Implementation" now documents the
+  independent-RNG-streams rule as a standing design principle, not just a
+  one-off fix buried in `features.py`'s docstring.
+- `DEFINITION_OF_DONE.md` Governance Rule 7 amended with two practices:
+  check for a session's designated branch before inventing one; Code
+  posts a branch-deletion list to the PO at the end of each PBI (Code has
+  no delete-branch permission via git or the GitHub API in this
+  environment — confirmed today by two separate 403s — so deletion stays
+  the PO's action, just on a tighter, PBI-level cadence instead of
+  end-of-session).
+- `CLAUDE.md` updated to match both Rule 7 amendments, plus a new
+  "Repo-wide renames and find/replace" section requiring a
+  case-insensitive verification grep after any rename — the exact gap
+  that let lowercase "business partner" instances survive the first
+  BP→PO rename pass this session.
+
+**Left open, explicitly not ruled on today (items 8–9):** Backlog
+Refinement placement and the PO role definition both stay "work in
+progress" — PO's own words — revisit after 2–3 more Iterations rather than
+forcing a premature ruling.
+
+**Status:** Iteration 3 fully closed — single trunk (`main`), retro
+converted to concrete doc changes where the PO gave a clear direction,
+explicitly parked where it didn't.

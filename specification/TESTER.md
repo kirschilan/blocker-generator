@@ -16,6 +16,15 @@
 
 ---
 
+## Schema Authenticity Check (standing, every Milestone — added 2026-08-24, `DEFINITION_OF_DONE.md` Governance Rule 8)
+
+Before any Milestone's CSV schema is called done, for every column in `ARCHITECTURE.md`'s Jira and Xray schema tables:
+- [ ] It cites a vendor-doc source (Atlassian/Xray docs, a known ticket like JRACLOUD-xxxxx) confirming this is how that vendor actually exports it, **or**
+- [ ] It's explicitly marked "internal, not vendor-native" (e.g., `Custom field (Waiting Reason)`)
+- [ ] `ARCHITECTURE.md`'s schema tables match what the code (`csv_io.py`/`xray_logs.py`) actually emits — a fix in one without the other fails this check (this is exactly the drift the Iteration 3 retro caught: Issue #9 dropped `Flaky`/`Automation Coverage %` in code before `ARCHITECTURE.md` was updated to match)
+
+---
+
 ## Milestone 1: Auth Squad + 1 Cluster (Minimum Viable Dataset)
 
 ### Automated Checks (Task 1.4 + 1.5 outputs)
@@ -428,4 +437,5 @@ Product Owner signs off (statement required) ← Gate to next iteration
 |------|------|--------|
 | 2026-08-22 | TESTER.md created: DoD for Sprint 1–3, automated checks, manual spot-checks, business partner sign-off criteria | Ready for Code |
 | 2026-08-23 | Renamed our delivery timebox from "Sprint" to "Iteration" throughout (headers, sign-off gates); domain concept (`Sprint-1..Sprint-12` columns, weekly cluster timing) left unchanged. No scope change. | PM + Code + BP (Kirschi) |
+| 2026-08-24 | Added Schema Authenticity Check (standing, every Milestone) per Iteration 3 retro / `DEFINITION_OF_DONE.md` Governance Rule 8: every schema column must cite a vendor-doc source or be marked internal, and `ARCHITECTURE.md` must match what the code actually emits. | PO + PM + Code |
 

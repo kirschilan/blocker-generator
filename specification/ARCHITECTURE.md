@@ -254,17 +254,21 @@ SQ-B-99, Add payment retry logic, ..., Sprint-1, Sprint-2, Sprint-3
 
 **File:** `high_density_test_logs.csv` (and `post_optimization_test_logs.csv`)
 
+**Corrected 2026-08-23/24, GitHub Issue #9 (research mirroring Issue #7's Jira audit):** `Flaky` and `Automation Coverage %` are not raw Xray fields — coverage is a computed report-level metric and flakiness is inferred from run history, the same pattern as Jira's dropped `Cycle Time (days)`. Both are dropped from the CSV (kept internally in `TestLogRow` for the validation report). `Test Type`'s values (Selenium/Postman/Swagger/Perfecto Mobile) are also flagged as **not vendor-authentic** — real Xray `Test Type` is Manual/Cucumber/Generic (a test's *authoring method*, not the tool that runs it) — but left unchanged pending client feedback on what should replace them; do not "fix" this without a PO ruling (Issue #9 stays open for this reason alone).
+
 | Column | Type | Example | Rules |
 |--------|------|---------|-------|
 | `Issue Key` | String | `SQ-B-42` | Links to Jira issue |
 | `Sprint` | Integer | 1, 2, ..., 12 | Sprint number |
-| `Test Type` | String | "Manual" \| "Selenium" \| "Postman" \| "Swagger" \| "Perfecto Mobile" | Automation type |
+| `Test Type` | String | "Manual" \| "Selenium" \| "Postman" \| "Swagger" \| "Perfecto Mobile" | Automation type — **not vendor-authentic values, see note above; open, Issue #9** |
 | `Test Count` | Integer | 5 | Number of test cases |
 | `Pass Count` | Integer | 5 | Tests passed |
 | `Fail Count` | Integer | 0 | Tests failed |
-| `Flaky` | Boolean | false | true if test fails 20–30% of the time |
-| `Automation Coverage %` | Float | 50.0 | Cumulative automation % (manual = 0, others = 100) |
 | `Executed Date` | ISO-8601 | `2026-07-15T14:00:00Z` | When tests last ran |
+
+**Dropped (not real Xray fields, Issue #9):**
+- `Flaky` — inferred from run history by Xray/reporting tools, not a stored per-row field. Kept internally (`TestLogRow.flaky`) for the validation report's flaky-rate summary.
+- `Automation Coverage %` — a computed report-level metric, not a raw field. Kept internally (`TestLogRow.automation_coverage_pct`) for the same reason.
 
 **Row Count:**
 - Per feature: 1–5 rows (one per test type if present)
@@ -347,6 +351,8 @@ class BlockerCluster:
    - Feature titles (randomize within domain, e.g., Auth features involve "session," "token," "timeout")
    - Cycle times (normal distribution around archetype mean)
    - Sprint distribution (features unevenly spread; some sprints busier)
+
+   **Design rule — independent RNG streams (added 2026-08-24, from a real bug in PBI 2.1):** Any *new* per-issue random decision must draw from its own seeded stream (e.g. `random.Random(f"{issue_key}:in-progress")`), never from the shared sequential stream already used for that issue's other draws (`created_date`, `cycle_time`, etc.). Consuming from the shared stream shifts every later draw for that seed, silently perturbing unrelated downstream values. This broke `test_window_scoped_blocker_density_week_3` and `test_flaky_rate_elevated_in_cluster_window` for seed 42 before the fix — both tests were correct; the RNG stream was the bug. Any future randomized field follows this pattern by default, not as an afterthought.
 
 2. **Timestamps:** 
    - Use Pendulum for date arithmetic
