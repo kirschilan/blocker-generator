@@ -54,7 +54,8 @@ TEST_AUTOMATION_POOL = (
 
 CORE_COLUMNS = [
     "Issue Key", "Summary", "Type", "Status", "Assignee", "Created", "Resolved",
-    "Waiting Reason", "Cycle Time (days)", "Test Automation", "External Blocker", "Cluster Tag",
+    "Custom field (Waiting Reason)", "Cycle Time (days)", "Custom field (Test Automation)",
+    "External Blocker", "Cluster Tag",
 ]
 
 

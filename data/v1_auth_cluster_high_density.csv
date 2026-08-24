@@ -1,4 +1,4 @@
-Issue Key,Summary,Type,Status,Assignee,Created,Resolved,Waiting Reason,Cycle Time (days),Test Automation,External Blocker,Cluster Tag,Sprint,Sprint,Sprint
+Issue Key,Summary,Type,Status,Assignee,Created,Resolved,Custom field (Waiting Reason),Cycle Time (days),Custom field (Test Automation),External Blocker,Cluster Tag,Sprint,Sprint,Sprint
 SQ-A-1,Fix password reset flow,Story,Done,auth-squad,2026-07-02T08:30:00Z,2026-07-05T11:22:48Z,,3.12,Perfecto Mobile,false,,Sprint-1,,
 SQ-A-2,Refactor login rate limiting,Story,Done,auth-squad,2026-07-09T09:45:00Z,2026-07-21T05:54:36Z,,11.84,Postman,false,,Sprint-1,Sprint-2,
 SQ-A-3,Optimize token refresh,Story,Done,auth-squad,2026-07-01T16:15:00Z,2026-07-09T06:53:24Z,,7.61,Manual,false,,Sprint-1,,

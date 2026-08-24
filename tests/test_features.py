@@ -196,6 +196,21 @@ def test_csv_header_has_12_core_and_repeated_sprint_columns(csv_table, dataset):
     assert len(header) == 12 + slots
 
 
+def test_non_native_fields_labeled_as_custom_fields(csv_table):
+    """PBI 2.0a (2026-08-23): real Jira CSV export labels every custom
+    field column as "Custom field (<Name>)" -- Waiting Reason and Test
+    Automation aren't native Jira fields, so they get that treatment.
+    Native fields (Issue Key, Summary, Type, Status, Assignee, Created,
+    Resolved, Sprint) keep plain names."""
+    header, _ = csv_table
+    assert "Custom field (Waiting Reason)" in header
+    assert "Custom field (Test Automation)" in header
+    assert "Waiting Reason" not in header
+    assert "Test Automation" not in header
+    for native in ("Issue Key", "Summary", "Type", "Status", "Assignee", "Created", "Resolved"):
+        assert native in header
+
+
 def test_csv_round_trips_through_csv_module(csv_table, dataset):
     header, data_rows = csv_table
     assert len(data_rows) == len(dataset)

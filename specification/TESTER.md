@@ -23,7 +23,7 @@
 **CSV Format & Structure**
 - [ ] `v1_auth_cluster_high_density.csv` exists and is valid CSV (can be parsed without errors)
 - [ ] Repeated `Sprint` columns exist (corrected 2026-08-23, Issue #7 — real Jira export repeats the literal `Sprint` header once per occupied slot, sized to the dataset's widest-spanning issue; not distinct `Sprint-1`..`Sprint-12` columns)
-- [ ] All mandatory columns present: `Issue Key`, `Summary`, `Type`, `Status`, `Assignee`, `Created`, `Resolved`, `Waiting Reason`, `Cycle Time (days)`, `Test Automation`, `External Blocker`, `Cluster Tag`
+- [ ] All mandatory columns present: `Issue Key`, `Summary`, `Type`, `Status`, `Assignee`, `Created`, `Resolved`, `Custom field (Waiting Reason)`, `Cycle Time (days)`, `Custom field (Test Automation)`, `External Blocker`, `Cluster Tag` (corrected 2026-08-23, PBI 2.0a — `Waiting Reason`/`Test Automation` aren't native Jira fields, exported as custom fields)
 - [ ] No UTF-8 encoding errors or null bytes
 - [ ] All rows have valid Issue Key (format: `SQ-[ABD]-[0-9]+`)
 
@@ -39,8 +39,8 @@
 - [ ] All `Resolved` dates are null (blank) if Status = "Waiting"; populated if Status = "Done"
 - [ ] All `Resolved` dates >= `Created` dates (no negative cycle times)
 - [ ] `Cycle Time (days)` is null if Status = "Waiting"; numeric (float) if Status = "Done"
-- [ ] Blocker rows (`Type` = "Sub-task") have non-null `Waiting Reason` regardless of `Status` — it persists after the blocker resolves, so the cluster signal stays retrospectively detectable (corrected 2026-08-23; previously required null once Status = "Done", which erased the signal `PROJECT.md`'s P1 Detection needs); feature rows (`Type` = "Story") have null `Waiting Reason`
-- [ ] `Test Automation` is one of: "Manual", "Selenium", "Postman", "Swagger", "Perfecto Mobile", or null
+- [ ] Blocker rows (`Type` = "Sub-task") have non-null `Custom field (Waiting Reason)` regardless of `Status` — it persists after the blocker resolves, so the cluster signal stays retrospectively detectable (corrected 2026-08-23; previously required null once Status = "Done", which erased the signal `PROJECT.md`'s P1 Detection needs); feature rows (`Type` = "Story") have null `Custom field (Waiting Reason)`
+- [ ] `Custom field (Test Automation)` is one of: "Manual", "Selenium", "Postman", "Swagger", "Perfecto Mobile", or null
 - [ ] `External Blocker` is boolean (true/false); false for Auth cluster (internal failure)
 - [ ] `Cluster Tag` is one of: "Cluster-1-Auth", null; all Auth-cluster blockers have "Cluster-1-Auth"
 
@@ -60,8 +60,8 @@
 - [ ] Auth blocker count: 3–5 in week 3 (root cause)
 - [ ] Checkout blockers: 2–3 appearing in week 3 day 2+ (1-day cascade lag)
 - [ ] Payments blockers: 2–3 appearing in week 3 day 2+ (1-day cascade lag)
-- [ ] All three squads' blockers have `Waiting Reason` containing "Login service" or "Auth"
-- [ ] No orphaned blockers (every blocker has a root cause in `Waiting Reason`)
+- [ ] All three squads' blockers have `Custom field (Waiting Reason)` containing "Login service" or "Auth"
+- [ ] No orphaned blockers (every blocker has a root cause in `Custom field (Waiting Reason)`)
 
 ---
 

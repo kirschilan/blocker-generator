@@ -210,15 +210,15 @@ SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00
 | `Issue Key` | String | `SQ-A-1`, `SQ-B-42` | Format: `SQ-{A..H}-{1..N}` |
 | `Summary` | String | "Login session timeout handling" | Feature or blocker description; <100 chars |
 | `Type` | String | "Story" or "Sub-task" | Always "Story" for features, "Sub-task" for blockers |
-| `Status` | String | "Done" \| "In Progress" \| "Waiting" | Features in Done; blockers in Waiting |
+| `Status` | String | "Done" \| "In Progress" \| "Waiting" | Feature rows: Done. Blocker rows: Waiting while open, Done once resolved (corrected 2026-08-23 — `Waiting Reason` persists either way, see below) |
 | `Assignee` | String | "auth-squad" | Lowercase squad identifier (e.g., "auth-squad", "payments-squad") |
 | `Created` | ISO-8601 | `2026-07-01T09:00:00Z` | Sprint start date + random offset |
-| `Resolved` | ISO-8601 | `2026-07-15T17:00:00Z` | Created + Cycle Time; null if in Waiting |
-| `Waiting Reason` | String | "Waiting on Login service (SQ-A)" | Only populated if Status = Waiting |
-| `Cycle Time (days)` | Float | `14.33` | (Resolved - Created) in days; null if waiting |
-| `Test Automation` | String | "Manual" \| "Selenium" \| "Postman" \| "Swagger" \| "Perfecto Mobile" | Primary automation type (if any) |
-| `External Blocker` | Boolean | true \| false | true if root cause is external team |
-| `Cluster Tag` | String | "Cluster-1-Auth" \| "Cluster-2-DP" \| "Cluster-3-Checkout" \| null | Injected for analysis (can be removed for blind testing) |
+| `Resolved` | ISO-8601 | `2026-07-15T17:00:00Z` | Created + Cycle Time; null only while a blocker row is still open (Status = Waiting) |
+| `Custom field (Waiting Reason)` | String | "Waiting on Login service (SQ-A)" | Corrected 2026-08-23, PBI 2.0a — not a native Jira field, exported as a custom field per real Jira CSV convention. Populated for every blocker row (`Type` = "Sub-task"), whether open or resolved; null for feature rows |
+| `Cycle Time (days)` | Float | `14.33` | (Resolved - Created) in days; null while a blocker is still open. Not a native Jira field or a typical custom field either — flagged as an open question in `BACKLOG.md` PBI 2.0d (keep as generator convenience vs. drop) |
+| `Custom field (Test Automation)` | String | "Manual" \| "Selenium" \| "Postman" \| "Swagger" \| "Perfecto Mobile" | Corrected 2026-08-23, PBI 2.0a — not a native Jira field, exported as a custom field. Primary automation type (if any) |
+| `External Blocker` | Boolean | true \| false | true if root cause is external team. Also not a native Jira field — pending rename to `Custom field (External Blocker)`, tracked as `BACKLOG.md` PBI 2.0b (Issue #8, resolved) |
+| `Cluster Tag` | String | "Cluster-1-Auth" \| "Cluster-2-DP" \| "Cluster-3-Checkout" \| null | Injected for analysis (can be removed for blind testing). Also not native — whether this should be a custom field or Jira's native `Labels` field is an open question, `BACKLOG.md` PBI 2.0c |
 
 ---
 
