@@ -236,3 +236,23 @@ Milestones and Iterations are not 1:1. Renamed across `BACKLOG.md`,
 `CLAUDE.md`, and the generator itself (`VALIDATION_REPORT_Milestone_1.md`,
 regenerated).
 
+**PBR (2026-08-23):** BP identified that `Test Automation`, `External
+Blocker`, and `Cluster Tag` aren't out-of-the-box Jira fields. Researched
+real Atlassian CSV export behavior (confirmed: custom fields export as
+`Custom field (<Name>)`, a documented convention — Atlassian
+JRASERVER-62216/JRACLOUD-62216). Classified every current schema column as
+native vs. custom (native: Issue Key, Summary, Type, Status, Assignee,
+Created, Resolved, Sprint — the last is technically a plugin-added field
+but Jira exports it plain; custom: Waiting Reason, Test Automation,
+External Blocker). Two open design questions surfaced, not decided
+unilaterally: whether `Cluster Tag` should be a custom field or Jira's
+native `Labels` field, and whether `Cycle Time (days)` (not a real
+exportable Jira field at all) should be kept as a generator convenience or
+dropped in favor of letting a downstream dashboard compute it. Written up
+as Task 2.0 in `specification/BACKLOG.md`, gating Milestone 2's 5-squad
+scope. Code assessed it as too large for one Iteration as scoped and split
+it into four independent sub-tasks (2.0a ready now; 2.0b blocked on Issue
+#8; 2.0c blocked on the Labels-format check; 2.0d blocked on a keep/drop
+decision) — for PM/BP/Code review before Iteration 3 starts, not yet
+implemented.
+

@@ -147,6 +147,43 @@
 
 ## Milestone 2: Expand to 5 Squads + DataPlatform Cluster + Optimized Scenario
 
+**Prerequisite (PBR, 2026-08-23 — for Iteration 3 review, not yet started):** correct the Jira CSV schema's native-vs-custom-field provenance before scaling the schema to 5 squads — scaling up a schema with unrealistic field labeling just compounds the authenticity gap. See Task 2.0 below.
+
+### Task 2.0: Correct Jira field provenance (native vs. custom fields)
+
+**Priority:** P0 (blocks Milestone 2's schema work — see rationale above)
+**Origin:** BP review, 2026-08-23. BP correctly identified that `Test Automation`, `External Blocker`, and `Cluster Tag` are not out-of-the-box Jira fields.
+
+**PM research (confirmed via Atlassian sources — see session_log.md):**
+- Real Jira "Export CSV, All Fields" labels every **custom field** column as literally `Custom field (<Field Name>)` — this is documented, known Jira export behavior (Atlassian issues JRASERVER-62216 / JRACLOUD-62216), not optional or configurable.
+- **Native/system fields** (keep plain names, no prefix): `Issue Key`, `Summary`, `Type`, `Status`, `Assignee`, `Created`, `Resolved`.
+- **`Sprint`** is a special case: technically implemented as a custom field under the hood by the Jira Software plugin, but Jira's own CSV export prints it as plain `Sprint` (not `Custom field (Sprint)`) because Jira Software treats it as a first-party feature field. No change needed — already correct (Issue #7).
+- **Not native — need the `Custom field (...)` treatment:**
+  - `Waiting Reason` → `Custom field (Waiting Reason)`
+  - `Test Automation` → `Custom field (Test Automation)`
+  - `External Blocker` → `Custom field (External Blocker)` — pending Issue #8's resolution, since BP flagged this column's meaning is unclear anyway
+- **Open design questions (need PM+BP decision, not Code's to default):**
+  1. `Cluster Tag` — model as a bespoke `Custom field (Cluster Tag)`, or as Jira's **native** `Labels` field (built for exactly this kind of tagging)? Needs verifying Jira's actual `Labels` CSV export convention (single cell, multi-value how?) before deciding — not yet confirmed.
+  2. `Cycle Time (days)` — this isn't a native Jira field *or* a typical custom field; real Jira doesn't export a computed cycle-time value directly (a reporting app would compute it from `Created`/`Resolved`, or a specific "time in status" app might add its own custom field for it). Decide: keep as a generator convenience value (clearly labeled as derived, not a real exported field), or drop it from the CSV and let a downstream dashboard compute it, matching real-world practice more closely?
+
+**Acceptance Criteria (draft — confirm with BP/PM before Code starts):**
+- Header renamed per the classification above
+- `Cluster Tag` and `Cycle Time (days)` open questions resolved by PM+BP before implementation (not decided unilaterally by Code)
+- `specification/ARCHITECTURE.md`'s Jira CSV Schema table updated to show native vs. custom provenance per column
+- Regenerated CSV + updated tests
+- Issue #8 resolved as part of, or before, `External Blocker`'s renaming
+
+**Code's INVEST assessment (2026-08-23):** Not a single one-day-Iteration slice as scoped above — it bundles a confirmed rename (small), an unresolved external dependency on BP's Issue #8 answer, and two open design decisions that could go either way and change the diff shape. Recommend splitting:
+- **Task 2.0a (Small, Independent, ready now):** rename `Waiting Reason` and `Test Automation` to `Custom field (...)` — no open questions block these two. Doable in well under a day.
+- **Task 2.0b (Small, blocked on Issue #8):** rename/rework `External Blocker` once BP clarifies its intended meaning.
+- **Task 2.0c (Small, blocked on a `Labels`-vs-custom-field decision):** `Cluster Tag`'s real modeling — needs the `Labels` export-format check first.
+- **Task 2.0d (Small, blocked on a keep-vs-drop decision):** `Cycle Time (days)`'s fate.
+Each is independently mergeable; 2.0a can land in Iteration 3 regardless of what happens with 2.0b–d.
+
+---
+
+## Milestone 2 (continued): 5-Squad + DataPlatform Scope
+
 **Goal:** Validate that a second, independent blocker cluster (DataPlatform delay) produces similar cascading behavior. Expand to 5 squads (Auth, Checkout, Payments, Core Banking, Savings), add external dependency (DataPlatform), generate optimized dataset where the DataPlatform cluster is mocked/reduced. Business partner confirms: "If we mock the DataPlatform API, do we see flow improvement?"
 
 **Done-Done Criteria:**
