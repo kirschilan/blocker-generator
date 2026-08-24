@@ -282,3 +282,26 @@ clarified — the output stands, just noting the cadence going forward.)
 `Waiting Reason`/`Test Automation` to native `Custom field (...)` format)
 + resolve Issue #8.
 
+**Issue #8 resolved:** BP's follow-up ("Test Automation, External
+Blocker, Cluster Tag are not out of the box Jira fields... they should be
+custom fields") confirmed the column in question is `External Blocker`,
+and the disposition is to correctly label it (PBI 2.0b), not fold it into
+`Waiting Reason` as the original report's wording suggested. Closed on
+GitHub with that reading; reopen if wrong.
+
+**PBI 2.0a landed** (`66e0e64`): `Waiting Reason` → `Custom field (Waiting
+Reason)`, `Test Automation` → `Custom field (Test Automation)`. Also fixed
+`ARCHITECTURE.md`'s Core Columns table, which still had pre-persistence-fix
+language ("Only populated if Status = Waiting") that this session's
+earlier Waiting-Reason-persistence correction had missed. Regenerated CSV,
+spot-checked the real output, 60/60 tests pass, determinism reconfirmed.
+
+**Deliberately not pulled into today's scope:** PBI 2.0b (`External
+Blocker` rename), even though Issue #8's resolution unblocks it — staying
+disciplined to what was actually planned at Kickoff rather than quietly
+expanding scope mid-Iteration. Flagged to BP as ready for Iteration 4 or
+sooner if wanted today.
+
+**Status:** Iteration 3 complete. Both planned items done. Product
+Backlog and Iteration Log in `BACKLOG.md` updated to match.
+

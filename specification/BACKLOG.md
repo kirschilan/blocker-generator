@@ -19,7 +19,7 @@
 |---|---|---|---|
 | 1 | 2026-08-22 | Complete (timeboxed out) | Land Milestone 1 (Auth Squad + Cluster) to Done-Done — **Not Done** |
 | 2 | 2026-08-23 | Complete | Land Milestone 1 to Done-Done — **Done**; Fix Issue #7 (Sprint CSV format) — **Done**; PBR — Task 2.0 candidate PBIs drafted |
-| 3 | 2026-08-24 | **Active** | PBI 2.0a (native vs. custom field rename) — in progress; Issue #8 (External Blocker clarification) — in progress |
+| 3 | 2026-08-24 | Complete | PBI 2.0a (native vs. custom field rename) — **Done**; Issue #8 (External Blocker clarification) — **Done** |
 
 Full narrative for each Iteration (root causes, decisions, rationale) lives in `session_log.md` — this table is a status index, not a replacement for it.
 
@@ -33,9 +33,9 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 |---|---|---|
 | Land Auth Squad + Cluster MVP to Done-Done | Milestone 1 | Done (Iterations 1–2) |
 | Fix Issue #7 — Sprint CSV column format | Milestone 1 | Done (Iteration 2) |
-| PBI 2.0a — Rename `Waiting Reason`/`Test Automation` to `Custom field (...)` | Milestone 2 (prerequisite) | In Progress (Iteration 3) |
-| Issue #8 — Clarify & resolve `External Blocker` column | Milestone 1 (hardening) | In Progress (Iteration 3) |
-| PBI 2.0b — `External Blocker` field correction | Milestone 2 (prerequisite) | Not started (blocked on Issue #8) |
+| PBI 2.0a — Rename `Waiting Reason`/`Test Automation` to `Custom field (...)` | Milestone 2 (prerequisite) | Done (Iteration 3) |
+| Issue #8 — Clarify & resolve `External Blocker` column | Milestone 1 (hardening) | Done (Iteration 3) — resolved as PBI 2.0b |
+| PBI 2.0b — `External Blocker` field correction | Milestone 2 (prerequisite) | Not started — ready (Issue #8 resolved, no blockers left) |
 | PBI 2.0c — `Cluster Tag`: custom field vs. native `Labels` | Milestone 2 (prerequisite) | Not started (needs a `Labels` export-format check) |
 | PBI 2.0d — `Cycle Time (days)`: keep as convenience value vs. drop | Milestone 2 (prerequisite) | Not started (needs a PM+BP decision) |
 | Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Not started — not yet broken into individual PBIs |
