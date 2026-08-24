@@ -9,6 +9,38 @@
 - **Iteration** — our one-day delivery timebox (BP/PM/Code). See `TEAM_OPERATING_SYSTEM.md`'s Daily Iteration Cadence. Iteration 1 = the first day worked (2026-08-22, timeboxed out); Iteration 2 = the second day (2026-08-23); etc.
 - **Milestone** (below) — a vertical-slice grouping of backlog tasks, potentially spanning several Iterations. Milestone 1 took two Iterations (1 and 2) to actually land. Don't assume one Milestone = one Iteration.
 
+**Planning structure (restructured 2026-08-23 — BP's call, to stop pre-determining scope):** what actually happens each day lives in the **Iteration Log** and **Product Backlog** below — a PBI moves between them, not between "Milestone N" sections. The **Milestone** sections further down are reference detail (domain-accurate acceptance criteria, CSV schemas, etc.) for when a PBI drawn from them gets pulled into an Iteration — they are not a pre-scheduled Iteration-by-Iteration plan. Only the Iteration Log/Product Backlog say what's actually next; a Milestone section being written doesn't mean its scope is committed to any particular Iteration.
+
+---
+
+## Iteration Log
+
+| Iteration | Date | Status | PBI(s) |
+|---|---|---|---|
+| 1 | 2026-08-22 | Complete (timeboxed out) | Land Milestone 1 (Auth Squad + Cluster) to Done-Done — **Not Done** |
+| 2 | 2026-08-23 | Complete | Land Milestone 1 to Done-Done — **Done**; Fix Issue #7 (Sprint CSV format) — **Done**; PBR — Task 2.0 candidate PBIs drafted |
+| 3 | 2026-08-24 | **Active** | PBI 2.0a (native vs. custom field rename) — in progress; Issue #8 (External Blocker clarification) — in progress |
+
+Full narrative for each Iteration (root causes, decisions, rationale) lives in `session_log.md` — this table is a status index, not a replacement for it.
+
+---
+
+## Product Backlog
+
+Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which vertical slice it belongs to) — it does **not** imply which Iteration it's scheduled into. Pulling a PBI into an Iteration is a planning-conversation decision, made fresh each day against actual capacity.
+
+| PBI | Milestone | Status |
+|---|---|---|
+| Land Auth Squad + Cluster MVP to Done-Done | Milestone 1 | Done (Iterations 1–2) |
+| Fix Issue #7 — Sprint CSV column format | Milestone 1 | Done (Iteration 2) |
+| PBI 2.0a — Rename `Waiting Reason`/`Test Automation` to `Custom field (...)` | Milestone 2 (prerequisite) | In Progress (Iteration 3) |
+| Issue #8 — Clarify & resolve `External Blocker` column | Milestone 1 (hardening) | In Progress (Iteration 3) |
+| PBI 2.0b — `External Blocker` field correction | Milestone 2 (prerequisite) | Not started (blocked on Issue #8) |
+| PBI 2.0c — `Cluster Tag`: custom field vs. native `Labels` | Milestone 2 (prerequisite) | Not started (needs a `Labels` export-format check) |
+| PBI 2.0d — `Cycle Time (days)`: keep as convenience value vs. drop | Milestone 2 (prerequisite) | Not started (needs a PM+BP decision) |
+| Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Not started — not yet broken into individual PBIs |
+| Milestone 3 scope: Full 8-Squad + 3 clusters + CLI | Milestone 3 | Not started — not yet broken into individual PBIs |
+
 ---
 
 ## Milestone 1: Auth Squad + Auth Cluster (Minimum Viable Dataset)

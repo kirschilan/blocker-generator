@@ -256,3 +256,29 @@ it into four independent sub-tasks (2.0a ready now; 2.0b blocked on Issue
 decision) — for PM/BP/Code review before Iteration 3 starts, not yet
 implemented.
 
+**BP feedback on planning structure:** BACKLOG.md's Milestone-N-as-Iteration-N
+framing was itself a predetermined-scope pitfall — pre-bucketing tasks into
+named multi-day sections reads as a schedule even when it isn't one (see
+the Milestone-vs-Iteration collision above). Restructured `BACKLOG.md`
+around two new sections: an **Iteration Log** (status index: which PBIs
+each Iteration pulled and their outcome) and a **Product Backlog** (flat,
+prioritized PBI list, tagged with a Milestone for narrative context only —
+not scheduled to any Iteration in advance). The `Milestone N` sections
+remain as reference detail (acceptance criteria, schemas) for whenever a
+PBI drawn from them actually gets pulled — they no longer imply a
+schedule.
+
+**Process note for tomorrow (Iteration 4):** BP clarified that PBR
+(backlog refinement — researching and drafting new candidate PBIs) should
+happen *after* the day's planning conversation closes, not folded into
+Kickoff. Added to `TEAM_OPERATING_SYSTEM.md`'s Daily Iteration Cadence as
+a new "After sign-off: Backlog Refinement" step, effective Iteration 4.
+(Today's Jira-field PBR happened mid-conversation, before this was
+clarified — the output stands, just noting the cadence going forward.)
+
+## Iteration 3 (2026-08-24)
+
+**Goal (per Product Backlog, pulled at Kickoff):** PBI 2.0a (rename
+`Waiting Reason`/`Test Automation` to native `Custom field (...)` format)
++ resolve Issue #8.
+

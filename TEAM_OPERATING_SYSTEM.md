@@ -306,6 +306,11 @@ BP signs off: "This matches our org" or escalates to PM
 - BP: "Does it match expectations?" — sign-off or escalate
 - Code + PM: carry anything unfinished into tomorrow's kickoff — never onto an open branch (see Governance Rule 7, trunk-based development)
 
+**After sign-off (added 2026-08-23, effective Iteration 4):** Backlog Refinement (PBR)
+- PM researches/scopes candidate PBIs for a future Iteration (e.g., "what does a real Jira export actually look like") and adds them to the Product Backlog (`BACKLOG.md`)
+- This happens *after* the planning conversation closes for the day, not folded into Kickoff — Kickoff is for deciding what today's Iteration pulls from the *existing* Product Backlog, not for generating new candidates on the spot
+- Output: new/updated Product Backlog entries, ready for tomorrow's Kickoff to consider — not yet committed to any Iteration
+
 **Async within the day:**
 - Code: commits + PRs (PM reviews async)
 - PM: session_log.md updated at end of day
