@@ -1,7 +1,7 @@
 # Team Operating System — Communication & Collaboration
 
 **Status:** Operational agreement  
-**Audience:** PM, Code, Business Partner (BP)  
+**Audience:** PM, Code, Product Owner (PO)  
 **Purpose:** How we stay synchronized across devices, platforms, and time zones; where work lives; how decisions flow
 
 ---
@@ -10,7 +10,7 @@
 
 One source of truth, lightweight communication, asynchronous-first (you're on iPad, Mac, iPhone, PC—work wherever you are without waiting).
 
-**Terminology:** "Iteration" is our own one-day delivery timebox (BP/PM/Code). "Sprint" is reserved for the synthetic dataset's own domain concept — the fictional squads' 12-sprint quarter (see `specification/ARCHITECTURE.md`). Don't conflate the two.
+**Terminology:** "Iteration" is our own one-day delivery timebox (PO/PM/Code). "Sprint" is reserved for the synthetic dataset's own domain concept — the fictional squads' 12-sprint quarter (see `specification/ARCHITECTURE.md`). Don't conflate the two.
 
 ---
 
@@ -52,7 +52,7 @@ blocker-generator/
 **Why GitHub?**
 - Version-controlled (you can see what changed, when, by whom)
 - Works on all devices (web + git CLI + GitHub mobile app)
-- Pull Requests = async code review (PM + BP can review Code's work without real-time meeting)
+- Pull Requests = async code review (PM + PO can review Code's work without real-time meeting)
 - Issues = async decision discussion (link to relevant artifacts, no Slack thread history to dig through)
 - One truth (not scattered across Slack, email, docs in different clouds)
 
@@ -67,7 +67,7 @@ blocker-generator/
 1. Code finishes a task → creates Pull Request → links to BACKLOG.md task
 2. PR includes: what changed, why, test results, any blockers
 3. PM reviews (spot-checks TESTER.md criteria)
-4. BP reviews (comments if data matches expectations)
+4. PO reviews (comments if data matches expectations)
 5. PM merges when all approve (or requests changes with feedback)
 
 **Traceability:** Every commit message references the task (e.g., "Task 1.4: Generate features w/ clusters (PR #42)")
@@ -82,7 +82,7 @@ blocker-generator/
 **Async-friendly:** Don't wait for Slack replies. If question is blocking:
 1. Post in Slack (for visibility)
 2. Also open GitHub Issue (for record)
-3. Continue with best guess; PM + BP will review in GitHub
+3. Continue with best guess; PM + PO will review in GitHub
 
 ---
 
@@ -94,7 +94,7 @@ blocker-generator/
 - Iteration sign-off: "Here's the data; does it match expectations?" (20 min)
 - Blockers / scope changes (if any) (5 min)
 
-**Recording:** PM writes summary in GitHub Issue immediately after (e.g., "Milestone 1 Sign-Off: BP confirmed Auth-cluster cascade matches expectations. Approved to proceed to Milestone 2.")
+**Recording:** PM writes summary in GitHub Issue immediately after (e.g., "Milestone 1 Sign-Off: PO confirmed Auth-cluster cascade matches expectations. Approved to proceed to Milestone 2.")
 
 ---
 
@@ -107,15 +107,15 @@ blocker-generator/
 ```markdown
 # Session Log
 
-## Session: Aug 22, 2026 — PM + Code + BP alignment on DoD
+## Session: Aug 22, 2026 — PM + Code + PO alignment on DoD
 
 **Date:** 2026-08-22  
-**Participants:** Kirschi (BP), PM (Claude), Code (pending Claude Code)  
+**Participants:** Kirschi (PO), PM (Claude), Code (pending Claude Code)  
 **Outcome:** Five locked docs (PROJECT, BACKLOG, ARCHITECTURE, TESTER, DEFINITION_OF_DONE); ready for Milestone 1 build
 
 **Decisions Made:**
 - GitHub as source of truth; Slack for real-time questions
-- Tester.md is shared agreement on verification; execution is collaborative (Code automates, PM spot-checks, BP signs off)
+- Tester.md is shared agreement on verification; execution is collaborative (Code automates, PM spot-checks, PO signs off)
 - Decision rights matrix defined in DEFINITION_OF_DONE.md
 - Scope change workflow: diagnose → update artifact → session log → confirm all three
 
@@ -130,7 +130,7 @@ blocker-generator/
 ```
 
 **Why?**
-- Asynchronous visibility (BP on iPad can see "where are we?" without asking)
+- Asynchronous visibility (PO on iPad can see "where are we?" without asking)
 - Traceability (future sessions can replay decisions)
 - One artifact per audience (not scattered notes in Slack)
 
@@ -178,10 +178,10 @@ Blockers / Questions:
 - Spot-checks: Does adjacency matrix match ARCHITECTURE.md?
 - Approves or requests changes
 
-### **BP Optional Review**
+### **PO Optional Review**
 
-- BP doesn't need to review every PR (that's Code + PM's domain)
-- BP reviews only when asked or at sign-off gate (after all Milestone 1 tasks are merged)
+- PO doesn't need to review every PR (that's Code + PM's domain)
+- PO reviews only when asked or at sign-off gate (after all Milestone 1 tasks are merged)
 
 ---
 
@@ -195,7 +195,7 @@ Blockers / Questions:
 |---|---|---|
 | **Automated checks** | Code | Implement in test suite (pytest, etc.); run before PR |
 | **Manual spot-checks** | PM | Load CSVs, spot-check 5 features, verify dates/times |
-| **Narrative validation** | BP | Load into viz tool; "Does this match our org?" |
+| **Narrative validation** | PO | Load into viz tool; "Does this match our org?" |
 | **Acceptance criteria** | All three | Agreed in TESTER.md before iteration starts |
 
 ### **Example: Task 1.4 (Generate Features + Blockers)**
@@ -222,7 +222,7 @@ def test_cascade_timing():
 5. Sample 5 features; check cycle times are 2–14 days (realistic)
 6. Record findings: "Spot-checks passed" or "Found issue: [specific example]"
 
-**BP's responsibility (narrative):**
+**PO's responsibility (narrative):**
 1. Receive CSV + validation report from PM
 2. Load into Tableau/Grafana
 3. Look at 12-week timeline; filter by "Waiting" status
@@ -240,9 +240,9 @@ PM reviews PR + runs manual spot-checks (samples, not exhaustive)
    ↓
 Code + PM agree: "Data looks good"
    ↓
-BP loads data into viz tool + validates narrative
+PO loads data into viz tool + validates narrative
    ↓
-BP signs off: "This matches our org" or escalates to PM
+PO signs off: "This matches our org" or escalates to PM
 ```
 
 **No separate "Tester" person.** The three of you verify together, with clear responsibilities.
@@ -260,8 +260,8 @@ BP signs off: "This matches our org" or escalates to PM
 4. PM: Comments in Issue: "Proposal: split into 1.4a (generate features) + 1.4b (inject cascades). Still depends on 1.1–1.3; both complete in parallel. Updates BACKLOG.md with new task breakdown."
 
 **Day 2, Friday:**
-1. BP: Sees Issue comment; reviews proposed split
-2. BP: Comments: "Split makes sense; no scope change. Approved."
+1. PO: Sees Issue comment; reviews proposed split
+2. PO: Comments: "Split makes sense; no scope change. Approved."
 3. PM: Updates BACKLOG.md (adds Task 1.4a, 1.4b; updates session log)
 4. Code: Commits backlog change; creates two PRs instead of one
 
@@ -271,7 +271,7 @@ BP signs off: "This matches our org" or escalates to PM
 
 ## Devices & Platforms: How It Works
 
-**You (BP) on iPad:**
+**You (PO) on iPad:**
 - Open GitHub in Safari
 - Read PROJECT.md, BACKLOG.md, latest session_log.md
 - Review Code's PR (see diffs, leave comments)
@@ -294,16 +294,16 @@ BP signs off: "This matches our org" or escalates to PM
 
 ## Daily Iteration Cadence
 
-**Our delivery timebox is one day** (an "Iteration" — see Terminology, above), adopted 2026-08-23 so BP, PM, and Code learn actual mutual throughput before committing to larger scope. Iterations replace the earlier weekly cadence; nothing else about decision rights or verification changes.
+**Our delivery timebox is one day** (an "Iteration" — see Terminology, above), adopted 2026-08-23 so PO, PM, and Code learn actual mutual throughput before committing to larger scope. Iterations replace the earlier weekly cadence; nothing else about decision rights or verification changes.
 
 **Start of day (10–15 min):** Iteration Kickoff
 - PM proposes today's slice from BACKLOG.md, sized to what can realistically reach Done-Done today — not what's left on the list
 - Code: flags anything blocking before starting
-- BP: anything to know for today's narrative validation?
+- PO: anything to know for today's narrative validation?
 
 **End of day (20–30 min):** Iteration Sign-Off
 - PM: "Here's what shipped today (CSVs + validation report)"
-- BP: "Does it match expectations?" — sign-off or escalate
+- PO: "Does it match expectations?" — sign-off or escalate
 - Code + PM: carry anything unfinished into tomorrow's kickoff — never onto an open branch (see Governance Rule 7, trunk-based development)
 
 **After sign-off (added 2026-08-23, effective Iteration 4):** Backlog Refinement (PBR)
@@ -314,7 +314,7 @@ BP signs off: "This matches our org" or escalates to PM
 **Async within the day:**
 - Code: commits + PRs (PM reviews async)
 - PM: session_log.md updated at end of day
-- BP: spot-checks any queries in Slack / GitHub
+- PO: spot-checks any queries in Slack / GitHub
 
 **No mid-day standup.** Trust async workflow within the day; the two synchronous touchpoints are kickoff and sign-off.
 
@@ -328,8 +328,8 @@ BP signs off: "This matches our org" or escalates to PM
 - Example CSVs committed for reference
 
 **When to use GitHub Issues (discussion, recorded decision):**
-- Scope change discussion (Code: "Task too large"; PM + BP: "Agree, split into X + Y")
-- Architecture assumption changes (BP: "We learned DataPlatform is weekly, not annual")
+- Scope change discussion (Code: "Task too large"; PM + PO: "Agree, split into X + Y")
+- Architecture assumption changes (PO: "We learned DataPlatform is weekly, not annual")
 - Blocker escalation (Code: "Can't implement without clarifying what 'cascade lag' means")
 
 **When to use Slack (quick, real-time):**
@@ -339,7 +339,7 @@ BP signs off: "This matches our org" or escalates to PM
 
 **When to use Video Call (30 min, formal):**
 - Iteration kickoff (ensure everyone understands what's being built)
-- Iteration sign-off (BP validates narrative; decision gate to proceed)
+- Iteration sign-off (PO validates narrative; decision gate to proceed)
 - Escalated disagreements (if GitHub Issue discussion reaches an impasse)
 
 ---
@@ -378,7 +378,7 @@ BP signs off: "This matches our org" or escalates to PM
 
 **Approvals / Sign-Offs:**
 - [ ] PM: Session log reviewed
-- [ ] BP: Iteration work acknowledged
+- [ ] PO: Iteration work acknowledged
 - [ ] Code: Ready for next task (if applicable)
 ```
 

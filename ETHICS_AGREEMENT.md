@@ -2,14 +2,14 @@
 
 **Status:** Locked working agreement (reviewed each session, updated only with explicit approval)
 **Applies to:** All Dr. Agile projects using Claude as PM or Code
-**Last Updated:** 2026-08-22
+**Last Updated:** 2026-08-24
 
 ---
 
 ## Stakeholder Hierarchy (In Order)
 
 1. **Clients** — End users making evidence-based executive decisions with dashboards/tools we build
-2. **Business Partners** — JV partners co-developing the solution with Dr. Agile
+2. **Product Owners** — JV partners co-developing the solution with Dr. Agile (Scrum/Nexus/LeSS Product Owner: single role, full backlog authority — not the narrower, team-level SAFe/Scrum@Scale PO; see `DEFINITION_OF_DONE.md` Governance Rule 4)
 3. **Dr. Agile** — The company delivering the work
 4. **Effectiveness** — Minimize wasted time, wasted tokens, wasted effort; maximize value per iteration
 
@@ -46,7 +46,7 @@
 
 **Example 1: "Fast delivery" vs. "correct spec"**
 - Clients need correct tools to make good decisions
-- Business Partners need predictability (correct spec prevents rework)
+- Product Owners need predictability (correct spec prevents rework)
 - Decision: Fix spec first, ship correct. Fast delivery that's wrong serves no one.
 
 **Example 2: "Use more tokens to be thorough" vs. "Use fewer tokens to be efficient"**
@@ -71,3 +71,4 @@ At the start and end of each session:
 |------|--------|----------|
 | 2026-08-22 | Initial: Hierarchy (Clients → Partners → Dr. Agile → Effectiveness); commitments for PM, Code, Joint | Kirschi (BP/PO) |
 | 2026-08-22 | Applied "single source of truth" commitment in practice: PM's Task 1.4 handoff (window-scoped density decision) had been recorded in session_log.md but not actually written into `/specification/BACKLOG.md` and `/specification/TESTER.md`. Code reconciled the spec files to match the handoff before implementing, per the "spec-first always" / "multiple versions = consolidate immediately" commitments above. | Code |
+| 2026-08-24 | Renamed "Business Partner"/"BP" → "Product Owner"/"PO" throughout (per Issue #10). Clarified stakeholder-hierarchy entry: this is the Scrum/Nexus/LeSS PO (single, full backlog authority), not the SAFe/Scrum@Scale PO. Dropped the previously-proposed dual BP/PO hat in favor of a single PO role, per explicit approval. | Kirschi (PO), via Issue #10: "I concur with PO as my role, noting that this is the Scrum, Nexus and LeSS PO, not the SAFe or Scrum@Scale PO. For simplicity, drop the BP definition. PO is easier." |

@@ -58,7 +58,7 @@
 
 | Item | Reason | Revisit If |
 |------|--------|-----------|
-| **P3 Simulation (what-if engine)** | Requires solid V1 detection first; simulation layer built post-validation | Business partner validates Metric A + B on high-density data |
+| **P3 Simulation (what-if engine)** | Requires solid V1 detection first; simulation layer built post-validation | Product Owner validates Metric A + B on high-density data |
 | **P4 Prediction (forecasting)** | Prediction requires baseline patterns from V1 + V2; not in MVP | Simulation engine works; client wants early-warning system |
 | **Production incident data** | Scope creep; blocker flow + test coverage are sufficient to validate hypothesis | Client explicitly requires incident correlation |
 | **Resource utilization data** | Adds complexity; we can mock interventions via scenario datasets without CPU/node details | Dashboard needs to recommend *how much* resource to add |
@@ -86,7 +86,7 @@
 2. Blocker clusters are *visibly* correlated across 2+ squads in the data (same root cause → same timeline)
 3. Waiting cycle times are realistic and interdependent (Squad A resolves → Squad B's waiting drops next day)
 4. Test execution logs correlate to feature complexity + automation coverage (high coverage → fewer manual test blockers)
-5. A human (business partner) can load the data, see the "crime neighborhoods," and articulate 1–2 fixes without asking for clarification
+5. A human (Product Owner) can load the data, see the "crime neighborhoods," and articulate 1–2 fixes without asking for clarification
 6. Datasets are regenerable (same seed → same data for regression testing)
 
 ---

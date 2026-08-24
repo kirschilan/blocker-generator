@@ -379,3 +379,50 @@ real exports being one-row-per-Test-Run rather than aggregated counts)
 remain open, tracked as future Milestone 2+ items needing BP/design
 input.
 
+
+---
+
+**Same day, continued — role clarification: Product Owner, not Business
+Partner (Issue #10):**
+
+Retro question from BP: given they've been *originating* architecture and
+backlog-structure rulings this iteration (Cluster Tag → Labels, dropping
+Cycle Time, folding External Blocker into Waiting Reason, the aging
+ruling, the Iteration Log / Product Backlog restructuring) rather than
+just vetoing PM/Code proposals, does "Business Partner" still describe
+the role, and if not, what should?
+
+Opened Issue #10 proposing a dual BP/PO hat (keep "Business Partner" for
+the `ETHICS_AGREEMENT.md` stakeholder-hierarchy meaning, add explicit
+"Product Owner" decision rights alongside it). BP rejected the dual-hat
+compromise and simplified instead:
+
+> "I concur with PO as my role, noting that this is the Scrum, Nexus and
+> LeSS PO, not the SAFe or Scrum@Scale PO. For simplicity, drop the BP
+> definition. PO is easier."
+
+Implemented as a single-role rename, not a relabeling exercise:
+- Mechanical rename "Business Partner"/"BP" → "Product Owner"/"PO" across
+  `CLAUDE.md`, `DEFINITION_OF_DONE.md`, `TEAM_OPERATING_SYSTEM.md`,
+  `ETHICS_AGREEMENT.md`, `README.md`, and all three live `specification/`
+  files — excluding dated Session Log rows (historical narrative is never
+  rewritten) and `_archive/` (out of scope, already retired).
+- Substantive follow-through, not just the label: rewrote
+  `DEFINITION_OF_DONE.md` Governance Rule 4's Decision Rights table so the
+  PO *owns* backlog prioritization and can *originate* architecture/
+  backlog-structure rulings, rather than only holding veto power — this
+  was the actual gap Issue #10 flagged, and the label change alone
+  would have left it undocumented.
+- Recorded the Scrum/Nexus/LeSS-PO-vs-SAFe/Scrum@Scale-PO distinction in
+  both `DEFINITION_OF_DONE.md` (Governance Rule 4) and
+  `ETHICS_AGREEMENT.md` (stakeholder hierarchy) so it isn't lost to a
+  single chat message.
+- Added Session Log rows to both `DEFINITION_OF_DONE.md` and
+  `ETHICS_AGREEMENT.md` per each document's own "changes require explicit
+  written agreement" rule, citing Issue #10 and BP's approval verbatim.
+
+61/61 tests pass (prose-only change; no generator code touched).
+
+**Status:** Issue #10 resolved — closing with a confirming comment. Going
+forward this log (and all docs) uses "Product Owner (PO)"; "BP" is
+retired except where it appears inside untouched historical rows above.

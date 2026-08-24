@@ -2,13 +2,13 @@
 
 **Status:** Locked (project governance)  
 **Principle:** Marty Cagan (outcome-driven), LeSS (one team, one definition), Melissa Perri (shared mental model), Fowler (trunk-based development)  
-**Audience:** PM, Code, Business Partner (all three are one team)
+**Audience:** PM, Code, Product Owner (all three are one team)
 
 ---
 
 ## The Contract
 
-This document defines what "done" means at each level of this project, and what happens when scope changes. **It is a working agreement, not a static rulebook.** It evolves only by explicit negotiation between PM, Code, and Business Partner—never silently.
+This document defines what "done" means at each level of this project, and what happens when scope changes. **It is a working agreement, not a static rulebook.** It evolves only by explicit negotiation between PM, Code, and Product Owner—never silently.
 
 ---
 
@@ -20,11 +20,11 @@ This document defines what "done" means at each level of this project, and what 
 - [ ] Outcomes (P1, P2, P3, P4) are stated, prioritized, and measurable (traceable to business hypothesis)
 - [ ] Success criteria are explicit (e.g., "Detection = visually identify 3 clusters in synthetic data")
 - [ ] Scope is defined: what's IN, what's DELIBERATELY OUT (with triggers for revisit)
-- [ ] Business Partner has read it and agrees: "Yes, these are the right outcomes"
+- [ ] Product Owner has read it and agrees: "Yes, these are the right outcomes"
 - [ ] No outcome can be misinterpreted (e.g., "P2 Actionability" has Metric A and Metric B; not vague)
 
 **Who owns it:** PM  
-**When it changes:** Only when business hypothesis, outcomes, or success metrics change (not when implementation details shift). Changes require PM + Business Partner re-negotiation.  
+**When it changes:** Only when business hypothesis, outcomes, or success metrics change (not when implementation details shift). Changes require PM + Product Owner re-negotiation.  
 **Impact on Backlog/Tester:** Major changes cascade (backlog tasks may be added/removed; tester sign-off gates may shift)
 
 **Current Status:** DONE (locked Aug 22, 2026)
@@ -40,14 +40,14 @@ This document defines what "done" means at each level of this project, and what 
 - [ ] No task is blocked by a later task (precedence is clear; parallelizable where possible)
 - [ ] Acceptance criteria are concrete and testable (not "build a feature"; "generate 600–750 rows with blocker density 20–30%")
 - [ ] Post-MVP items are explicitly deferred with triggers (not silently dropped)
-- [ ] Business Partner has read it and agrees: "This breakdown makes sense; I can validate each iteration"
+- [ ] Product Owner has read it and agrees: "This breakdown makes sense; I can validate each iteration"
 
 **Who owns it:** PM  
 **When it changes:** When scope changes (outcomes shift, or implementation strategy evolves). Changes are triggered by:
   - **Code discovers a task is too large:** PM breaks it down (backlog updated before iteration runs)
-  - **Business Partner requests new feature:** PM assesses against outcomes, re-prioritizes, updates backlog
+  - **Product Owner requests new feature:** PM assesses against outcomes, re-prioritizes, updates backlog
   - **New dependency discovered:** PM updates precedence and task order
-  - Changes require PM re-assessment and Business Partner acknowledgment (not silent)
+  - Changes require PM re-assessment and Product Owner acknowledgment (not silent)
 
 **Impact on Tester:** Task-level changes affect TESTER.md acceptance criteria (if backlog task size changes, verification scope changes)
 
@@ -64,12 +64,12 @@ This document defines what "done" means at each level of this project, and what 
 - [ ] CSV schemas are unambiguous (columns, types, examples, rules for each cell)
 - [ ] Code can implement without asking "what does this mean?"
 - [ ] All examples are realistic (not obviously fake; finance domain-authentic)
-- [ ] Business Partner has read it and agrees: "Yes, this topology matches our organization"
+- [ ] Product Owner has read it and agrees: "Yes, this topology matches our organization"
 
 **Who owns it:** PM  
 **When it changes:** Only when understood domain assumptions change (new squad, new external dependency, new blocker type). Changes require:
   - Root-cause diagnosis (why does domain understanding need to shift?)
-  - PM + Business Partner negotiation (impact assessment)
+  - PM + Product Owner negotiation (impact assessment)
   - Backlog update (if architecture changes, implementation tasks may change)
   - Tester update (if cluster specs change, verification thresholds change)
 
@@ -79,7 +79,7 @@ This document defines what "done" means at each level of this project, and what 
 - **Response:** 
   1. PM diagnoses: "If we own CRM, blocker durations drop from 2–5 days to <1 day"
   2. PM assesses impact: "This affects Cluster scenarios; Metric B (mocking) changes"
-  3. PM + Business Partner decide: "This changes our Actionability story; worth 1–2 tasks in Milestone 2"
+  3. PM + Product Owner decide: "This changes our Actionability story; worth 1–2 tasks in Milestone 2"
   4. PM updates ARCHITECTURE.md (CRM no longer external)
   5. PM updates BACKLOG.md (new task: "reduce Cluster 2 blocker durations")
   6. PM updates TESTER.md (sign-off gate for updated cluster specs)
@@ -93,7 +93,7 @@ This document defines what "done" means at each level of this project, and what 
 **This artifact is DONE when:**
 - [ ] Automated checks are written (code can run them; pass/fail is binary)
 - [ ] Manual spot-checks are defined (PM knows exactly what to verify; ~10–20 min per iteration)
-- [ ] Business Partner sign-off criteria are explicit (what must partner confirm before gate opens?)
+- [ ] Product Owner sign-off criteria are explicit (what must partner confirm before gate opens?)
 - [ ] Acceptance thresholds are quantified (not "blocker density should be high"; "20–30%")
 - [ ] Each milestone has its own TESTER section (Milestone 1 ≠ Milestone 2; verification scope evolves)
 
@@ -119,16 +119,16 @@ This document defines what "done" means at each level of this project, and what 
 **This artifact is DONE when:**
 - [ ] All automated checks in TESTER.md pass (binary: green/red)
 - [ ] All manual spot-checks pass (PM has verified 5–10 samples)
-- [ ] Business Partner has signed off (explicit statement required; not just "looks good")
+- [ ] Product Owner has signed off (explicit statement required; not just "looks good")
 - [ ] Code is committed with clear commit message linking to BACKLOG task
 - [ ] Example CSVs are in version control (reproducible; same seed = same data)
 
-**Who owns it:** Code (with PM verification and Business Partner sign-off)  
+**Who owns it:** Code (with PM verification and Product Owner sign-off)  
 **When it changes:** When bugs are discovered post-sign-off. Changes require:
   - Root-cause diagnosis (why did verification miss this?)
   - Code fix + re-run all TESTER checks
   - PM re-spot-checks if fix impacts acceptance criteria
-  - Business Partner notified (may need re-sign-off if change is significant)
+  - Product Owner notified (may need re-sign-off if change is significant)
 
 **Current Status:** PENDING (waiting for Claude Code to build Milestone 1)
 
@@ -136,7 +136,7 @@ This document defines what "done" means at each level of this project, and what 
 
 ## Decision Rights: How Scope Changes Flow
 
-### Scenario 1: Business Partner Requests New Feature
+### Scenario 1: Product Owner Requests New Feature
 
 **Example:** "Can you add scenario data showing incident correlation?"
 
@@ -158,11 +158,11 @@ This document defines what "done" means at each level of this project, and what 
    - Updates TESTER.md with new verification checks
    - Adjusts backlog priority and iteration if needed
 
-4. **PM + Business Partner confirm:**
+4. **PM + Product Owner confirm:**
    - "Does this change still meet your definition of success for V1?"
    - If yes: proceed; if no: defer to post-MVP with explicit trigger
 
-**Decision is PM's, but requires Business Partner acknowledgment (not approval; acknowledgment that we're aware of the impact).**
+**Decision is PM's, but requires Product Owner acknowledgment (not approval; acknowledgment that we're aware of the impact).**
 
 ---
 
@@ -184,17 +184,17 @@ This document defines what "done" means at each level of this project, and what 
    - Verifies split doesn't break precedence (both tasks still depend on Tasks 1.1–1.3)
    - Updates TESTER.md acceptance criteria for both sub-tasks
 
-4. **PM confirms with Business Partner:**
+4. **PM confirms with Product Owner:**
    - "Implementation strategy changed, but output is the same; no scope change."
-   - Business Partner acknowledges; no re-sign-off needed (implementation detail)
+   - Product Owner acknowledges; no re-sign-off needed (implementation detail)
 
-**Decision is Code's + PM's (not Business Partner's unless it impacts outcomes).**
+**Decision is Code's + PM's (not Product Owner's unless it impacts outcomes).**
 
 ---
 
-### Scenario 3: Tester Validation Fails (Business Partner Says "Data Looks Fake")
+### Scenario 3: Tester Validation Fails (Product Owner Says "Data Looks Fake")
 
-**Example:** Cycle times show features resolving in 1 day; Business Partner says "Nobody ships features in our org in 1 day."
+**Example:** Cycle times show features resolving in 1 day; Product Owner says "Nobody ships features in our org in 1 day."
 
 **Process:**
 
@@ -210,15 +210,15 @@ This document defines what "done" means at each level of this project, and what 
    - Fixes architecture (e.g., ARCHITECTURE.md cluster duration updated)
    - Regenerates data
    - Re-runs all TESTER checks
-   - If still failing: escalate to PM + Business Partner jointly
+   - If still failing: escalate to PM + Product Owner jointly
 
 4. **If escalation needed:**
-   - PM + Business Partner + Code meet to align on what "realistic" means
+   - PM + Product Owner + Code meet to align on what "realistic" means
    - ARCHITECTURE.md is updated with agreed durations
    - Data is regenerated
    - New sign-off
 
-**Decision is PM's + Code's, with Business Partner veto authority (can say "this doesn't match reality").**
+**Decision is PM's + Code's, with Product Owner veto authority (can say "this doesn't match reality").**
 
 ---
 
@@ -236,7 +236,7 @@ This document defines what "done" means at each level of this project, and what 
 2. **PM brings to team:**
    - "This changes our cluster topology. Resets current iteration; let's reassess."
 
-3. **PM + Business Partner + Code jointly decide:**
+3. **PM + Product Owner + Code jointly decide:**
    - **Option A:** Adjust cluster to match new reality (weekly gate, shorter duration) → regenerate data, adjust TESTER
    - **Option B:** Keep annual assumption as "what-if" scenario (for demo purposes) → add note to ARCHITECTURE.md
    - **Option C:** Make two datasets (one annual, one weekly) → adds complexity
@@ -247,7 +247,7 @@ This document defines what "done" means at each level of this project, and what 
    - TESTER.md updated with new thresholds
    - Code regenerates data
 
-**Decision is PM + Business Partner (shared; not PM alone).**
+**Decision is PM + Product Owner (shared; not PM alone).**
 
 ---
 
@@ -262,7 +262,7 @@ This document defines what "done" means at each level of this project, and what 
 ### 2. Changes Require Root-Cause Diagnosis
 
 - **Rule:** Don't change scope because "it would be nice to have." Diagnose why (business need, domain misunderstanding, implementation complexity).
-- **Enforcement:** PM asks "Why?" before updating backlog. If answer is unclear, escalate to Business Partner.
+- **Enforcement:** PM asks "Why?" before updating backlog. If answer is unclear, escalate to Product Owner.
 - **Rationale (pm-playbook):** "Find the actual cause before proposing a fix."
 
 ### 3. Deferred Items Have Explicit Triggers
@@ -273,12 +273,14 @@ This document defines what "done" means at each level of this project, and what 
 
 ### 4. Decision Rights Are Specific
 
+**Role note (per Issue #10, resolved 2026-08-24):** "Product Owner" here is the Scrum/Nexus/LeSS PO — a single role with full backlog ownership (prioritization, acceptance, and domain rulings) — not the SAFe/Scrum@Scale PO, which is narrower and layered under Product Management. Concretely: the PO can *originate* architecture and backlog-structure decisions, not just veto PM/Code proposals. Iteration 3 already worked this way in practice (the PO ruled directly on Cluster Tag → Labels, dropping Cycle Time, folding External Blocker into Waiting Reason, and the Iteration Log / Product Backlog restructuring); this rule catches the table up to that practice.
+
 - **Rule:** Different decisions have different owners:
-  - **Outcomes (P1–P4):** PM + Business Partner (joint; veto = project reset)
-  - **Backlog prioritization:** PM (Code input on effort; Business Partner input on value)
-  - **Architecture assumptions:** PM (Code input on implementability; Business Partner veto if unrealistic)
-  - **Task breakdown:** Code + PM (implementation detail; doesn't require Business Partner sign-off)
-  - **Verification thresholds:** PM + Code (must be automatable and defensible; Business Partner sign-off on final data)
+  - **Outcomes (P1–P4):** PM + Product Owner (joint; veto = project reset)
+  - **Backlog prioritization:** Product Owner owns it (PM assesses against outcomes and scopes; Code estimates effort)
+  - **Architecture assumptions:** Product Owner can originate a domain ruling directly; PM incorporates it into ARCHITECTURE.md and assesses downstream impact; Code flags implementability concerns before it's locked
+  - **Task breakdown:** Code + PM (implementation detail; doesn't require Product Owner sign-off) — distinct from backlog *structure* (e.g., Iteration Log vs. Product Backlog shape), which the PO can direct
+  - **Verification thresholds:** PM + Code (must be automatable and defensible; Product Owner sign-off on final data)
 
 **Enforcement:** If someone makes a decision outside their authority, PM flags it. Decisions are documented with owner and date.
 
@@ -290,7 +292,7 @@ This document defines what "done" means at each level of this project, and what 
 
 ### 6. One Team, One Definition of Done
 
-- **Rule:** DoD is negotiated once, then held constant. No separate "Code's DoD" vs "PM's DoD" vs "Business Partner's DoD."
+- **Rule:** DoD is negotiated once, then held constant. No separate "Code's DoD" vs "PM's DoD" vs "Product Owner's DoD."
 - **Enforcement:** This document (DEFINITION_OF_DONE.md) is the contract. Changes require all three parties.
 - **Rationale (pm-playbook):** "Treat the team (human + any coding agent involved) as one whole unit with one definition of done."
 
@@ -309,7 +311,7 @@ This document defines what "done" means at each level of this project, and what 
 
 1. **Trigger:** A recurring misunderstanding (e.g., "We keep debating what 'independent task' means") or a process that broke down (e.g., "Code didn't know who decides this")
 2. **Proposal:** PM proposes a clarification or rule update
-3. **Discussion:** PM + Code + Business Partner discuss; aim for consensus
+3. **Discussion:** PM + Code + Product Owner discuss; aim for consensus
 4. **Update:** PM updates this document with new rule + rationale + date
 5. **Acknowledgment:** All three parties confirm "Yes, this is our new agreement"
 
@@ -320,6 +322,7 @@ This document defines what "done" means at each level of this project, and what 
 | 2026-08-22 | Created DEFINITION_OF_DONE.md; locked 1-level DoD (artifact + decision rights + governance rules) | Explicit working agreement required; supports Cagan (outcomes-driven), LeSS (one team), Perri (shared mental model) | Kirschi (PO) + PM + Code (pending) |
 | 2026-08-23 | Fixed citation spelling (Marty Cagan, Melissa Perri). Added Governance Rule 7 (Trunk-Based Development, Fowler). Renamed our delivery timebox "Sprint" → "Iteration" throughout (kept "Sprint" for the dataset's own domain concept). | Iteration 1 retro surfaced three unmerged, divergent branches — policy without enforcement or a bounded branch lifetime doesn't prevent drift; "Sprint" collided with ARCHITECTURE.md's domain concept | Kirschi (BP) + PM + Code |
 | 2026-08-23 | Fixed citation spelling (Marty Cagan, Melissa Perri). Added Governance Rule 7 (Trunk-Based Development). Renamed our delivery timebox "Sprint" → "Iteration" throughout (kept "Sprint" for the dataset's own domain concept). | Iteration 1 retro surfaced three unmerged, divergent branches — policy without enforcement or a bounded branch lifetime doesn't prevent drift; "Sprint" collided with ARCHITECTURE.md's domain concept | Kirschi (BP) + PM + Code |
+| 2026-08-24 | Renamed "Business Partner"/"BP" → "Product Owner"/"PO" throughout (dropped the proposed dual BP/PO hat from Issue #10 — simplified to a single PO role). Rewrote Governance Rule 4's Decision Rights table: PO owns backlog prioritization and can originate architecture/backlog-structure rulings, not just veto PM/Code proposals — catching the table up to how Iteration 3 actually ran. Noted this is the Scrum/Nexus/LeSS PO (single, full backlog authority), not the SAFe/Scrum@Scale PO (narrower, team-level). | Issue #10 retro: table under-documented rights already being exercised. Kirschi: "I concur with PO as my role, noting that this is the Scrum, Nexus and LeSS PO, not the SAFe or Scrum@Scale PO. For simplicity, drop the BP definition. PO is easier." | Kirschi (PO) + PM + Code |
 
 ---
 
@@ -337,7 +340,7 @@ When scope changes:
   1. Root-cause diagnosis (pm-playbook: "diagnose before proposing fix")
   2. Update relevant artifact (PROJECT, BACKLOG, ARCHITECTURE, or TESTER)
   3. Session log entry (what changed, why, approver)
-  4. Confirm all three parties acknowledge (PM + Code + Business Partner)
+  4. Confirm all three parties acknowledge (PM + Code + Product Owner)
 ```
 
 ---
@@ -357,7 +360,7 @@ When scope changes:
 **Melissa Perri (Organizational):**
 - Shared mental model (explicit working agreements, not assumptions)
 - Role clarity (who decides what; GOVERNANCE RULES section)
-- Psychological safety (Code can escalate blocker without blame; Business Partner can say "data looks fake" without offending PM)
+- Psychological safety (Code can escalate blocker without blame; Product Owner can say "data looks fake" without offending PM)
 
 **Martin Fowler (Trunk-Based Development):**
 - Branches are short-lived and integrate to `main` frequently, not held open across sessions (Governance Rule 7)
@@ -368,9 +371,9 @@ When scope changes:
 
 ## Who This Is For
 
-- **PM:** Your contract with Code and Business Partner. Refer to this when scope changes or decisions are ambiguous.
+- **PM:** Your contract with Code and Product Owner. Refer to this when scope changes or decisions are ambiguous.
 - **Code:** Your accountability framework. Know your decision authority; know when to escalate.
-- **Business Partner:** Your participation roadmap. You have veto authority on outcomes and final data; you don't need to approve implementation details.
+- **Product Owner:** Full backlog ownership (Scrum/Nexus/LeSS PO, not the SAFe/Scrum@Scale PO) — you originate architecture and backlog-structure calls, not just veto; you don't need to approve implementation details (task breakdown, task-splitting mechanics).
 
 **One team. One DoD. Clear decisions.**
 

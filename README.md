@@ -9,7 +9,7 @@ See `specification/PROJECT.md` for the outcome and constraints,
 `specification/ARCHITECTURE.md` for the domain model,
 `specification/BACKLOG.md` for the current Iteration's tasks, and
 `TEAM_OPERATING_SYSTEM.md` / `DEFINITION_OF_DONE.md` / `CLAUDE.md` for how
-the team (BP/PM/Code) works.
+the team (PO/PM/Code) works.
 
 **Hypothesis:** percolation theory — a shared-component failure (Auth) halts
 not just its own squad but cascades to dependent squads, visible as a

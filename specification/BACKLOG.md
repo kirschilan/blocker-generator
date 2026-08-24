@@ -2,14 +2,14 @@
 
 **Status:** Ready for Claude Code (Vertical Slices)  
 **Updated:** 2026-08-22  
-**Principle:** Each iteration produces a complete, testable vertical slice that can be validated with the business partner. INVEST: Independent, Negotiable, Valuable, Estimable, Small, Testable.
+**Principle:** Each iteration produces a complete, testable vertical slice that can be validated with the Product Owner. INVEST: Independent, Negotiable, Valuable, Estimable, Small, Testable.
 
 **Terminology (corrected 2026-08-23 — see session_log.md):** three words, three distinct things, don't conflate them:
 - **Sprint** — the synthetic dataset's own domain concept (the fictional squads' 12-sprint quarter). Never ours.
-- **Iteration** — our one-day delivery timebox (BP/PM/Code). See `TEAM_OPERATING_SYSTEM.md`'s Daily Iteration Cadence. Iteration 1 = the first day worked (2026-08-22, timeboxed out); Iteration 2 = the second day (2026-08-23); etc.
+- **Iteration** — our one-day delivery timebox (PO/PM/Code). See `TEAM_OPERATING_SYSTEM.md`'s Daily Iteration Cadence. Iteration 1 = the first day worked (2026-08-22, timeboxed out); Iteration 2 = the second day (2026-08-23); etc.
 - **Milestone** (below) — a vertical-slice grouping of backlog tasks, potentially spanning several Iterations. Milestone 1 took two Iterations (1 and 2) to actually land. Don't assume one Milestone = one Iteration.
 
-**Planning structure (restructured 2026-08-23 — BP's call, to stop pre-determining scope):** what actually happens each day lives in the **Iteration Log** and **Product Backlog** below — a PBI moves between them, not between "Milestone N" sections. The **Milestone** sections further down are reference detail (domain-accurate acceptance criteria, CSV schemas, etc.) for when a PBI drawn from them gets pulled into an Iteration — they are not a pre-scheduled Iteration-by-Iteration plan. Only the Iteration Log/Product Backlog say what's actually next; a Milestone section being written doesn't mean its scope is committed to any particular Iteration.
+**Planning structure (restructured 2026-08-23 — PO's call, to stop pre-determining scope):** what actually happens each day lives in the **Iteration Log** and **Product Backlog** below — a PBI moves between them, not between "Milestone N" sections. The **Milestone** sections further down are reference detail (domain-accurate acceptance criteria, CSV schemas, etc.) for when a PBI drawn from them gets pulled into an Iteration — they are not a pre-scheduled Iteration-by-Iteration plan. Only the Iteration Log/Product Backlog say what's actually next; a Milestone section being written doesn't mean its scope is committed to any particular Iteration.
 
 ---
 
@@ -35,9 +35,9 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 | Fix Issue #7 — Sprint CSV column format | Milestone 1 | Done (Iteration 2) |
 | PBI 2.0a — Rename `Waiting Reason`/`Test Automation` to `Custom field (...)` | Milestone 2 (prerequisite) | Done (Iteration 3) |
 | Issue #8 — Clarify & resolve `External Blocker` column | Milestone 1 (hardening) | Done (Iteration 3) |
-| PBI 2.0b — `External Blocker` dropped; signal folded into `Waiting Reason` archetype | Milestone 2 (prerequisite) | Done (Iteration 3) — BP's ruling: not a real field, remove rather than relabel |
+| PBI 2.0b — `External Blocker` dropped; signal folded into `Waiting Reason` archetype | Milestone 2 (prerequisite) | Done (Iteration 3) — PO's ruling: not a real field, remove rather than relabel |
 | PBI 2.0c — `Cluster Tag` → native, repeated `Labels` field | Milestone 2 (prerequisite) | Done (Iteration 3) — confirmed Jira exports `Labels` as repeated columns, same convention as `Sprint` |
-| PBI 2.0d — `Cycle Time (days)` dropped from CSV (kept internally) | Milestone 2 (prerequisite) | Done (Iteration 3) — BP's ruling: not a real field, dashboard computes it |
+| PBI 2.0d — `Cycle Time (days)` dropped from CSV (kept internally) | Milestone 2 (prerequisite) | Done (Iteration 3) — PO's ruling: not a real field, dashboard computes it |
 | PBI 2.1 — Live/actionable Status distribution | Milestone 1 (hardening) | Done (Iteration 3) — see resolution note below |
 | Xray Issue #9 — drop `Flaky`/`Automation Coverage %` (not real Xray fields) | Milestone 1 (hardening) | Done (Iteration 3) |
 | Xray gap — `Test Type` values (tool names vs. Manual/Cucumber/Generic) | Milestone 2 (prerequisite) | Not started — needs a design decision, Issue #9 |
@@ -49,13 +49,13 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 
 ## Milestone 1: Auth Squad + Auth Cluster (Minimum Viable Dataset)
 
-**Goal:** Prove the percolation hypothesis works at the smallest scale. Generate Auth squad (SQ-A) + 1 blocker cluster (Auth outage, weeks 3–5) + 2 cascading squads (Checkout, Payments) for 12 sprints. Business partner validates the data correlates to their mental model of how Auth blockers ripple.
+**Goal:** Prove the percolation hypothesis works at the smallest scale. Generate Auth squad (SQ-A) + 1 blocker cluster (Auth outage, weeks 3–5) + 2 cascading squads (Checkout, Payments) for 12 sprints. Product Owner validates the data correlates to their mental model of how Auth blockers ripple.
 
 **Done-Done Criteria:**
 - All tests pass
 - Auth cluster is visibly propagated to Checkout + Payments (same root cause, cascading timeline)
 - Data loaded into a simple viz (Excel pivot, Grafana, or Tableau) shows the "crime neighborhood"
-- Business partner signs off: "Yes, this matches how our squads actually get blocked"
+- Product Owner signs off: "Yes, this matches how our squads actually get blocked"
 
 ---
 
@@ -157,7 +157,7 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 
 ---
 
-### Task 1.6: Validate & document (for business partner review)
+### Task 1.6: Validate & document (for Product Owner review)
 **Priority:** P1  
 **Size:** Small (validation + README)  
 **Acceptance Criteria:**
@@ -177,7 +177,7 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 
 **Input to Code:** Tasks 1.1–1.5  
 **Output:** `VALIDATION_REPORT.md` + updated `README.md`  
-**Verification:** Business partner reads report, loads CSVs into a viz tool, confirms: "I see the Auth blocker cascade; matches our mental model"
+**Verification:** Product Owner reads report, loads CSVs into a viz tool, confirms: "I see the Auth blocker cascade; matches our mental model"
 
 ---
 
@@ -188,7 +188,7 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 ### Task 2.0: Correct Jira field provenance (native vs. custom fields)
 
 **Priority:** P0 (blocks Milestone 2's schema work — see rationale above)
-**Origin:** BP review, 2026-08-23. BP correctly identified that `Test Automation`, `External Blocker`, and `Cluster Tag` are not out-of-the-box Jira fields.
+**Origin:** PO review, 2026-08-23. PO correctly identified that `Test Automation`, `External Blocker`, and `Cluster Tag` are not out-of-the-box Jira fields.
 
 **PM research (confirmed via Atlassian sources — see session_log.md):**
 - Real Jira "Export CSV, All Fields" labels every **custom field** column as literally `Custom field (<Field Name>)` — this is documented, known Jira export behavior (Atlassian issues JRASERVER-62216 / JRACLOUD-62216), not optional or configurable.
@@ -197,26 +197,26 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 - **Not native — need the `Custom field (...)` treatment:**
   - `Waiting Reason` → `Custom field (Waiting Reason)`
   - `Test Automation` → `Custom field (Test Automation)`
-  - `External Blocker` → `Custom field (External Blocker)` — pending Issue #8's resolution, since BP flagged this column's meaning is unclear anyway
-- **Open design questions (need PM+BP decision, not Code's to default):**
+  - `External Blocker` → `Custom field (External Blocker)` — pending Issue #8's resolution, since PO flagged this column's meaning is unclear anyway
+- **Open design questions (need PM+PO decision, not Code's to default):**
   1. `Cluster Tag` — model as a bespoke `Custom field (Cluster Tag)`, or as Jira's **native** `Labels` field (built for exactly this kind of tagging)? Needs verifying Jira's actual `Labels` CSV export convention (single cell, multi-value how?) before deciding — not yet confirmed.
   2. `Cycle Time (days)` — this isn't a native Jira field *or* a typical custom field; real Jira doesn't export a computed cycle-time value directly (a reporting app would compute it from `Created`/`Resolved`, or a specific "time in status" app might add its own custom field for it). Decide: keep as a generator convenience value (clearly labeled as derived, not a real exported field), or drop it from the CSV and let a downstream dashboard compute it, matching real-world practice more closely?
 
-**Acceptance Criteria (draft — confirm with BP/PM before Code starts):**
+**Acceptance Criteria (draft — confirm with PO/PM before Code starts):**
 - Header renamed per the classification above
-- `Cluster Tag` and `Cycle Time (days)` open questions resolved by PM+BP before implementation (not decided unilaterally by Code)
+- `Cluster Tag` and `Cycle Time (days)` open questions resolved by PM+PO before implementation (not decided unilaterally by Code)
 - `specification/ARCHITECTURE.md`'s Jira CSV Schema table updated to show native vs. custom provenance per column
 - Regenerated CSV + updated tests
 - Issue #8 resolved as part of, or before, `External Blocker`'s renaming
 
-**Code's INVEST assessment (2026-08-23):** Not a single one-day-Iteration slice as scoped above — it bundles a confirmed rename (small), an unresolved external dependency on BP's Issue #8 answer, and two open design decisions that could go either way and change the diff shape. Recommend splitting:
+**Code's INVEST assessment (2026-08-23):** Not a single one-day-Iteration slice as scoped above — it bundles a confirmed rename (small), an unresolved external dependency on PO's Issue #8 answer, and two open design decisions that could go either way and change the diff shape. Recommend splitting:
 - **Task 2.0a (Small, Independent, ready now):** rename `Waiting Reason` and `Test Automation` to `Custom field (...)` — no open questions block these two. Doable in well under a day.
-- **Task 2.0b (Small, blocked on Issue #8):** rename/rework `External Blocker` once BP clarifies its intended meaning.
+- **Task 2.0b (Small, blocked on Issue #8):** rename/rework `External Blocker` once PO clarifies its intended meaning.
 - **Task 2.0c (Small, blocked on a `Labels`-vs-custom-field decision):** `Cluster Tag`'s real modeling — needs the `Labels` export-format check first.
 - **Task 2.0d (Small, blocked on a keep-vs-drop decision):** `Cycle Time (days)`'s fate.
 Each is independently mergeable; 2.0a can land in Iteration 3 regardless of what happens with 2.0b–d.
 
-**Resolved 2026-08-24 (BP's ruling on each, ahead of Code starting):**
+**Resolved 2026-08-24 (PO's ruling on each, ahead of Code starting):**
 - **2.0b:** `External Blocker` isn't a Jira field. Not relabeled — dropped. The internal-vs-external signal belongs to which blocker archetype produced the `Waiting Reason` (e.g. `ExternalDelay`'s template vs. `SharedCompFailure`'s), not a separate column.
 - **2.0c:** `Cluster Tag` → Jira's native `Labels` field, confirmed to export as repeated columns (one per occupied label slot), the same convention as `Sprint` (Issue #7) — not a single comma-joined cell.
 - **2.0d:** `Cycle Time (days)` isn't a Jira field. Dropped from the CSV; a real dashboard computes it from `Created`/`Resolved`. Kept internally since `xray_logs.py` and the validation report still use it.
@@ -228,16 +228,16 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 ### PBI 2.1: Live/actionable Status distribution (as-of reference date)
 
 **Priority:** P1 (blocks Milestone 1 fully satisfying `PROJECT.md`'s P1 Detection outcome as a *live* dashboard input, not just a retrospective one)
-**Origin:** BP, 2026-08-24 — "all lines in the CSV are in Status Done. We should have multiple stati, so the dashboard can point to actionable data, such as aging items."
+**Origin:** PO, 2026-08-24 — "all lines in the CSV are in Status Done. We should have multiple stati, so the dashboard can point to actionable data, such as aging items."
 
 **Root cause:** the generator has no "as-of" reference point within the 12-sprint timeline — it always generates as if the entire quarter has already concluded. `generate_features` hardcodes every feature row to `Status = "Done"` regardless of where it falls in the timeline, and (after today's persistence fix) every blocker row also resolves to `Done`. Real dashboards need a live snapshot: some items still open now, some resolved with history, some at risk of becoming a problem soon. `ARCHITECTURE.md`'s own schema already lists `"In Progress"` as a valid `Status` value — the generator has just never used it.
 
-**What BP is asking for, restated as three concrete row categories at some reference point in time ("as of" a chosen sprint/day within the quarter, not after it):**
+**What PO is asking for, restated as three concrete row categories at some reference point in time ("as of" a chosen sprint/day within the quarter, not after it):**
 1. **Currently blocked** — a cluster blocker whose active window straddles the as-of date: `Status = "Waiting"`, `Resolved` still null, `Waiting Reason` populated. (Today, every cluster blocker resolves — none are left genuinely open.)
 2. **Previously blocked, now resolved** — already implemented (today's persistence fix): `Status = "Done"`, `Waiting Reason` still populated.
 3. **Aging / at-risk candidates** — a feature still open (`Status = "In Progress"`, no `Resolved`) that's been open unusually long relative to typical cycle time for its squad — an early-warning signal, not yet an actual blocker.
 
-**Resolved 2026-08-24 (BP's ruling, then implemented same day):**
+**Resolved 2026-08-24 (PO's ruling, then implemented same day):**
 - **Aging is dashboard-computed** — "NOW()-Created at the time of the report," not a stored field. Simplifies category 3 to just: leave some features genuinely unresolved; nothing to pre-compute.
 - **Rejected a global as-of-date/truncation design** (would have cut most of the 12-sprint feature population, since a single as-of point early enough to catch the Auth cluster live would exclude sprints 2–12 entirely — conflicting with `TESTER.md`'s existing 540–720 feature row-count baseline). Implemented a smaller, narratively-consistent design instead:
   1. **Currently blocked:** each cascade squad's (Checkout, Payments) *final* blocker day stays `Status = "Waiting"`, `Resolved` null — the root's "resolves day 3" is a completed fact per `BACKLOG.md`; "downstream clears day 4" is a *lag* relative to that, so the last step of propagation hasn't happened yet as of the report. The root (Auth) itself always fully resolves.
@@ -251,12 +251,12 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 
 ## Milestone 2 (continued): 5-Squad + DataPlatform Scope
 
-**Goal:** Validate that a second, independent blocker cluster (DataPlatform delay) produces similar cascading behavior. Expand to 5 squads (Auth, Checkout, Payments, Core Banking, Savings), add external dependency (DataPlatform), generate optimized dataset where the DataPlatform cluster is mocked/reduced. Business partner confirms: "If we mock the DataPlatform API, do we see flow improvement?"
+**Goal:** Validate that a second, independent blocker cluster (DataPlatform delay) produces similar cascading behavior. Expand to 5 squads (Auth, Checkout, Payments, Core Banking, Savings), add external dependency (DataPlatform), generate optimized dataset where the DataPlatform cluster is mocked/reduced. Product Owner confirms: "If we mock the DataPlatform API, do we see flow improvement?"
 
 **Done-Done Criteria:**
 - DataPlatform cluster visible in data (weeks 6–10), cascades to Core Banking → Savings
 - Optimized dataset shows blocker reduction when DataPlatform cluster is mocked (P2 Metric B)
-- Business partner validates both datasets load + correlate correctly
+- Product Owner validates both datasets load + correlate correctly
 
 ---
 
@@ -345,7 +345,7 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 
 ---
 
-### Task 2.6: Validate & document V2 (for business partner review)
+### Task 2.6: Validate & document V2 (for Product Owner review)
 **Priority:** P1  
 **Size:** Small  
 **Acceptance Criteria:**
@@ -360,13 +360,13 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 
 **Input to Code:** Tasks 2.1–2.5  
 **Output:** Validation report + updated README  
-**Verification:** Business partner: "I see Auth + DataPlatform clusters; mocking DataPlatform shows flow improvement. This proves the hypothesis. Ready for full 8-squad dataset."
+**Verification:** Product Owner: "I see Auth + DataPlatform clusters; mocking DataPlatform shows flow improvement. This proves the hypothesis. Ready for full 8-squad dataset."
 
 ---
 
 ## Milestone 3: Full 8-Squad + 3 Clusters + CLI + Reusability
 
-**Goal:** Merge all squads (Loans, Invoicing, Collections) + all external dependencies (CRM, Loans Rule Engine, BPM, ESB) + 3rd cluster (Checkout instability). Parameterize generator (CLI, config files, reproducibility). Handoff to business partner as reusable tool.
+**Goal:** Merge all squads (Loans, Invoicing, Collections) + all external dependencies (CRM, Loans Rule Engine, BPM, ESB) + 3rd cluster (Checkout instability). Parameterize generator (CLI, config files, reproducibility). Handoff to Product Owner as reusable tool.
 
 ---
 
@@ -496,7 +496,7 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 
 **Input to Code:** All tasks + ARCHITECTURE.md  
 **Output:** README + updated docs + example CSVs  
-**Verification:** Business partner runs generator, loads CSVs into dashboard, sees "crime neighborhoods," validates hypothesis: "Percolation model holds; interventions reduce density; flow improves."
+**Verification:** Product Owner runs generator, loads CSVs into dashboard, sees "crime neighborhoods," validates hypothesis: "Percolation model holds; interventions reduce density; flow improves."
 
 ---
 
@@ -504,7 +504,7 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 
 | Task | Trigger | Priority |
 |------|---------|----------|
-| **P3 Simulation (what-if engine)** | Business partner validates Milestones 1–2; wants to run scenario: "What if we mock CRM instead of DataPlatform?" | P3 |
+| **P3 Simulation (what-if engine)** | Product Owner validates Milestones 1–2; wants to run scenario: "What if we mock CRM instead of DataPlatform?" | P3 |
 | **P4 Prediction (forecasting)** | Simulation works; client wants early-warning system ("Squad X will halt in 3 days") | P3 |
 | **Production incident correlation** | Client wants to link blockers to actual prod incidents from their monitoring | P4 |
 | **Resource utilization data** | Dashboard recommends "add 2 nodes to Auth service" (requires resource estimates per squad) | P4 |
@@ -516,9 +516,9 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 ## Key INVEST Principles (Enforced per Milestone)
 
 1. **Independent:** Each iteration produces a complete dataset (tests, docs, validation) independent of downstream iterations
-2. **Valuable:** At end of Milestone 1, business partner can load Auth-cluster data and validate hypothesis; at end of Milestone 2, can compare high-density vs. optimized and see flow improvement
+2. **Valuable:** At end of Milestone 1, Product Owner can load Auth-cluster data and validate hypothesis; at end of Milestone 2, can compare high-density vs. optimized and see flow improvement
 3. **Estimable:** Task sizes mapped (P0 = small, P1 = moderate, no task >1 iteration)
-4. **Testable:** Each task has explicit verification steps (automated tests + manual validation with business partner)
+4. **Testable:** Each task has explicit verification steps (automated tests + manual validation with Product Owner)
 5. **Small:** No task blocks another; parallelizable (e.g., Task 1.4 and 1.5 can run in parallel once 1.1–1.3 are done)
 6. **Negotiable:** If Task 1.6 validation reveals the data doesn't match business expectations, backlog is updated before Milestone 2 (no late surprises)
 
@@ -526,9 +526,9 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 
 ## Blockers & Dependencies
 
-- **None at this point.** Assume each iteration clears its tasks before handoff to business partner.
-- **Decision point after Milestone 1:** Business partner signs off on Auth-cluster data before proceeding to Milestone 2.
-- **Decision point after Milestone 2:** Business partner confirms mocking scenario (P2 Metric B) works before proceeding to Milestone 3.
+- **None at this point.** Assume each iteration clears its tasks before handoff to Product Owner.
+- **Decision point after Milestone 1:** Product Owner signs off on Auth-cluster data before proceeding to Milestone 2.
+- **Decision point after Milestone 2:** Product Owner confirms mocking scenario (P2 Metric B) works before proceeding to Milestone 3.
 
 ---
 

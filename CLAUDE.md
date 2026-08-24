@@ -8,7 +8,7 @@ the pointed-to file wins; fix this file instead of trusting the copy.
 
 ## Read first, in this order
 
-1. `TEAM_OPERATING_SYSTEM.md` — how PM/Code/BP communicate, GitHub workflow, cadence
+1. `TEAM_OPERATING_SYSTEM.md` — how PM/Code/PO communicate, GitHub workflow, cadence
 2. `DEFINITION_OF_DONE.md` — decision rights, governance rules, done-done criteria
 3. `specification/PROJECT.md`, `specification/ARCHITECTURE.md`,
    `specification/BACKLOG.md`, `specification/TESTER.md` — the single source
@@ -36,7 +36,7 @@ you're about to run `git checkout -b`:
 
 - **Sprint** — the synthetic dataset's own domain concept
   (`Sprint-1..Sprint-12` in `specification/ARCHITECTURE.md`). Never ours.
-- **Iteration** — our one-day delivery timebox (BP/PM/Code). See
+- **Iteration** — our one-day delivery timebox (PO/PM/Code). See
   `TEAM_OPERATING_SYSTEM.md`'s Terminology note and Daily Iteration Cadence
   section.
 - **Milestone** — a vertical-slice grouping of BACKLOG.md tasks (e.g.

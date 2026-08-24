@@ -203,7 +203,7 @@ SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00
 
 ---
 
-**Core Columns (corrected 2026-08-23, PBI 2.0a/b/c/d — BP's ruling on each):**
+**Core Columns (corrected 2026-08-23, PBI 2.0a/b/c/d — PO's ruling on each):**
 
 | Column | Type | Example | Rules |
 |--------|------|---------|-------|
@@ -218,7 +218,7 @@ SQ-A-15, Fix session cache corruption, Story, Done, auth-squad, 2026-07-01T09:00
 | `Custom field (Test Automation)` | String | "Manual" \| "Selenium" \| "Postman" \| "Swagger" \| "Perfecto Mobile" | PBI 2.0a — not a native Jira field, exported as a custom field. Primary automation type (if any) |
 | `Labels` | String, repeated column per value | "Cluster-1-Auth" | PBI 2.0c — `Cluster Tag` was never a real field; Jira's native `Labels` field is the right fit. Like `Sprint`, a real Jira export repeats this header once per occupied slot (confirmed: Atlassian JRACLOUD-85433/JRASERVER-63747), not a single comma-joined cell. Only cluster blockers carry a label today; feature rows have none |
 
-**Dropped (not real Jira fields, per BP's 2026-08-23 ruling):**
+**Dropped (not real Jira fields, per PO's 2026-08-23 ruling):**
 - `Cycle Time (days)` — Jira doesn't export a computed cycle time; a real dashboard computes it from `Created`/`Resolved` (PBI 2.0d). Kept as an internal generator value for `xray_logs.py` and the validation report, just not written to the CSV.
 - `External Blocker` — not a Jira field either. The internal-vs-external signal it carried belongs to which blocker archetype produced the `Waiting Reason` text (e.g. `SharedCompFailure`'s internal template vs. `ExternalDelay`'s external one), not a separate boolean column (PBI 2.0b). No archetype other than `SharedCompFailure` is used yet (external dependencies are still deferred, Task 1.1), so this distinction isn't visible in Milestone 1's data — it will become visible once Milestone 2 introduces `ExternalDelay`.
 

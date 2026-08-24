@@ -1,10 +1,10 @@
 # Blocker Generator — Definition of Done (Verification & Validation)
 
 **Status:** Validation framework  
-**Purpose:** Executable checklist for confirming each iteration's dataset is production-ready for business partner review  
+**Purpose:** Executable checklist for confirming each iteration's dataset is production-ready for Product Owner review  
 
 **Terminology (corrected 2026-08-23):** **Sprint** = the synthetic dataset's own domain concept (never ours). **Iteration** = our one-day delivery timebox (see `TEAM_OPERATING_SYSTEM.md`'s Daily Iteration Cadence). **Milestone** (below, e.g. "Milestone 1") = a vertical-slice grouping of backlog tasks that can span several Iterations — don't assume one Milestone fits in one Iteration.
-**Audience:** Code (automated checks), PM (manual spot-checks), Business Partner (sign-off)
+**Audience:** Code (automated checks), PM (manual spot-checks), Product Owner (sign-off)
 
 ---
 
@@ -12,7 +12,7 @@
 
 1. **Automated Checks** (Code runs these; deterministic, <5 min)
 2. **Manual Spot-Checks** (PM runs these; sample-based, ~15 min)
-3. **Business Partner Validation** (Decision gate; qualitative, ~30 min)
+3. **Product Owner Validation** (Decision gate; qualitative, ~30 min)
 
 ---
 
@@ -139,11 +139,11 @@
 
 ---
 
-### Business Partner Validation (Sign-Off Gate; ~20–30 min)
+### Product Owner Validation (Sign-Off Gate; ~20–30 min)
 
 **Narrative Validation:**
 
-> BP reviews directly from `main` (corrected 2026-08-23 — "Done" means merged to `main`; artifacts live in `data/`/`docs/` there, no need to upload files to a session for review):
+> PO reviews directly from `main` (corrected 2026-08-23 — "Done" means merged to `main`; artifacts live in `data/`/`docs/` there, no need to upload files to a session for review):
 > 1. `data/v1_auth_cluster_high_density.csv` + `data/v1_auth_cluster_test_logs.csv`
 > 2. `docs/VALIDATION_REPORT_Milestone_1.md` (auto-generated summary: row counts, blocker density, cluster timeline)
 > 3. A simple Tableau/Grafana/Excel pivot showing:
@@ -153,7 +153,7 @@
 > 4. This question: "Does this pattern match how Auth blockers actually cascade through your squads?"
 
 **Sign-Off Criteria (Qualitative):**
-- [ ] Business partner recognizes Auth → Checkout/Payments cascade (says "yes, this matches")
+- [ ] Product Owner recognizes Auth → Checkout/Payments cascade (says "yes, this matches")
 - [ ] Waiting reasons are realistic (not random noise)
 - [ ] Blocker timeline makes sense (dense in weeks 3–5, sparse elsewhere)
 - [ ] Test automation coverage aligns with their reality (50% Selenium, 10% API, rest manual)
@@ -229,7 +229,7 @@ All Milestone 1 checks apply here, plus:
    - [ ] High-density: 2–3 blockers (waiting on Core Banking, which is waiting on DataPlatform)
    - [ ] Optimized: 0 blockers (Core Banking unblocked → Savings unblocked)
 
-**Comparison Table (for business partner):**
+**Comparison Table (for Product Owner):**
 | Metric | High-Density | Optimized (w/ Mocking) | Improvement |
 |--------|--------------|------------------------|-------------|
 | Total Blockers | 40–50 | 20–30 | -40–50% |
@@ -239,7 +239,7 @@ All Milestone 1 checks apply here, plus:
 
 ---
 
-### Business Partner Validation (Sign-Off Gate; ~30 min)
+### Product Owner Validation (Sign-Off Gate; ~30 min)
 
 > Provide:
 > 1. High-density + optimized CSVs + test logs (all 4 files)
@@ -248,7 +248,7 @@ All Milestone 1 checks apply here, plus:
 > 4. This question: "If we mocked the DataPlatform API, would your flow improve like this?"
 
 **Sign-Off Criteria:**
-- [ ] Business partner sees the mocking scenario and validates: "Yes, mocking DataPlatform would unblock Core Banking, Savings, Loans. This shows how we can improve flow."
+- [ ] Product Owner sees the mocking scenario and validates: "Yes, mocking DataPlatform would unblock Core Banking, Savings, Loans. This shows how we can improve flow."
 - [ ] No objections to the blocker reduction (40–50% feels realistic for that intervention)
 - [ ] Agrees that Metric B (mocking reduces blockage) is proven
 
@@ -340,7 +340,7 @@ All Milestone 1–2 checks apply, plus:
 
 ---
 
-### Business Partner Validation (Final Sign-Off; ~45 min)
+### Product Owner Validation (Final Sign-Off; ~45 min)
 
 > Provide:
 > 1. Full 8-squad high-density + optimized CSVs + test logs (all 4 files)
@@ -353,7 +353,7 @@ All Milestone 1–2 checks apply, plus:
 >    - "Is this dataset credible enough to show in an RFP demo?"
 
 **Sign-Off Criteria:**
-- [ ] Business partner recognizes all 3 clusters (Auth, DataPlatform, Checkout)
+- [ ] Product Owner recognizes all 3 clusters (Auth, DataPlatform, Checkout)
 - [ ] Cascade logic feels authentic (not random)
 - [ ] Blocker density targets (30–40% → 15–20%) match their mental model of "percolation threshold"
 - [ ] Data is "client-ready" (realistic enough for RFP, not obviously synthetic)
@@ -363,7 +363,7 @@ All Milestone 1–2 checks apply, plus:
 > "This dataset proves the percolation hypothesis. The 8-squad finance model is credible and ready to demo to clients. I'm confident this is our ROI platform for the dashboard."
 
 **Follow-Up:**
-- [ ] Business partner identifies any features/clusters that need adjustment for their specific context
+- [ ] Product Owner identifies any features/clusters that need adjustment for their specific context
 - [ ] Any post-MVP priorities (Simulation, Prediction, etc.) are logged for post-launch roadmap
 
 ---
@@ -396,7 +396,7 @@ All Milestone 1–2 checks apply, plus:
 
 ---
 
-## Verification Workflow (Code + PM + Business Partner)
+## Verification Workflow (Code + PM + Product Owner)
 
 ```
 Milestone N Development:
@@ -409,13 +409,13 @@ PM runs Manual Spot-Checks (~15 min) ← Sample-based validation
   ↓
 Generate VALIDATION_REPORT.md ← Auto-summary of datasets
   ↓
-Schedule Business Partner Review (~30 min)
+Schedule Product Owner Review (~30 min)
   ↓
-Business Partner loads CSVs into viz tool ← Sees "crime neighborhoods"
+Product Owner loads CSVs into viz tool ← Sees "crime neighborhoods"
   ↓
-Business Partner validates narrative: "Does this match reality?"
+Product Owner validates narrative: "Does this match reality?"
   ↓
-Business Partner signs off (statement required) ← Gate to next iteration
+Product Owner signs off (statement required) ← Gate to next iteration
   ↓
 (If sign-off fails: backlog updated, tasks re-run, cycle repeats)
 ```
