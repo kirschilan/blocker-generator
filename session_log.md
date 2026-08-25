@@ -492,3 +492,43 @@ forcing a premature ruling.
 **Status:** Iteration 3 fully closed — single trunk (`main`), retro
 converted to concrete doc changes where the PO gave a clear direction,
 explicitly parked where it didn't.
+
+---
+
+**Iteration 4 (2026-08-25) — Task 2.1: 5-squad + DataPlatform squad model:**
+
+PM/Code proposed pulling only Task 2.1 into today's Iteration (PO explicitly
+asked for a realistic, Done-able-today proposal, not a development session —
+"recall that I am human"). PO approved as proposed: "I like this plan. Go
+ahead. We'll examine the resulting artifacts and decide afterwards if
+there's capacity for more Done-able work."
+
+Before starting, merged Iteration 3's retro follow-through branch
+(`claude/blocker-generator-meeting-8ogayj`, commit `37910ab`) into `main`
+so today's work forked from a clean trunk.
+
+**Implemented:** `build_five_squad_subgraph()` in `squads.py` — Auth,
+Checkout, Payments (unchanged from Task 1.1) + Core Banking, Savings.
+Added a new `Squad.external_depends_on` field rather than following
+BACKLOG.md's literal Task 2.1 test line (`CoreBanking.depends_on ==
+[Auth, DataPlatform]`) exactly — that line mixes a squad id and an
+external system name in one list, which would have broken the existing
+invariant (`depends_on` is squad-ids-only) that Task 1.1's own tests
+already rely on. `CoreBanking.depends_on == [Auth]`,
+`CoreBanking.external_depends_on == [DataPlatform]` — same fact, cleaner
+types. Documented as a Code implementation-detail decision (no PO
+sign-off needed per `DEFINITION_OF_DONE.md`'s Decision Rights) directly
+in BACKLOG.md's Task 2.1 resolution note.
+
+Scope held deliberately narrow, matching Task 1.1's own precedent: Core
+Banking's squad-level dependency on Payments (present in `ARCHITECTURE.md`'s
+full Interdependency Graph) is not modeled in this slice. Not wired into
+`__main__.py` or feature/cluster generation — that starts at Task 2.2.
+
+6 new tests added (`tests/test_squads.py`); 67/67 pass. Spot-checked
+`print_adjacency(build_five_squad_subgraph())` output by hand, matches
+`ARCHITECTURE.md`'s topology for this slice exactly.
+
+**Status:** Task 2.1 Done-Done. Awaiting PO's review of the artifacts
+before deciding whether today has capacity for more (per PO's own framing
+of how today would proceed).

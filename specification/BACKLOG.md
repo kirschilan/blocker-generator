@@ -20,6 +20,7 @@
 | 1 | 2026-08-22 | Complete (timeboxed out) | Land Milestone 1 (Auth Squad + Cluster) to Done-Done — **Not Done** |
 | 2 | 2026-08-23 | Complete | Land Milestone 1 to Done-Done — **Done**; Fix Issue #7 (Sprint CSV format) — **Done**; PBR — Task 2.0 candidate PBIs drafted |
 | 3 | 2026-08-24 | Complete | PBI 2.0a — **Done**; Issue #8 — **Done**; PBI 2.0b/c/d — **Done**; Xray Issue #9 research + fix (Flaky/Automation Coverage % dropped) — **Done**; PBI 2.1 (live Status distribution: Waiting/Done/In Progress) — **Done**; Xray `Test Type` gap and row-shape gap — flagged, not started (need design input) |
+| 4 | 2026-08-25 | Complete | Task 2.1 — 5-squad + DataPlatform external dependency — **Done** |
 
 Full narrative for each Iteration (root causes, decisions, rationale) lives in `session_log.md` — this table is a status index, not a replacement for it.
 
@@ -42,7 +43,8 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 | Xray Issue #9 — drop `Flaky`/`Automation Coverage %` (not real Xray fields) | Milestone 1 (hardening) | Done (Iteration 3) |
 | Xray gap — `Test Type` values (tool names vs. Manual/Cucumber/Generic) | Milestone 2 (prerequisite) | Not started — needs a design decision, Issue #9 |
 | Xray gap — real exports are one row per Test Run, not aggregated counts | Milestone 2+ (future) | Not started — noted, not attempted; bigger structural change |
-| Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Not started — not yet broken into individual PBIs |
+| Task 2.1 — Extend squad model to 5 squads + DataPlatform external dependency | Milestone 2 | Done (Iteration 4) — see resolution note below |
+| Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Task 2.1 done; Tasks 2.2–2.6 not yet started |
 | Milestone 3 scope: Full 8-Squad + 3 clusters + CLI | Milestone 3 | Not started — not yet broken into individual PBIs |
 
 ---
@@ -272,6 +274,8 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 **Input to Code:** ARCHITECTURE.md "Squad Topology" + "External Dependencies"  
 **Output:** Updated Python dataclass instantiation (5 squads + DataPlatform)  
 **Test:** `assert CoreBanking.depends_on == [Auth, DataPlatform]`
+
+**Resolved 2026-08-25 (Iteration 4), Code's implementation note:** the literal test above mixes a squad id and an external system name in one list; implemented instead with a new, separate `Squad.external_depends_on` field so `depends_on` keeps its existing invariant (squad ids only — every Task 1.1 test relies on this). `CoreBanking.depends_on == [Auth]` and `CoreBanking.external_depends_on == [DataPlatform]` — same fact the literal test was reaching for, without overloading one field with two types. Like Task 1.1, this slice is still narrower than the full topology: Core Banking's squad-level dependency on Payments (`ARCHITECTURE.md`'s Interdependency Graph) isn't modeled yet — out of this task's stated scope. `build_five_squad_subgraph()` added alongside (not replacing) `build_auth_subgraph()`; Milestone 1's dataset generation (`__main__.py`) is untouched. 6 new tests added (`tests/test_squads.py`), 67/67 pass. Not yet wired into feature/cluster generation — that's Task 2.2 onward.
 
 ---
 
@@ -539,4 +543,5 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 | 2026-08-22 | Backlog restructured as vertical slices (Sprint 1: Auth + 1 cluster; Sprint 2: 5 squads + 2 clusters + mocking; Sprint 3: full 8 squads + all clusters + CLI). Each sprint produces complete, testable data for business partner validation. INVEST principles enforced. | Ready for Code |
 | 2026-08-23 | Renamed our delivery timebox from "Sprint" to "Iteration" throughout (headers, sign-off gates, INVEST section) to stop colliding with the dataset's own domain concept (`Sprint-1..Sprint-12` in ARCHITECTURE.md). No scope change — same three vertical slices, same acceptance criteria. | PM + Code + BP (Kirschi) |
 | 2026-08-23 | Task 1.4 corrected: original "20–30% global blocker density" was mathematically impossible for the 3-squad/1-cluster slice (copied from the full 8-squad/3-cluster model without rescaling — see `pm-ffutq6` branch's diagnosis). Ruling: density is window-scoped (within the cluster's own week), not global. `Waiting Reason` now persists after a blocker resolves (needed for retrospective cluster detection, PROJECT.md P1). External-dependency deferral (Task 1.1) confirmed standing. | PM + Code + BP (Kirschi), formalizing a ruling first made 2026-08-22 |
+| 2026-08-25 | Task 2.1 done: 5-squad + DataPlatform squad model, `Squad.external_depends_on` added as a separate field rather than overloading `depends_on`. Iteration 4 kickoff deliberately scoped to this one task only (PO: focus on what's realistically Done-Done today). | PO + PM + Code |
 
