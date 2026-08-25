@@ -20,7 +20,7 @@
 | 1 | 2026-08-22 | Complete (timeboxed out) | Land Milestone 1 (Auth Squad + Cluster) to Done-Done — **Not Done** |
 | 2 | 2026-08-23 | Complete | Land Milestone 1 to Done-Done — **Done**; Fix Issue #7 (Sprint CSV format) — **Done**; PBR — Task 2.0 candidate PBIs drafted |
 | 3 | 2026-08-24 | Complete | PBI 2.0a — **Done**; Issue #8 — **Done**; PBI 2.0b/c/d — **Done**; Xray Issue #9 research + fix (Flaky/Automation Coverage % dropped) — **Done**; PBI 2.1 (live Status distribution: Waiting/Done/In Progress) — **Done**; Xray `Test Type` gap and row-shape gap — flagged, not started (need design input) |
-| 4 | 2026-08-25 | Complete | Task 2.1 — 5-squad + DataPlatform external dependency — **Done**; Task 2.2 — inject DataPlatform cluster, verified against a real CSV — **Done** |
+| 4 | 2026-08-25 | Complete | Task 2.1 — 5-squad + DataPlatform external dependency — **Done**; Task 2.2 — inject DataPlatform cluster, verified against a real CSV — **Done**; 3 new Product Backlog items added from CSV row-order finding (2 bugs + 1 improvement PBI, deferred to Iteration 5) — no work commenced; documentation gaps closed (`ARCHITECTURE.md` Cluster 2 timeline, Task 2.3 housekeeping note, sort-order research requirement) |
 
 Full narrative for each Iteration (root causes, decisions, rationale) lives in `session_log.md` — this table is a status index, not a replacement for it.
 
