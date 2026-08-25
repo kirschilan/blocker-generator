@@ -10,7 +10,9 @@
 
 One source of truth, lightweight communication, asynchronous-first (you're on iPad, Mac, iPhone, PC—work wherever you are without waiting).
 
-**Terminology:** "Iteration" is our own one-day delivery timebox (PO/PM/Code). "Sprint" is reserved for the synthetic dataset's own domain concept — the fictional squads' 12-sprint quarter (see `specification/ARCHITECTURE.md`). Don't conflate the two.
+**Terminology:** "Iteration" is our own one-day delivery timebox (PO/PM/Code). "Sprint" is reserved for the synthetic dataset's own domain concept — the fictional squads' 12-sprint quarter (see `specification/ARCHITECTURE.md`). "Milestone" is a vertical-slice grouping of backlog tasks, potentially spanning several Iterations. Don't conflate any of the three.
+
+**Call out mixups, including the PO's own (added 2026-08-25, PO's explicit request):** this product is laden with potential for terminology confusion (Sprint/Iteration/Milestone, and previously Business Partner/Product Owner). PM/Code should flag a mixup the moment it appears in conversation — including when the PO is the one who said it — rather than silently going along with it or only correcting other parties. Say what was said, what it likely meant, and continue; don't let a slip stand uncorrected just because correcting the PO feels awkward.
 
 ---
 
@@ -402,4 +404,5 @@ Everything is in git; no risk of losing work.
 |------|---------|--------------|---------------|
 | 2026-08-22 | PM Alignment on DoD | Kirschi (BP), PM, (Code pending) | GitHub as source of truth; Tester.md is shared agreement (not a role); three-party verification (Code automated, PM manual, BP narrative) |
 | 2026-08-23 | Iteration 1 Retro | Kirschi (BP), PM, Code | Weekly cadence replaced with one-day Iterations (calibrate throughput before committing scope); "Sprint" renamed to "Iteration" for our own cadence; trunk-based development adopted (branch per task, merged before session ends); `CLAUDE.md` created to enforce branching without duplicating `/specification/` |
+| 2026-08-25 | Iteration 4 Retro | Kirschi (PO), PM, Code | Added explicit instruction: PM/Code call out a terminology mixup the moment it appears, including the PO's own ("close the sprint" for "close the Iteration") — this product's terminology (Sprint/Iteration/Milestone) has caused real confusion multiple times already, so the correction applies symmetrically, not just to Code/PM's own slips |
 

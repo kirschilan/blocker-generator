@@ -679,3 +679,85 @@ mid-Iteration. Recorded here so they aren't lost between now and then.
 
 No source or test files touched this round; 80/80 tests still pass
 (unaffected, doc-only change).
+
+---
+
+**Iteration 4 Retrospective — closed 2026-08-25:**
+
+Seven candidate topics (working software, architecture improvement, no
+work commenced on findings, dependent-artifact drift, trunk-based
+development vs. Done, terminology mixups, velocity) — PO's rulings on
+each, and what actually changed:
+
+**1 & 2 — Working software as the default outcome of Done.** PO: "Working
+software should be the normal and implicit outcome of a Done PBI. The
+exception... should be stated so explicitly." Added `DEFINITION_OF_DONE.md`
+Governance Rule 9 (Working Software Is the Default Outcome of Done) and a
+matching checklist line on Artifact 5 (Code & Generated Data). A PBI's
+Done statement must now say explicitly which case applies: behavior
+changed (show it), or deliberately unchanged (show how "unchanged" was
+verified).
+
+**3 — Testing philosophy.** PO: "That is normal for software development.
+As long as our TESTER is robust enough to catch what we already did, we
+should be OK. Surprises will keep happening." Explicitly closed with NO
+rule change -- declined the "manually eyeball CSV rows" standing practice
+I'd proposed. The actual bar: regression coverage for bug classes already
+found (already true -- both today's bugs got regression tests), not a
+blanket promise to prevent all future surprises.
+
+**4 — Dependent artifacts move together.** PO asked what should happen so
+downstream docs (e.g. `ARCHITECTURE.md`) update before a PBI is Done, when
+upstream artifacts (code) change. Added `DEFINITION_OF_DONE.md` Governance
+Rule 10 (Dependent Artifacts Move Together): before Done, Code greps
+`specification/*.md` for the domain concept being changed, not just
+re-reads the file already being edited -- a mechanism, not a promise,
+matching the style of `CLAUDE.md`'s rename-verification rule.
+
+**5 — Trunk-based development vs. Done.** PO: "This should be implicit by
+definition of Trunk Based Development. Do you forecast conditions when a
+branch should remain open and the PBI would be considered Done?" Answer:
+no -- this project's own DoD already requires PO sign-off before Done, and
+in a trunk-based, single-day-Iteration, few-participant flow, sign-off and
+merge are the same event. No external review queue, staged-rollout gate,
+or compliance hold exists in this project's actual operating model that
+would justify a gap between the two. Made this explicit in Rule 7 rather
+than leaving it merely implicit, since implicit cross-document consistency
+is exactly the failure mode Rule 10 (above) exists to close.
+
+**6 — Terminology mixups, symmetrically.** PO: "Call me (PO) out when I
+make a terminology mixup. Ours is a product laden with potential for
+confusion over terminology." Added to `TEAM_OPERATING_SYSTEM.md`'s
+Terminology note: PM/Code flag a mixup the moment it appears, including
+the PO's own (e.g. "close the sprint" for "close the Iteration," this
+same conversation) -- not just correct other parties' slips.
+
+**7 — Velocity, visualized:**
+
+```
+Velocity -- PBIs Done per Iteration (specification/BACKLOG.md, verified count)
+
+Iteration 1 (Aug 22) |                        0
+Iteration 2 (Aug 23) |######                  2
+Iteration 3 (Aug 24) |###################     7
+Iteration 4 (Aug 25) |######                  2
+                      +--+--+--+--+--+--+--+--+
+                      0  1  2  3  4  5  6  7  8
+```
+
+Caveat, per this team's own "no inflated numbers" standard (Iteration 3
+retro): Iteration 3's "7" bundles PBI 2.0b/c/d -- three mechanical outputs
+from a single PO ruling made in one exchange -- alongside Issue #8, PBI
+2.0a, PBI 2.1, and the Xray Issue #9 fix. Iteration 4's "2" required more
+rigor per item (a real generated CSV, a bug caught by reading actual rows
+and fixed with regression tests, stale-doc correction). Raw PBI count is
+not an apples-to-apples throughput measure across Iterations -- read as a
+rough shape (Iteration 1's honest zero, a big Iteration 3, a smaller but
+more rigor-heavy Iteration 4), not a precise rate.
+
+**Status:** Iteration 4 retro closed. Two Governance Rules added (9, 10),
+one amended (7), one terminology-symmetry instruction added to
+`TEAM_OPERATING_SYSTEM.md`, one item explicitly closed with no change,
+one velocity chart produced. All logged in `DEFINITION_OF_DONE.md`'s and
+`TEAM_OPERATING_SYSTEM.md`'s own Session Log tables per their respective
+change-approval rules.
