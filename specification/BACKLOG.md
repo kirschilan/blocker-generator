@@ -45,6 +45,9 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 | Xray gap — real exports are one row per Test Run, not aggregated counts | Milestone 2+ (future) | Not started — noted, not attempted; bigger structural change |
 | Task 2.1 — Extend squad model to 5 squads + DataPlatform external dependency | Milestone 2 | Done (Iteration 4) — see resolution note below |
 | Task 2.2 — Inject DataPlatform cluster (weeks 6–10) | Milestone 2 | Done (Iteration 4) — see resolution note below |
+| Bug — CSV row order isn't sorted (Waiting rows cluster at the bottom) | Milestone 2 (hardening) | Not started — found in Task 2.2 (PO's question), deferred to Iteration 5 per PO. Do not commence. Detail: session_log.md, Iteration 4. |
+| Bug — Issue Key numbering doesn't reflect chronological creation order | Milestone 2 (hardening) | Not started — found alongside the row-sort bug in Task 2.2, deferred to Iteration 5 per PO. Do not commence. Detail: session_log.md, Iteration 4. |
+| PBI — Improve Waiting-issue generation logic | Milestone 2 | Not started — deferred to Iteration 5 per PO. Do not commence. Detail: session_log.md, Iteration 4. |
 | Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Tasks 2.1–2.2 done; Tasks 2.3–2.6 not yet started |
 | Milestone 3 scope: Full 8-Squad + 3 clusters + CLI | Milestone 3 | Not started — not yet broken into individual PBIs |
 
@@ -556,4 +559,5 @@ Scope explicitly NOT included (Task 2.3's job): tuned combined blocker density (
 | 2026-08-23 | Task 1.4 corrected: original "20–30% global blocker density" was mathematically impossible for the 3-squad/1-cluster slice (copied from the full 8-squad/3-cluster model without rescaling — see `pm-ffutq6` branch's diagnosis). Ruling: density is window-scoped (within the cluster's own week), not global. `Waiting Reason` now persists after a blocker resolves (needed for retrospective cluster detection, PROJECT.md P1). External-dependency deferral (Task 1.1) confirmed standing. | PM + Code + BP (Kirschi), formalizing a ruling first made 2026-08-22 |
 | 2026-08-25 | Task 2.1 done: 5-squad + DataPlatform squad model, `Squad.external_depends_on` added as a separate field rather than overloading `depends_on`. Iteration 4 kickoff deliberately scoped to this one task only (PO: focus on what's realistically Done-Done today). | PO + PM + Code |
 | 2026-08-25 | Task 2.2 done, same Iteration: PO pushed back that Task 2.1 alone had no measurable working-software delta ("Working software is the primary measure of progress" — what's Done today?). Pulled Task 2.2, generated and committed a real CSV, and caught a real bug (Cluster 2's summary text hardcoded to Cluster 1's) by testing that actual file instead of only aggregate assertions. | PO + PM + Code |
+| 2026-08-25 | PO spotted a second real issue by reading the committed CSV directly (all Waiting rows clustered at the bottom): traced to two root causes, not fixed today — added as 3 new Product Backlog items (2 bugs + 1 improvement PBI), explicitly deferred to Iteration 5, no work commenced. | PO + PM + Code |
 

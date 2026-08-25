@@ -584,3 +584,57 @@ today, verified against Task 2.2's own acceptance criteria via the real
 file. Task 2.3 (tuned combined density, official `v2_...` naming, row-
 count range, optimized variant, test logs, validation report) remains
 unstarted and out of today's scope.
+
+---
+
+**Iteration 4, continued — 3 new Product Backlog items from reading the
+actual CSV (no work commenced, per PO's explicit instruction):**
+
+PO, examining `data/task_2.2_five_squad_two_clusters.csv` directly: "I see
+that all Waiting issues are towards the bottom of the CSV. Is that
+deliberate?" Investigated (read-only, no code changes) and confirmed via
+the real file:
+
+**Root cause 1 -- CSV row order isn't sorted by anything.** Not deliberate:
+`generate_dataset()` returns `features + blockers` (every Story row, then
+every Sub-task row appended as one block); `write_jira_csv` writes rows in
+exactly that order with zero sorting anywhere in the pipeline. Since
+`Status = "Waiting"` only ever occurs on blocker rows, and blockers are
+100% of the tail block, every Waiting row is structurally guaranteed to
+land near the bottom. Confirmed on the actual file: all 3 Waiting rows sit
+at positions 1061, 1064, 1074 of 1075 total rows. Confirmed the CSV isn't
+sorted by `Created` date either (checked programmatically) -- this is a
+Governance-Rule-8 (Vendor Format Verification) miss: nobody checked our
+row order against what a real Jira CSV export actually looks like.
+
+**Root cause 2 -- Issue Key numbers don't track chronological creation
+order.** A squad's blocker rows (created week 3 or week 6) get *higher*
+key numbers than that squad's features spanning all 12 weeks, because keys
+are assigned in generation order (all of a squad's features first, then
+its blockers) not creation-date order. Sorting the CSV by `Created` alone
+would leave Issue Keys jumping backward and forward -- a real Jira
+project's keys are assigned in the order tickets are actually opened.
+Deeper than root cause 1: fixing it touches Issue Key assignment, which
+ripples into existing tests and the specific example keys already
+documented in `TESTER.md` (e.g. `SQ-A-214`).
+
+**Also raised, not a bug but a design gap:** only 3 Waiting rows exist
+across 1,075 total rows (the last cascade-tail day per cluster, per PBI
+2.1's design). Thin for a 5-squad, 2-cluster dataset meant to give a
+dashboard actionable "currently blocked" signal -- worth a PBI to revisit
+the generation logic now that there's more than one cluster to draw from,
+not just a same-day fix to root cause 1.
+
+PO's explicit instruction: add all three to the Product Backlog, do NOT
+commence work on any of them -- next Iteration's decision. Added to
+`specification/BACKLOG.md`'s Product Backlog table:
+1. Bug -- CSV row order isn't sorted (Waiting rows cluster at the bottom)
+2. Bug -- Issue Key numbering doesn't reflect chronological creation order
+3. PBI -- Improve Waiting-issue generation logic
+
+No code touched. No tests added or changed. Today's CSV
+(`data/task_2.2_five_squad_two_clusters.csv`) is left exactly as Task 2.2
+produced it.
+
+**Status:** Iteration 4 remains Task 2.1 + Task 2.2, both Done-Done. Three
+new backlog items logged for Iteration 5 planning; none started.
