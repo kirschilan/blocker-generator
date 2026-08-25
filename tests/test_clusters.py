@@ -1,8 +1,9 @@
-"""Automated checks for BACKLOG.md Task 1.3 (Auth cluster injection)."""
+"""Automated checks for BACKLOG.md Task 1.3 (Auth cluster injection) and
+Task 2.2 (DataPlatform cluster injection)."""
 from datetime import timedelta
 
-from blocker_generator.clusters import CLUSTER_1_AUTH, inject_cluster
-from blocker_generator.squads import AUTH, CHECKOUT, PAYMENTS
+from blocker_generator.clusters import CLUSTER_1_AUTH, CLUSTER_2_DATAPLATFORM, inject_cluster
+from blocker_generator.squads import AUTH, CHECKOUT, CORE_BANKING, PAYMENTS, SAVINGS
 from blocker_generator.sprints import week_day_to_date
 
 
@@ -68,3 +69,42 @@ def test_no_blockers_outside_weeks_3_to_5():
     week3_start = week_day_to_date(3, 1)
     week5_end = week_day_to_date(5, 7)
     assert all(week3_start <= e.date <= week5_end for e in entries)
+
+
+# --- BACKLOG.md Task 2.2: DataPlatform cluster injection --------------------
+
+
+def test_core_banking_has_five_blockers_starting_week_6():
+    entries = inject_cluster(CLUSTER_2_DATAPLATFORM)
+    root_entries = [e for e in entries if e.squad_id == CORE_BANKING]
+    assert len(root_entries) == 5
+    week6_day1 = week_day_to_date(6, 1)
+    assert min(e.date for e in root_entries) == week6_day1
+
+
+def test_savings_cascades_one_day_after_core_banking():
+    entries = inject_cluster(CLUSTER_2_DATAPLATFORM)
+    root_min_date = min(e.date for e in entries if e.is_root)
+    cascade_min_date = min(e.date for e in entries if e.squad_id == SAVINGS)
+    assert (cascade_min_date - root_min_date).days == 1
+
+
+def test_dataplatform_entries_tagged_with_own_cluster_id():
+    entries = inject_cluster(CLUSTER_2_DATAPLATFORM)
+    assert all(e.cluster_id == "Cluster-2-DataPlatform" for e in entries)
+
+
+def test_dataplatform_summary_and_waiting_reason_do_not_mention_auth():
+    # Regression: generate_cluster_blockers used to hardcode Cluster 1's
+    # "Session cache corruption in Auth service" / "Feature blocked
+    # pending Auth service fix" text for every cluster -- caught by
+    # inspecting the actual generated CSV for Task 2.2 (2026-08-25), not
+    # by any prior test, since no test checked `summary` content before.
+    entries = inject_cluster(CLUSTER_2_DATAPLATFORM)
+    for entry in entries:
+        assert "Auth" not in entry.summary, entry
+        assert "Auth" not in entry.waiting_reason, entry
+    root_entries = [e for e in entries if e.is_root]
+    cascade_entries = [e for e in entries if not e.is_root]
+    assert all("DataPlatform" in e.summary for e in root_entries)
+    assert all("Core Banking" in e.summary for e in cascade_entries)

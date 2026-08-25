@@ -532,3 +532,55 @@ full Interdependency Graph) is not modeled in this slice. Not wired into
 **Status:** Task 2.1 Done-Done. Awaiting PO's review of the artifacts
 before deciding whether today has capacity for more (per PO's own framing
 of how today would proceed).
+
+---
+
+**Iteration 4, continued — Task 2.2: DataPlatform cluster injection,
+verified against a real CSV:**
+
+PO pushed on the Agile Manifesto principle directly: "Working software is
+the primary measure of progress. What is Done today that can be measured
+in working progress?" Honest answer at that point: nothing — Task 2.1's
+5-squad model was reachable from precisely nowhere the CLI actually runs;
+`python3 -m blocker_generator --seed 42` produced byte-identical output to
+the day before (verified by diff, not assumed). PO then directed: "Pull
+Task 2.2, test the resulting CSV files meet the criteria."
+
+**Implemented:**
+- `CLUSTER_2_DATAPLATFORM` in `clusters.py`: root Core Banking, cascade
+  Savings, onset week 6 day 1, 5-day duration (BACKLOG.md Task 2.2's own
+  stated figure — same "duration vs. ARCHITECTURE.md's day-by-day
+  narrative" mismatch as Cluster 1, resolved the same way: the
+  BACKLOG-stated, testable number wins).
+- `generate_dataset()` extended to take a list of clusters (was a single
+  cluster) sharing one issue-key counter, so Auth + DataPlatform coexist
+  in one dataset without key collisions. Updated all 4 existing call
+  sites (`__main__.py`, `test_features.py` x3, `test_test_logs.py`) --
+  Milestone 1's actual CLI output reconfirmed byte-identical afterward
+  (diffed against `data/v1_auth_cluster_high_density.csv`).
+- Generated and committed a real artifact:
+  `data/task_2.2_five_squad_two_clusters.csv` (1,075 rows) -- not proven
+  only in a test's temp directory, an actual file in the repo.
+
+**Real bug caught by testing the CSV itself, not just aggregate counts:**
+`generate_cluster_blockers` hardcoded Cluster 1's "Session cache
+corruption in Auth service" / "Feature blocked pending Auth service fix"
+summary text unconditionally -- harmless with one cluster, silently wrong
+with two (every DataPlatform blocker's `Summary` column read "...Auth
+service"). Found by eyeballing the actual generated CSV rows after
+writing them, which is exactly what the PO's "test the resulting CSV
+files" instruction was for -- an in-memory-only check of counts/labels
+would not have caught it. Fixed by adding `root_summary`/`cascade_summary`
+to `BlockerCluster`, threaded through `BlockerDay`. Added regression tests
+at both the injection level and the CSV level so this can't quietly
+reappear.
+
+13 new tests (5 `test_clusters.py`, 8 `test_cluster2_dataplatform.py`);
+80/80 total pass.
+
+**Status:** Task 2.2 Done-Done, with an actual working-software delta
+this time: a new, regenerable CSV in `data/` that didn't exist before
+today, verified against Task 2.2's own acceptance criteria via the real
+file. Task 2.3 (tuned combined density, official `v2_...` naming, row-
+count range, optimized variant, test logs, validation report) remains
+unstarted and out of today's scope.

@@ -28,7 +28,7 @@ SPRINT_NAME_RE = re.compile(r"^Sprint-([1-9]|1[0-2])$")
 
 @pytest.fixture(scope="module")
 def dataset():
-    return generate_dataset(seed=42, squads=build_auth_subgraph(), cluster=CLUSTER_1_AUTH)
+    return generate_dataset(seed=42, squads=build_auth_subgraph(), clusters=[CLUSTER_1_AUTH])
 
 
 @pytest.fixture(scope="module")
@@ -119,13 +119,13 @@ def test_no_duplicate_issue_keys(dataset):
 # --- Cascade validation (TESTER.md) -----------------------------------------
 
 def test_auth_blocker_count_in_week_3():
-    blockers = [r for r in generate_dataset(42, build_auth_subgraph(), CLUSTER_1_AUTH) if r.type == "Sub-task"]
+    blockers = [r for r in generate_dataset(42, build_auth_subgraph(), [CLUSTER_1_AUTH]) if r.type == "Sub-task"]
     auth_blockers = [r for r in blockers if r.assignee == "auth-squad"]
     assert 3 <= len(auth_blockers) <= 5
 
 
 def test_checkout_and_payments_blocker_counts():
-    blockers = [r for r in generate_dataset(42, build_auth_subgraph(), CLUSTER_1_AUTH) if r.type == "Sub-task"]
+    blockers = [r for r in generate_dataset(42, build_auth_subgraph(), [CLUSTER_1_AUTH]) if r.type == "Sub-task"]
     for assignee in ("checkout-squad", "payments-squad"):
         count = len([r for r in blockers if r.assignee == assignee])
         assert 2 <= count <= 3

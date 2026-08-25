@@ -20,7 +20,7 @@
 | 1 | 2026-08-22 | Complete (timeboxed out) | Land Milestone 1 (Auth Squad + Cluster) to Done-Done — **Not Done** |
 | 2 | 2026-08-23 | Complete | Land Milestone 1 to Done-Done — **Done**; Fix Issue #7 (Sprint CSV format) — **Done**; PBR — Task 2.0 candidate PBIs drafted |
 | 3 | 2026-08-24 | Complete | PBI 2.0a — **Done**; Issue #8 — **Done**; PBI 2.0b/c/d — **Done**; Xray Issue #9 research + fix (Flaky/Automation Coverage % dropped) — **Done**; PBI 2.1 (live Status distribution: Waiting/Done/In Progress) — **Done**; Xray `Test Type` gap and row-shape gap — flagged, not started (need design input) |
-| 4 | 2026-08-25 | Complete | Task 2.1 — 5-squad + DataPlatform external dependency — **Done** |
+| 4 | 2026-08-25 | Complete | Task 2.1 — 5-squad + DataPlatform external dependency — **Done**; Task 2.2 — inject DataPlatform cluster, verified against a real CSV — **Done** |
 
 Full narrative for each Iteration (root causes, decisions, rationale) lives in `session_log.md` — this table is a status index, not a replacement for it.
 
@@ -44,7 +44,8 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 | Xray gap — `Test Type` values (tool names vs. Manual/Cucumber/Generic) | Milestone 2 (prerequisite) | Not started — needs a design decision, Issue #9 |
 | Xray gap — real exports are one row per Test Run, not aggregated counts | Milestone 2+ (future) | Not started — noted, not attempted; bigger structural change |
 | Task 2.1 — Extend squad model to 5 squads + DataPlatform external dependency | Milestone 2 | Done (Iteration 4) — see resolution note below |
-| Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Task 2.1 done; Tasks 2.2–2.6 not yet started |
+| Task 2.2 — Inject DataPlatform cluster (weeks 6–10) | Milestone 2 | Done (Iteration 4) — see resolution note below |
+| Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Tasks 2.1–2.2 done; Tasks 2.3–2.6 not yet started |
 | Milestone 3 scope: Full 8-Squad + 3 clusters + CLI | Milestone 3 | Not started — not yet broken into individual PBIs |
 
 ---
@@ -290,6 +291,16 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 **Input to Code:** ARCHITECTURE.md Cluster 2 + Task 1.3 cluster injection method  
 **Output:** Updated injection logic (handle 2+ clusters)  
 **Test:** Inject both clusters; assert Auth blockers in week 3, DataPlatform blockers in week 6; no conflicts
+
+**Resolved 2026-08-25 (Iteration 4):** PO explicitly directed this be verified against an actual CSV file, not just in-memory assertions, after Task 2.1 shipped with no data artifact ("Working software is the primary measure of progress" — what's Done today that's measurable in working software?). Implemented:
+- `CLUSTER_2_DATAPLATFORM` added to `clusters.py` (root: Core Banking, 5-day duration per this task's own acceptance criteria — same "stated duration vs. ARCHITECTURE.md's day-by-day narrative" inconsistency as Cluster 1, resolved the same way: BACKLOG's stated figure wins; cascade: Savings only, 1-day lag, matching ARCHITECTURE.md's Cluster 2 timeline).
+- `generate_dataset()` extended to accept a list of clusters (was a single cluster) sharing one issue-key counter, so two clusters coexist in one dataset without key collisions.
+- A real CSV (`data/task_2.2_five_squad_two_clusters.csv`, 1,075 rows) generated and committed — not just proven in a test's temp directory — so there's an actual artifact to open, per the PO's standard from this same conversation.
+- **Bug caught by testing the real CSV, not just aggregate counts:** `generate_cluster_blockers` hardcoded Cluster 1's "Session cache corruption in Auth service" / "Feature blocked pending Auth service fix" summary text for *every* cluster — harmless with one cluster, silently wrong with two (DataPlatform blockers were labeled as Auth blockers). Caught by eyeballing the generated CSV's actual rows, not by any existing test (none checked `summary` content before). Fixed by adding `root_summary`/`cascade_summary` fields to `BlockerCluster` and threading them through `BlockerDay`, with regression tests added at both the injection level (`test_clusters.py`) and the CSV level (`test_cluster2_dataplatform.py`) so it can't silently regress.
+- Milestone 1's output reconfirmed byte-identical (`v1_auth_cluster_high_density.csv` unchanged) — the fix only affected Cluster 2's values.
+- 13 new tests (5 in `test_clusters.py`, 8 in `test_cluster2_dataplatform.py`), 80/80 total pass.
+
+Scope explicitly NOT included (Task 2.3's job): tuned combined blocker density (25–35%), the official `v2_two_clusters_high_density.csv` name/row-count range, the optimized/mocked variant, test logs, validation report.
 
 ---
 
@@ -544,4 +555,5 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 | 2026-08-23 | Renamed our delivery timebox from "Sprint" to "Iteration" throughout (headers, sign-off gates, INVEST section) to stop colliding with the dataset's own domain concept (`Sprint-1..Sprint-12` in ARCHITECTURE.md). No scope change — same three vertical slices, same acceptance criteria. | PM + Code + BP (Kirschi) |
 | 2026-08-23 | Task 1.4 corrected: original "20–30% global blocker density" was mathematically impossible for the 3-squad/1-cluster slice (copied from the full 8-squad/3-cluster model without rescaling — see `pm-ffutq6` branch's diagnosis). Ruling: density is window-scoped (within the cluster's own week), not global. `Waiting Reason` now persists after a blocker resolves (needed for retrospective cluster detection, PROJECT.md P1). External-dependency deferral (Task 1.1) confirmed standing. | PM + Code + BP (Kirschi), formalizing a ruling first made 2026-08-22 |
 | 2026-08-25 | Task 2.1 done: 5-squad + DataPlatform squad model, `Squad.external_depends_on` added as a separate field rather than overloading `depends_on`. Iteration 4 kickoff deliberately scoped to this one task only (PO: focus on what's realistically Done-Done today). | PO + PM + Code |
+| 2026-08-25 | Task 2.2 done, same Iteration: PO pushed back that Task 2.1 alone had no measurable working-software delta ("Working software is the primary measure of progress" — what's Done today?). Pulled Task 2.2, generated and committed a real CSV, and caught a real bug (Cluster 2's summary text hardcoded to Cluster 1's) by testing that actual file instead of only aggregate assertions. | PO + PM + Code |
 

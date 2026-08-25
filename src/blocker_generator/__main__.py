@@ -87,7 +87,7 @@ def main(argv=None) -> int:
     args = build_arg_parser().parse_args(argv)
 
     squads = build_auth_subgraph()
-    dataset = generate_dataset(args.seed, squads, CLUSTER_1_AUTH)
+    dataset = generate_dataset(args.seed, squads, [CLUSTER_1_AUTH])
     test_logs = generate_test_logs(random.Random(args.seed), dataset)
 
     output_dir = Path(args.output_dir)

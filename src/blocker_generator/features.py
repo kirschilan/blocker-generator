@@ -44,13 +44,19 @@ from datetime import date, datetime, time, timedelta
 from typing import Dict, List, Optional
 
 from blocker_generator.clusters import BlockerCluster, inject_cluster
-from blocker_generator.squads import AUTH, CHECKOUT, PAYMENTS, Squad
+from blocker_generator.squads import AUTH, CHECKOUT, CORE_BANKING, PAYMENTS, SAVINGS, Squad
 from blocker_generator.sprints import SPRINT_COUNT, sprint_for_date, sprint_start_date
 
 FEATURES_PER_SQUAD_PER_SPRINT_RANGE = (15, 20)
 
-ISSUE_KEY_PREFIX = {AUTH: "SQ-A", CHECKOUT: "SQ-B", PAYMENTS: "SQ-D"}
-ASSIGNEE = {AUTH: "auth-squad", CHECKOUT: "checkout-squad", PAYMENTS: "payments-squad"}
+ISSUE_KEY_PREFIX = {
+    AUTH: "SQ-A", CHECKOUT: "SQ-B", PAYMENTS: "SQ-D",
+    CORE_BANKING: "SQ-C", SAVINGS: "SQ-E",  # BACKLOG.md Task 2.1/2.2
+}
+ASSIGNEE = {
+    AUTH: "auth-squad", CHECKOUT: "checkout-squad", PAYMENTS: "payments-squad",
+    CORE_BANKING: "core-banking-squad", SAVINGS: "savings-squad",  # Task 2.1/2.2
+}
 
 SQUAD_KEYWORDS = {
     AUTH: ["session handling", "token refresh", "MFA enrollment", "credential rotation",
@@ -59,6 +65,11 @@ SQUAD_KEYWORDS = {
                "guest checkout", "cart abandonment email"],
     PAYMENTS: ["card tokenization", "wallet linking", "fraud rule tuning",
                "settlement batch", "refund workflow", "payment retry logic"],
+    CORE_BANKING: ["account balance reconciliation", "ledger integrity check",
+                   "transaction history pagination", "interest accrual calculation",
+                   "statement generation", "double-entry validation"],
+    SAVINGS: ["savings goal tracking", "interest rate tiering", "account opening flow",
+              "auto-save rule", "goal progress notification", "savings withdrawal limit"],
 }
 SQUAD_VERBS = ["Add", "Fix", "Improve", "Refactor", "Investigate", "Harden", "Optimize", "Document"]
 
@@ -190,15 +201,10 @@ def generate_cluster_blockers(
         else:
             resolved = created + timedelta(days=1)
             status, cycle_time = "Done", (resolved - created).total_seconds() / 86400
-        summary = (
-            "Session cache corruption in Auth service"
-            if entry.is_root
-            else "Feature blocked pending Auth service fix"
-        )
         rows.append(
             IssueRow(
                 issue_key=key,
-                summary=summary,
+                summary=entry.summary,
                 type="Sub-task",
                 status=status,
                 assignee=ASSIGNEE[entry.squad_id],
@@ -267,8 +273,15 @@ def row_to_csv_row(row: IssueRow, label_slots: int, sprint_slots: int) -> List[s
     return core + label_values + sprint_values
 
 
-def generate_dataset(seed: int, squads: List[Squad], cluster: BlockerCluster) -> List[IssueRow]:
+def generate_dataset(seed: int, squads: List[Squad], clusters: List[BlockerCluster]) -> List[IssueRow]:
+    """BACKLOG.md Task 2.2: accepts 2+ clusters (previously a single
+    cluster) so Milestone 2's dataset can inject Auth + DataPlatform
+    together. Clusters share one counters dict so issue-key numbering
+    stays sequential per squad across clusters -- no key collisions
+    regardless of how many clusters touch the same squad."""
     rng = random.Random(seed)
     features, counters = generate_features(rng, squads)
-    blockers = generate_cluster_blockers(rng, cluster, counters)
+    blockers: List[IssueRow] = []
+    for cluster in clusters:
+        blockers.extend(generate_cluster_blockers(rng, cluster, counters))
     return features + blockers

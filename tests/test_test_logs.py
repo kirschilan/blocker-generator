@@ -21,7 +21,7 @@ VALID_TEST_TYPES = {"Manual", "Selenium", "Postman", "Swagger", "Perfecto Mobile
 
 @pytest.fixture(scope="module")
 def features():
-    rows = generate_dataset(seed=42, squads=build_auth_subgraph(), cluster=CLUSTER_1_AUTH)
+    rows = generate_dataset(seed=42, squads=build_auth_subgraph(), clusters=[CLUSTER_1_AUTH])
     return [r for r in rows if r.type == "Story"]
 
 
