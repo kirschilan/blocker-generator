@@ -122,23 +122,24 @@ Three hardcoded blocker clusters injected into high-density dataset. Each cluste
 ### Cluster 2: DataPlatform Annual Release Delay (Weeks 6–10)
 
 **Timeline:**
-- Week 6, Day 1: DataPlatform team (external) misses planned release date. SQ-C's features depending on new data schemas are stuck.
-- Week 6, Day 1: SQ-C places 4–5 features in "Waiting on DataPlatform release."
-- Week 6, Day 2: Downstream squads (SQ-E, SQ-F, dependent on SQ-C) see SQ-C waiting and place their own blockers: "Waiting on Core Banking data" (indirect cascade).
-- Week 10, Day 3: DataPlatform finally releases. SQ-C unblocks.
-- Week 10, Day 4: SQ-E, SQ-F unblock (propagation lag = 1 day).
+- Week 6, Day 1: DataPlatform team (external) misses planned release date. SQ-C's features depending on new data schemas are stuck. SQ-C places 5 features in "Waiting on DataPlatform team annual release (scheduled Q3)."
+- Week 6, Day 2: SQ-E (Savings, dependent on SQ-C) sees SQ-C waiting and places its own blocker: "Waiting on Core Banking data updates (DataPlatform delay)" (cascade lag = 1 day).
+- Week 6, Day 6: DataPlatform releases. SQ-C's blockers resolve (5-day duration).
+- Week 6, Day 7 (implied): SQ-E would unblock (propagation lag = 1 day) — as of the report this is the cluster's final observed day, so Savings' last blocker stays open rather than also resolving, same convention as Cluster 1's cascade tail (PBI 2.1).
+
+*(Corrected 2026-08-25, BACKLOG.md Task 2.2: this timeline previously read "Week 6 Day 1" through "Week 10, Day 3/4," implying a ~30-day root duration that contradicted Task 2.2's own stated "duration 5 days" acceptance criterion — the same kind of narrative-vs-quantified-criteria mismatch Cluster 1 had (corrected 2026-08-23, above). Same resolution: the quantified acceptance criteria are the contract; this narrative is corrected to match them, not the reverse. SQ-F (Loans) is dropped from this narrative — Loans isn't part of the 5-squad model Task 2.1 built, and Task 2.2's own acceptance criteria scopes the cascade to Savings only.)*
 
 **Affected Squads:**
-- SQ-C (direct): 4–5 features, 5-day wait
-- SQ-E, SQ-F (cascade): 2–3 features each, 5-day wait
+- SQ-C (direct): 5 features, 5-day wait
+- SQ-E (cascade): 5 features, 5-day wait (cascade_duration = duration + propagation_lag − cascade_lag)
 
 **Blocker Counts:**
-- Peak: 4 (C) + 2 (E) + 3 (F) = 9 blockers in week 6–10 window
-- Density: ~15% during this period
+- Total: 5 (C) + 5 (E) = 10 blockers, entirely within week 6
+- Density: within-window density is Task 2.3's concern (full feature generation), not measured at the injection-logic level (Task 2.2)
 
 **Waiting Reasons in Data:**
 - SQ-C: "Waiting on DataPlatform team annual release (scheduled Q3)"
-- SQ-E, SQ-F: "Waiting on Core Banking data updates (DataPlatform delay)"
+- SQ-E: "Waiting on Core Banking data updates (DataPlatform delay)"
 
 ---
 

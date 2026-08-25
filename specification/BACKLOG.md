@@ -45,7 +45,7 @@ Flat, prioritized list. A PBI's `Milestone` tag is for narrative context (which 
 | Xray gap — real exports are one row per Test Run, not aggregated counts | Milestone 2+ (future) | Not started — noted, not attempted; bigger structural change |
 | Task 2.1 — Extend squad model to 5 squads + DataPlatform external dependency | Milestone 2 | Done (Iteration 4) — see resolution note below |
 | Task 2.2 — Inject DataPlatform cluster (weeks 6–10) | Milestone 2 | Done (Iteration 4) — see resolution note below |
-| Bug — CSV row order isn't sorted (Waiting rows cluster at the bottom) | Milestone 2 (hardening) | Not started — found in Task 2.2 (PO's question), deferred to Iteration 5 per PO. Do not commence. Detail: session_log.md, Iteration 4. |
+| Bug — CSV row order isn't sorted (Waiting rows cluster at the bottom) | Milestone 2 (hardening) | Not started — found in Task 2.2 (PO's question), deferred to Iteration 5 per PO. **Must include research on real Jira's default CSV export row ordering (Governance Rule 8) before implementing a fix** — don't assume "sort by Created date" is correct without verifying it, same research-before-fix pattern as Issues #7/#8/#9. Do not commence. Detail: session_log.md, Iteration 4. |
 | Bug — Issue Key numbering doesn't reflect chronological creation order | Milestone 2 (hardening) | Not started — found alongside the row-sort bug in Task 2.2, deferred to Iteration 5 per PO. Do not commence. Detail: session_log.md, Iteration 4. |
 | PBI — Improve Waiting-issue generation logic | Milestone 2 | Not started — deferred to Iteration 5 per PO. Do not commence. Detail: session_log.md, Iteration 4. |
 | Milestone 2 scope: 5-Squad + DataPlatform cluster + optimized scenario | Milestone 2 | Tasks 2.1–2.2 done; Tasks 2.3–2.6 not yet started |
@@ -305,6 +305,8 @@ All three landed same-day as 2.0a (see `session_log.md`, Iteration 3).
 
 Scope explicitly NOT included (Task 2.3's job): tuned combined blocker density (25–35%), the official `v2_two_clusters_high_density.csv` name/row-count range, the optimized/mocked variant, test logs, validation report.
 
+**Housekeeping note for whoever starts Task 2.3:** `data/task_2.2_five_squad_two_clusters.csv` is Task 2.2's verification artifact, not a Milestone deliverable — it exists to prove the injection logic against a real file, deliberately named apart from Task 2.3's official `v2_two_clusters_high_density.csv` so the two are never confused for each other. Once Task 2.3 lands the real V2 dataset, decide explicitly whether to delete `task_2.2_five_squad_two_clusters.csv` or keep it — don't leave both sitting in `data/` indefinitely without a decision either way.
+
 ---
 
 ### Task 2.3: Generate 12-sprint features + 2 clusters (high-density V2)
@@ -560,4 +562,5 @@ Scope explicitly NOT included (Task 2.3's job): tuned combined blocker density (
 | 2026-08-25 | Task 2.1 done: 5-squad + DataPlatform squad model, `Squad.external_depends_on` added as a separate field rather than overloading `depends_on`. Iteration 4 kickoff deliberately scoped to this one task only (PO: focus on what's realistically Done-Done today). | PO + PM + Code |
 | 2026-08-25 | Task 2.2 done, same Iteration: PO pushed back that Task 2.1 alone had no measurable working-software delta ("Working software is the primary measure of progress" — what's Done today?). Pulled Task 2.2, generated and committed a real CSV, and caught a real bug (Cluster 2's summary text hardcoded to Cluster 1's) by testing that actual file instead of only aggregate assertions. | PO + PM + Code |
 | 2026-08-25 | PO spotted a second real issue by reading the committed CSV directly (all Waiting rows clustered at the bottom): traced to two root causes, not fixed today — added as 3 new Product Backlog items (2 bugs + 1 improvement PBI), explicitly deferred to Iteration 5, no work commenced. | PO + PM + Code |
+| 2026-08-25 | Closed today's documentation gaps per PO instruction: corrected `ARCHITECTURE.md`'s stale Cluster 2 timeline (never got Cluster 1's 2026-08-23 corrective treatment), added a Task 2.3 housekeeping note on the preview CSV's fate, and required Jira row-ordering research (Governance Rule 8) before Iteration 5 fixes the sort-order bug. Two working-agreement proposals from today explicitly deferred to the retro, not decided now, per PO. | PO + PM + Code |
 

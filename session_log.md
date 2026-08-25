@@ -638,3 +638,44 @@ produced it.
 
 **Status:** Iteration 4 remains Task 2.1 + Task 2.2, both Done-Done. Three
 new backlog items logged for Iteration 5 planning; none started.
+
+---
+
+**Iteration 4, continued — closing today's documentation gaps (PO
+instruction: complete gaps now; sort-order fix must include research;
+agreement changes wait for the retro):**
+
+Three concrete gaps closed:
+
+1. **`ARCHITECTURE.md`'s Cluster 2 section was stale.** It still described
+   the pre-Task-2.2 ~30-day timeline (Week 6 Day 1 through Week 10 Day
+   3/4), contradicting Task 2.2's actual 5-day implementation -- the same
+   narrative-vs-quantified-criteria mismatch Cluster 1 had, which *did*
+   get a corrective note (2026-08-23) that Cluster 2 never received.
+   Corrected the timeline, Affected Squads, and Blocker Counts to match
+   what `clusters.py` actually implements (5 (Core Banking) + 5 (Savings)
+   = 10 blockers, entirely within week 6; SQ-F/Loans dropped from the
+   narrative since it isn't part of the 5-squad slice), with an inline
+   note explaining the correction, mirroring Cluster 1's precedent.
+2. **Housekeeping note added to Task 2.3** in `BACKLOG.md`: whoever
+   starts Task 2.3 must explicitly decide whether to delete or keep
+   `data/task_2.2_five_squad_two_clusters.csv` once the official
+   `v2_two_clusters_high_density.csv` lands -- not leave both sitting in
+   `data/` indefinitely with no stated relationship between them.
+3. **Sort-order bug's backlog entry tightened** per PO's explicit
+   instruction: it now requires researching real Jira's default CSV
+   export row ordering (Governance Rule 8) *before* implementing a fix,
+   not just applying "sort by Created date" as an assumption -- same
+   research-before-fix discipline as Issues #7/#8/#9.
+
+**Explicitly deferred, not decided now (PO's instruction):** the two
+working-agreement proposals from earlier today --
+(a) flagging at Kickoff whether a proposed task produces a PO-facing
+artifact, and
+(b) a standing Kickoff-sizing check that a solo-task Iteration must
+produce a measurable working-software delta --
+are queued for the retrospective after this sprint closes, not decided
+mid-Iteration. Recorded here so they aren't lost between now and then.
+
+No source or test files touched this round; 80/80 tests still pass
+(unaffected, doc-only change).
